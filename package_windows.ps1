@@ -97,7 +97,7 @@ if ($CudaPath) {
     $RequiredDlls = @(
         "cudart64_*.dll"
     )
-    
+
     foreach ($pattern in $RequiredDlls) {
         $dlls = Get-ChildItem -Path $CudaDllDir -Filter $pattern -ErrorAction SilentlyContinue
         foreach ($dll in $dlls) {

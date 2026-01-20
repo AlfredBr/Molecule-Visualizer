@@ -10,7 +10,7 @@
 param(
     [Parameter(Mandatory=$true)]
     [string]$Version,
-    
+
     [switch]$Draft = $false,
     [switch]$SkipBuild = $false,
     [switch]$SkipUpload = $false
@@ -46,7 +46,7 @@ if (-not $SkipUpload) {
         Write-Host ""
         exit 1
     }
-    
+
     # Check if authenticated
     $authStatus = gh auth status 2>&1
     if ($LASTEXITCODE -ne 0) {
@@ -64,7 +64,7 @@ if (-not $SkipBuild) {
     Write-Host " Step 1: Building MolVis" -ForegroundColor Blue
     Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Blue
     Write-Host ""
-    
+
     Push-Location $ProjectRoot
     try {
         & .\build.bat
