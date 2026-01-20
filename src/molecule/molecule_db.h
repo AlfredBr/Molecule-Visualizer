@@ -7,7 +7,8 @@
 #ifndef MOLECULE_DB_H
 #define MOLECULE_DB_H
 
-#include "renderer/cuda_renderer.h"
+// Use platform-agnostic molecule types
+#include "molecule/molecule_types.h"
 
 // Molecule categories for UI organization
 enum MoleculeCategory {
