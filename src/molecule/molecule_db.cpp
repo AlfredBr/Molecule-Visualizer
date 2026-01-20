@@ -11324,7 +11324,489 @@ void buildTungstenHexacarbonyl(Molecule* mol) {
     centerMolecule(mol);
 }
 
-// ============== MOLECULE REGISTRY (240 molecules) ==============
+// Build o-Carborane (C2B10H12) - icosahedral cage, "sci-fi grenade"
+void buildOCarborane(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "o-Carborane (C2B10H12)");
+
+    // Icosahedron vertices using golden ratio
+    // φ = (1 + √5) / 2 ≈ 1.618
+    const float phi = 1.618033988749895f;
+    const float scale = 1.0f;
+    const float hDist = 0.8f;  // B-H and C-H bond length extension
+
+    // 12 vertices of icosahedron: (0, ±1, ±φ), (±1, ±φ, 0), (±φ, 0, ±1)
+    float verts[12][3] = {
+        { 0,  1,  phi}, { 0,  1, -phi}, { 0, -1,  phi}, { 0, -1, -phi},
+        { 1,  phi,  0}, {-1,  phi,  0}, { 1, -phi,  0}, {-1, -phi,  0},
+        { phi,  0,  1}, {-phi,  0,  1}, { phi,  0, -1}, {-phi,  0, -1}
+    };
+
+    // Scale vertices
+    for (int i = 0; i < 12; i++) {
+        verts[i][0] *= scale;
+        verts[i][1] *= scale;
+        verts[i][2] *= scale;
+    }
+
+    // In o-carborane, carbons are at adjacent positions (vertices 0 and 4 are adjacent)
+    // Atoms 0,1 = Carbon, Atoms 2-11 = Boron
+    addAtom(mol, verts[0][0], verts[0][1], verts[0][2], ATOM_C);  // 0 - C
+    addAtom(mol, verts[4][0], verts[4][1], verts[4][2], ATOM_C);  // 1 - C
+
+    // Remaining 10 borons
+    int boronVerts[] = {1, 2, 3, 5, 6, 7, 8, 9, 10, 11};
+    for (int i = 0; i < 10; i++) {
+        int v = boronVerts[i];
+        addAtom(mol, verts[v][0], verts[v][1], verts[v][2], ATOM_B);  // 2-11 - B
+    }
+
+    // Add hydrogens radially outward from each cage atom
+    for (int i = 0; i < 12; i++) {
+        float x, y, z;
+        if (i == 0) { x = verts[0][0]; y = verts[0][1]; z = verts[0][2]; }
+        else if (i == 1) { x = verts[4][0]; y = verts[4][1]; z = verts[4][2]; }
+        else { int v = boronVerts[i-2]; x = verts[v][0]; y = verts[v][1]; z = verts[v][2]; }
+
+        // Normalize and extend for H position
+        float len = sqrtf(x*x + y*y + z*z);
+        float hx = x + (x/len) * hDist;
+        float hy = y + (y/len) * hDist;
+        float hz = z + (z/len) * hDist;
+        addAtom(mol, hx, hy, hz, ATOM_H);  // 12-23 - H
+    }
+
+    // Icosahedron edges (30 edges connecting 12 vertices)
+    // Each vertex connects to 5 neighbors
+    int edges[30][2] = {
+        {0,2}, {0,4}, {0,5}, {0,8}, {0,9},      // vertex 0
+        {1,3}, {1,4}, {1,5}, {1,10}, {1,11},    // vertex 1
+        {2,6}, {2,7}, {2,8}, {2,9},             // vertex 2
+        {3,6}, {3,7}, {3,10}, {3,11},           // vertex 3
+        {4,5}, {4,8}, {4,10},                   // vertex 4
+        {5,9}, {5,11},                          // vertex 5
+        {6,7}, {6,8}, {6,10},                   // vertex 6
+        {7,9}, {7,11},                          // vertex 7
+        {8,10}, {9,11}                          // vertices 8,9
+    };
+
+    // Map original vertex indices to our atom indices
+    // Vertex 0 -> atom 0 (C), vertex 4 -> atom 1 (C)
+    // Other vertices map to atoms 2-11 (B)
+    auto vertToAtom = [&](int v) -> int {
+        if (v == 0) return 0;
+        if (v == 4) return 1;
+        for (int i = 0; i < 10; i++) {
+            if (boronVerts[i] == v) return i + 2;
+        }
+        return -1;
+    };
+
+    for (int i = 0; i < 30; i++) {
+        int a1 = vertToAtom(edges[i][0]);
+        int a2 = vertToAtom(edges[i][1]);
+        if (a1 >= 0 && a2 >= 0) {
+            addBond(mol, a1, a2, 1);
+        }
+    }
+
+    // C-H and B-H bonds (cage atoms 0-11 to hydrogens 12-23)
+    for (int i = 0; i < 12; i++) {
+        addBond(mol, i, i + 12, 1);
+    }
+
+    centerMolecule(mol);
+}
+
+// Build Dodecaborate ([B12H12]2-) - perfect icosahedron, super clean
+void buildDodecaborate(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "[B12H12]2- Dodecaborate");
+
+    // Perfect icosahedron with golden ratio
+    const float phi = 1.618033988749895f;
+    const float scale = 1.0f;
+    const float hDist = 0.85f;  // B-H bond length extension
+
+    // 12 vertices of icosahedron
+    float verts[12][3] = {
+        { 0,  1,  phi}, { 0,  1, -phi}, { 0, -1,  phi}, { 0, -1, -phi},
+        { 1,  phi,  0}, {-1,  phi,  0}, { 1, -phi,  0}, {-1, -phi,  0},
+        { phi,  0,  1}, {-phi,  0,  1}, { phi,  0, -1}, {-phi,  0, -1}
+    };
+
+    // Scale and add boron atoms at all 12 vertices
+    for (int i = 0; i < 12; i++) {
+        addAtom(mol, verts[i][0] * scale, verts[i][1] * scale, verts[i][2] * scale, ATOM_B);
+    }
+
+    // Add hydrogens radially outward from each boron
+    for (int i = 0; i < 12; i++) {
+        float x = verts[i][0] * scale;
+        float y = verts[i][1] * scale;
+        float z = verts[i][2] * scale;
+        float len = sqrtf(x*x + y*y + z*z);
+        float hx = x + (x/len) * hDist;
+        float hy = y + (y/len) * hDist;
+        float hz = z + (z/len) * hDist;
+        addAtom(mol, hx, hy, hz, ATOM_H);  // 12-23 - H
+    }
+
+    // All 30 icosahedral edges (B-B bonds)
+    int edges[30][2] = {
+        {0,2}, {0,4}, {0,5}, {0,8}, {0,9},
+        {1,3}, {1,4}, {1,5}, {1,10}, {1,11},
+        {2,6}, {2,7}, {2,8}, {2,9},
+        {3,6}, {3,7}, {3,10}, {3,11},
+        {4,5}, {4,8}, {4,10},
+        {5,9}, {5,11},
+        {6,7}, {6,8}, {6,10},
+        {7,9}, {7,11},
+        {8,10}, {9,11}
+    };
+
+    for (int i = 0; i < 30; i++) {
+        addBond(mol, edges[i][0], edges[i][1], 1);
+    }
+
+    // B-H bonds (borons 0-11 to hydrogens 12-23)
+    for (int i = 0; i < 12; i++) {
+        addBond(mol, i, i + 12, 1);
+    }
+
+    centerMolecule(mol);
+}
+
+// Build [2]Catenane - two interlocked rings (molecular chain links)
+void buildCatenane(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "[2]Catenane");
+
+    // Two interlocked rings, each with 20 carbons
+    // Ring 1: in XY plane, Ring 2: in XZ plane, offset and tilted to interlock
+    const int ringSize = 20;
+    const float r1 = 2.5f;  // radius of ring 1
+    const float r2 = 2.5f;  // radius of ring 2
+    const float kPi = 3.14159265359f;
+
+    // Ring 1: circular in XY plane (carbons 0-19)
+    for (int i = 0; i < ringSize; i++) {
+        float angle = 2.0f * kPi * i / ringSize;
+        float x = r1 * cosf(angle);
+        float y = r1 * sinf(angle);
+        float z = 0.0f;
+        addAtom(mol, x, y, z, ATOM_C);
+    }
+
+    // Ring 2: circular in XZ plane, offset to pass through ring 1 (carbons 20-39)
+    for (int i = 0; i < ringSize; i++) {
+        float angle = 2.0f * kPi * i / ringSize;
+        float x = r2 * cosf(angle);
+        float y = 0.0f;
+        float z = r2 * sinf(angle);
+        addAtom(mol, x, y, z, ATOM_N);  // Use N for visual distinction
+    }
+
+    // Bonds for ring 1
+    for (int i = 0; i < ringSize; i++) {
+        addBond(mol, i, (i + 1) % ringSize, 1);
+    }
+
+    // Bonds for ring 2
+    for (int i = 0; i < ringSize; i++) {
+        addBond(mol, ringSize + i, ringSize + ((i + 1) % ringSize), 1);
+    }
+
+    centerMolecule(mol);
+}
+
+// Build Rotaxane - ring on an axle with bulky stoppers
+void buildRotaxane(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Rotaxane");
+
+    const float kPi = 3.14159265359f;
+
+    // Central axle: linear chain of 12 carbons along X axis
+    const int axleLength = 12;
+    const float axleSpacing = 0.8f;
+    float axleStart = -axleLength * axleSpacing / 2.0f;
+
+    for (int i = 0; i < axleLength; i++) {
+        float x = axleStart + i * axleSpacing;
+        addAtom(mol, x, 0.0f, 0.0f, ATOM_C);  // 0-11: axle carbons
+    }
+
+    // Ring around the middle (threaded bead) - 12 nitrogens
+    const int ringSize = 12;
+    const float ringRadius = 1.5f;
+    for (int i = 0; i < ringSize; i++) {
+        float angle = 2.0f * kPi * i / ringSize;
+        float y = ringRadius * cosf(angle);
+        float z = ringRadius * sinf(angle);
+        addAtom(mol, 0.0f, y, z, ATOM_N);  // 12-23: ring atoms
+    }
+
+    // Left stopper (bulky group) - tetrahedral arrangement of 4 oxygens
+    float stopperX = axleStart - 0.5f;
+    float stopperR = 1.2f;
+    addAtom(mol, stopperX, stopperR, 0.0f, ATOM_O);           // 24
+    addAtom(mol, stopperX, -stopperR, 0.0f, ATOM_O);          // 25
+    addAtom(mol, stopperX, 0.0f, stopperR, ATOM_O);           // 26
+    addAtom(mol, stopperX, 0.0f, -stopperR, ATOM_O);          // 27
+
+    // Right stopper
+    stopperX = axleStart + (axleLength - 1) * axleSpacing + 0.5f;
+    addAtom(mol, stopperX, stopperR, 0.0f, ATOM_O);           // 28
+    addAtom(mol, stopperX, -stopperR, 0.0f, ATOM_O);          // 29
+    addAtom(mol, stopperX, 0.0f, stopperR, ATOM_O);           // 30
+    addAtom(mol, stopperX, 0.0f, -stopperR, ATOM_O);          // 31
+
+    // Axle bonds
+    for (int i = 0; i < axleLength - 1; i++) {
+        addBond(mol, i, i + 1, 1);
+    }
+
+    // Ring bonds
+    for (int i = 0; i < ringSize; i++) {
+        addBond(mol, 12 + i, 12 + ((i + 1) % ringSize), 1);
+    }
+
+    // Left stopper bonds to first axle carbon
+    addBond(mol, 0, 24, 1);
+    addBond(mol, 0, 25, 1);
+    addBond(mol, 0, 26, 1);
+    addBond(mol, 0, 27, 1);
+
+    // Right stopper bonds to last axle carbon
+    addBond(mol, axleLength - 1, 28, 1);
+    addBond(mol, axleLength - 1, 29, 1);
+    addBond(mol, axleLength - 1, 30, 1);
+    addBond(mol, axleLength - 1, 31, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Molecular Trefoil Knot - a knotted loop
+void buildTrefoilKnot(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Molecular Trefoil Knot");
+
+    // Parametric trefoil knot: 
+    // x = sin(t) + 2*sin(2t)
+    // y = cos(t) - 2*cos(2t)
+    // z = -sin(3t)
+    const int numAtoms = 60;  // Number of atoms in the knot
+    const float kPi = 3.14159265359f;
+    const float scale = 0.8f;
+
+    for (int i = 0; i < numAtoms; i++) {
+        float t = 2.0f * kPi * i / numAtoms;
+        float x = (sinf(t) + 2.0f * sinf(2.0f * t)) * scale;
+        float y = (cosf(t) - 2.0f * cosf(2.0f * t)) * scale;
+        float z = -sinf(3.0f * t) * scale;
+
+        // Alternate colors for visual effect (C, N, O pattern)
+        int atomType = (i % 3 == 0) ? ATOM_C : ((i % 3 == 1) ? ATOM_N : ATOM_O);
+        addAtom(mol, x, y, z, atomType);
+    }
+
+    // Connect atoms in sequence to form the knot
+    for (int i = 0; i < numAtoms; i++) {
+        addBond(mol, i, (i + 1) % numAtoms, 1);
+    }
+
+    centerMolecule(mol);
+}
+
+// Build [1.1.1]Propellane (C5H6) - inverted internal C-C bond under tension
+void buildPropellane(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "[1.1.1]Propellane (C5H6)");
+
+    // Structure: two bridgehead carbons connected by 3 methylene bridges
+    // and a direct "inverted" bond between them
+    // Bridgehead carbons at top and bottom
+    float bh = 0.8f;  // bridgehead separation (half)
+    float br = 1.2f;  // bridge radius
+
+    // Bridgehead carbons (the famous inverted bond between these)
+    addAtom(mol, 0.0f, 0.0f, -bh, ATOM_C);  // 0 - bottom bridgehead
+    addAtom(mol, 0.0f, 0.0f,  bh, ATOM_C);  // 1 - top bridgehead
+
+    // Three bridge carbons (CH2) arranged in triangle around z-axis
+    float angle1 = 0.0f;
+    float angle2 = 2.094395f;  // 120 degrees
+    float angle3 = 4.188790f;  // 240 degrees
+
+    addAtom(mol, br * cosf(angle1), br * sinf(angle1), 0.0f, ATOM_C);  // 2
+    addAtom(mol, br * cosf(angle2), br * sinf(angle2), 0.0f, ATOM_C);  // 3
+    addAtom(mol, br * cosf(angle3), br * sinf(angle3), 0.0f, ATOM_C);  // 4
+
+    // Hydrogens on bridge carbons (2 per carbon, pointing outward)
+    float hDist = 0.8f;
+    for (int i = 0; i < 3; i++) {
+        float angle = i * 2.094395f;
+        float cx = br * cosf(angle);
+        float cy = br * sinf(angle);
+        // Two H's per bridge carbon, displaced up/down and outward
+        float hx = (br + hDist) * cosf(angle);
+        float hy = (br + hDist) * sinf(angle);
+        addAtom(mol, hx, hy, -0.5f, ATOM_H);  // 5,7,9
+        addAtom(mol, hx, hy,  0.5f, ATOM_H);  // 6,8,10
+    }
+
+    // The famous inverted bond between bridgeheads
+    addBond(mol, 0, 1, 1);
+
+    // Bridgehead to bridge bonds
+    addBond(mol, 0, 2, 1); addBond(mol, 1, 2, 1);
+    addBond(mol, 0, 3, 1); addBond(mol, 1, 3, 1);
+    addBond(mol, 0, 4, 1); addBond(mol, 1, 4, 1);
+
+    // C-H bonds
+    addBond(mol, 2, 5, 1); addBond(mol, 2, 6, 1);
+    addBond(mol, 3, 7, 1); addBond(mol, 3, 8, 1);
+    addBond(mol, 4, 9, 1); addBond(mol, 4, 10, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Prismane (C6H6) - triangular prism of carbons
+void buildPrismane(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Prismane (C6H6)");
+
+    // Triangular prism: 2 triangular faces connected by 3 rectangular faces
+    float r = 1.0f;   // radius of triangular face
+    float h = 0.9f;   // half-height of prism
+
+    // Bottom triangle (z = -h)
+    float a1 = 0.0f, a2 = 2.094395f, a3 = 4.188790f;  // 0, 120, 240 degrees
+    addAtom(mol, r * cosf(a1), r * sinf(a1), -h, ATOM_C);  // 0
+    addAtom(mol, r * cosf(a2), r * sinf(a2), -h, ATOM_C);  // 1
+    addAtom(mol, r * cosf(a3), r * sinf(a3), -h, ATOM_C);  // 2
+
+    // Top triangle (z = +h)
+    addAtom(mol, r * cosf(a1), r * sinf(a1),  h, ATOM_C);  // 3
+    addAtom(mol, r * cosf(a2), r * sinf(a2),  h, ATOM_C);  // 4
+    addAtom(mol, r * cosf(a3), r * sinf(a3),  h, ATOM_C);  // 5
+
+    // Hydrogens pointing outward from each carbon
+    float hDist = 0.8f;
+    for (int i = 0; i < 3; i++) {
+        float angle = i * 2.094395f;
+        float hx = (r + hDist) * cosf(angle);
+        float hy = (r + hDist) * sinf(angle);
+        addAtom(mol, hx, hy, -h - 0.3f, ATOM_H);  // 6,7,8 - bottom H's
+        addAtom(mol, hx, hy,  h + 0.3f, ATOM_H);  // 9,10,11 - top H's
+    }
+
+    // Bottom triangle bonds
+    addBond(mol, 0, 1, 1); addBond(mol, 1, 2, 1); addBond(mol, 2, 0, 1);
+    // Top triangle bonds
+    addBond(mol, 3, 4, 1); addBond(mol, 4, 5, 1); addBond(mol, 5, 3, 1);
+    // Vertical bonds (connecting triangles)
+    addBond(mol, 0, 3, 1); addBond(mol, 1, 4, 1); addBond(mol, 2, 5, 1);
+
+    // C-H bonds
+    addBond(mol, 0, 6, 1); addBond(mol, 1, 7, 1); addBond(mol, 2, 8, 1);
+    addBond(mol, 3, 9, 1); addBond(mol, 4, 10, 1); addBond(mol, 5, 11, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Tetrahedrane (C4H4) - tetrahedral carbon cage
+void buildTetrahedrane(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Tetrahedrane (C4H4)");
+
+    // Perfect tetrahedron vertices
+    float a = 1.0f;  // scale
+    // Tetrahedral coordinates: 
+    // (1,1,1), (1,-1,-1), (-1,1,-1), (-1,-1,1) normalized
+    float v = a * 0.577350269f;  // 1/sqrt(3)
+
+    addAtom(mol,  v,  v,  v, ATOM_C);  // 0
+    addAtom(mol,  v, -v, -v, ATOM_C);  // 1
+    addAtom(mol, -v,  v, -v, ATOM_C);  // 2
+    addAtom(mol, -v, -v,  v, ATOM_C);  // 3
+
+    // Hydrogens pointing outward from each carbon
+    float hDist = 0.8f;
+    float hv = (a + hDist) * 0.577350269f;
+    addAtom(mol,  hv,  hv,  hv, ATOM_H);  // 4
+    addAtom(mol,  hv, -hv, -hv, ATOM_H);  // 5
+    addAtom(mol, -hv,  hv, -hv, ATOM_H);  // 6
+    addAtom(mol, -hv, -hv,  hv, ATOM_H);  // 7
+
+    // All 6 edges of tetrahedron (C-C bonds)
+    addBond(mol, 0, 1, 1); addBond(mol, 0, 2, 1); addBond(mol, 0, 3, 1);
+    addBond(mol, 1, 2, 1); addBond(mol, 1, 3, 1); addBond(mol, 2, 3, 1);
+
+    // C-H bonds
+    addBond(mol, 0, 4, 1); addBond(mol, 1, 5, 1);
+    addBond(mol, 2, 6, 1); addBond(mol, 3, 7, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Dewar Benzene (C6H6) - bicyclic bent benzene isomer
+void buildDewarBenzene(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Dewar Benzene (C6H6)");
+
+    // Structure: bicyclo[2.2.0]hexa-2,5-diene
+    // Two fused cyclobutene rings forming a "butterfly" shape
+    float w = 1.0f;   // width
+    float h = 0.7f;   // height of fold
+    float d = 0.6f;   // depth
+
+    // Four carbons of the central 4-membered ring (folded)
+    addAtom(mol, -w/2, -d,  h, ATOM_C);  // 0 - back left (up)
+    addAtom(mol,  w/2, -d,  h, ATOM_C);  // 1 - back right (up)
+    addAtom(mol,  w/2,  d, -h, ATOM_C);  // 2 - front right (down)
+    addAtom(mol, -w/2,  d, -h, ATOM_C);  // 3 - front left (down)
+
+    // Two carbons bridging across (the "wings")
+    addAtom(mol, -w/2, 0.0f, 0.0f, ATOM_C);  // 4 - left bridge
+    addAtom(mol,  w/2, 0.0f, 0.0f, ATOM_C);  // 5 - right bridge
+
+    // Hydrogens on each carbon
+    float hDist = 0.8f;
+    addAtom(mol, -w/2 - hDist, -d,  h + 0.3f, ATOM_H);  // 6
+    addAtom(mol,  w/2 + hDist, -d,  h + 0.3f, ATOM_H);  // 7
+    addAtom(mol,  w/2 + hDist,  d, -h - 0.3f, ATOM_H);  // 8
+    addAtom(mol, -w/2 - hDist,  d, -h - 0.3f, ATOM_H);  // 9
+    addAtom(mol, -w/2 - hDist, 0.0f, 0.0f, ATOM_H);     // 10
+    addAtom(mol,  w/2 + hDist, 0.0f, 0.0f, ATOM_H);     // 11
+
+    // Central 4-membered ring
+    addBond(mol, 0, 1, 1); addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1); addBond(mol, 3, 0, 1);
+
+    // Bridge bonds (double bond character in real molecule)
+    addBond(mol, 0, 4, 2); addBond(mol, 3, 4, 1);
+    addBond(mol, 1, 5, 2); addBond(mol, 2, 5, 1);
+
+    // C-H bonds
+    addBond(mol, 0, 6, 1); addBond(mol, 1, 7, 1);
+    addBond(mol, 2, 8, 1); addBond(mol, 3, 9, 1);
+    addBond(mol, 4, 10, 1); addBond(mol, 5, 11, 1);
+
+    centerMolecule(mol);
+}
+
+// ============== MOLECULE REGISTRY (249 molecules) ==============
 
 typedef void (*MoleculeBuilder)(Molecule*);
 
@@ -11593,7 +12075,7 @@ static MoleculeInfo molecules[] = {
     { buildMescaline, "Mescaline/Peyote", CAT_PHARMA, "Peyote cactus" },
     // === RANDOM (232) ===
     { buildRandomMolecule, "Random", CAT_OTHER, "Random structure" },
-    // === EXOTIC STRUCTURES (233-240) ===
+    // === EXOTIC STRUCTURES (233-249) ===
     { buildCubane, "Cubane", CAT_ORGANIC, "C8H8 - Cube-shaped" },
     { buildBuckminsterfullerene, "Buckyball/C60", CAT_ORGANIC, "Carbon soccer ball" },
     { buildAdamantane, "Adamantane", CAT_ORGANIC, "C10H16 - Diamond cage" },
@@ -11601,6 +12083,15 @@ static MoleculeInfo molecules[] = {
     { buildXenonDifluoride, "Xenon Difluoride (XeF2)", CAT_OTHER, "Linear noble gas" },
     { buildRheniumChlorideDimer, "[Re2Cl8]2- Dimer", CAT_OTHER, "Quadruple metal bond" },
     { buildTungstenHexacarbonyl, "W(CO)6 Hexacarbonyl", CAT_OTHER, "Octahedral carbonyl" },
+    { buildOCarborane, "o-Carborane (C2B10H12)", CAT_OTHER, "Icosahedral cage" },
+    { buildDodecaborate, "[B12H12]2- Dodecaborate", CAT_OTHER, "Perfect icosahedron" },
+    { buildCatenane, "[2]Catenane", CAT_OTHER, "Interlocked rings" },
+    { buildRotaxane, "Rotaxane", CAT_OTHER, "Ring on axle" },
+    { buildTrefoilKnot, "Molecular Trefoil Knot", CAT_OTHER, "Knotted loop" },
+    { buildPropellane, "[1.1.1]Propellane", CAT_ORGANIC, "Inverted C-C bond" },
+    { buildPrismane, "Prismane (C6H6)", CAT_ORGANIC, "Triangular prism" },
+    { buildTetrahedrane, "Tetrahedrane (C4H4)", CAT_ORGANIC, "Carbon tetrahedron" },
+    { buildDewarBenzene, "Dewar Benzene", CAT_ORGANIC, "Bent benzene isomer" },
 };
 
 static const int NUM_MOLECULES = sizeof(molecules) / sizeof(molecules[0]);
