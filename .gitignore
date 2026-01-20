@@ -21,6 +21,9 @@
 /build/
 /build_mac/
 
+# Distribution (generated DMGs)
+/dist/
+
 # Visual Studio
 .vs/
 *.vcxproj
