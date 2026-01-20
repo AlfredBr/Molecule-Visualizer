@@ -11204,7 +11204,127 @@ void buildChlorophyll(Molecule* mol) {
     centerMolecule(mol);
 }
 
-// ============== MOLECULE REGISTRY (233 molecules) ==============
+// Build Xenon Difluoride (XeF2) - linear noble gas compound
+void buildXenonDifluoride(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Xenon Difluoride (XeF2)");
+
+    // Linear geometry: F-Xe-F (180 degrees)
+    // Xe-F bond length ~2.0 Angstroms
+    float bondLen = 1.5f;
+
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_PT);      // 0 - Xe (using Pt color - silver)
+    addAtom(mol, -bondLen, 0.0f, 0.0f, ATOM_F);   // 1 - F
+    addAtom(mol, bondLen, 0.0f, 0.0f, ATOM_F);    // 2 - F
+
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 0, 2, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Rhenium(III) Chloride Dimer ([Re2Cl8]2-) - metal-metal quadruple bond
+void buildRheniumChlorideDimer(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "[Re2Cl8]2- Quadruple Bond");
+
+    // Two Re atoms with quadruple bond between them
+    // Each Re has 4 Cl ligands in eclipsed square planar arrangement
+    float reBond = 1.0f;   // Re-Re bond length (very short for quadruple bond)
+    float reCl = 1.8f;     // Re-Cl bond length
+
+    // Rhenium atoms (using Ti color - silver/gray metallic)
+    addAtom(mol, -reBond/2, 0.0f, 0.0f, ATOM_TI);  // 0 - Re1
+    addAtom(mol,  reBond/2, 0.0f, 0.0f, ATOM_TI);  // 1 - Re2
+
+    // Chlorines on Re1 (eclipsed square planar)
+    addAtom(mol, -reBond/2,  reCl,  0.0f, ATOM_CL);  // 2
+    addAtom(mol, -reBond/2, -reCl,  0.0f, ATOM_CL);  // 3
+    addAtom(mol, -reBond/2,  0.0f,  reCl, ATOM_CL);  // 4
+    addAtom(mol, -reBond/2,  0.0f, -reCl, ATOM_CL);  // 5
+
+    // Chlorines on Re2 (eclipsed with Re1's ligands)
+    addAtom(mol,  reBond/2,  reCl,  0.0f, ATOM_CL);  // 6
+    addAtom(mol,  reBond/2, -reCl,  0.0f, ATOM_CL);  // 7
+    addAtom(mol,  reBond/2,  0.0f,  reCl, ATOM_CL);  // 8
+    addAtom(mol,  reBond/2,  0.0f, -reCl, ATOM_CL);  // 9
+
+    // Re-Re quadruple bond (shown as order 3 since we max at triple visually)
+    addBond(mol, 0, 1, 3);
+
+    // Re-Cl bonds
+    addBond(mol, 0, 2, 1);
+    addBond(mol, 0, 3, 1);
+    addBond(mol, 0, 4, 1);
+    addBond(mol, 0, 5, 1);
+    addBond(mol, 1, 6, 1);
+    addBond(mol, 1, 7, 1);
+    addBond(mol, 1, 8, 1);
+    addBond(mol, 1, 9, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Tungsten Hexacarbonyl (W(CO)6) - octahedral carbonyl complex
+void buildTungstenHexacarbonyl(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "W(CO)6 Hexacarbonyl");
+
+    // Perfect octahedral geometry
+    // W at center, 6 CO ligands along ±x, ±y, ±z axes
+    float wC = 1.5f;   // W-C bond length
+    float cO = 0.9f;   // C-O bond length (triple bond)
+
+    // Central tungsten (using Fe color - metallic)
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_FE);  // 0 - W
+
+    // CO ligands along +x
+    addAtom(mol,  wC, 0.0f, 0.0f, ATOM_C);           // 1 - C
+    addAtom(mol,  wC + cO, 0.0f, 0.0f, ATOM_O);      // 2 - O
+
+    // CO ligands along -x
+    addAtom(mol, -wC, 0.0f, 0.0f, ATOM_C);           // 3 - C
+    addAtom(mol, -wC - cO, 0.0f, 0.0f, ATOM_O);      // 4 - O
+
+    // CO ligands along +y
+    addAtom(mol, 0.0f,  wC, 0.0f, ATOM_C);           // 5 - C
+    addAtom(mol, 0.0f,  wC + cO, 0.0f, ATOM_O);      // 6 - O
+
+    // CO ligands along -y
+    addAtom(mol, 0.0f, -wC, 0.0f, ATOM_C);           // 7 - C
+    addAtom(mol, 0.0f, -wC - cO, 0.0f, ATOM_O);      // 8 - O
+
+    // CO ligands along +z
+    addAtom(mol, 0.0f, 0.0f,  wC, ATOM_C);           // 9 - C
+    addAtom(mol, 0.0f, 0.0f,  wC + cO, ATOM_O);      // 10 - O
+
+    // CO ligands along -z
+    addAtom(mol, 0.0f, 0.0f, -wC, ATOM_C);           // 11 - C
+    addAtom(mol, 0.0f, 0.0f, -wC - cO, ATOM_O);      // 12 - O
+
+    // W-C bonds (6 bonds to central W)
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 0, 3, 1);
+    addBond(mol, 0, 5, 1);
+    addBond(mol, 0, 7, 1);
+    addBond(mol, 0, 9, 1);
+    addBond(mol, 0, 11, 1);
+
+    // C≡O triple bonds (6 CO groups)
+    addBond(mol, 1, 2, 3);
+    addBond(mol, 3, 4, 3);
+    addBond(mol, 5, 6, 3);
+    addBond(mol, 7, 8, 3);
+    addBond(mol, 9, 10, 3);
+    addBond(mol, 11, 12, 3);
+
+    centerMolecule(mol);
+}
+
+// ============== MOLECULE REGISTRY (240 molecules) ==============
 
 typedef void (*MoleculeBuilder)(Molecule*);
 
@@ -11473,11 +11593,14 @@ static MoleculeInfo molecules[] = {
     { buildMescaline, "Mescaline/Peyote", CAT_PHARMA, "Peyote cactus" },
     // === RANDOM (232) ===
     { buildRandomMolecule, "Random", CAT_OTHER, "Random structure" },
-    // === EXOTIC STRUCTURES (233-234) ===
+    // === EXOTIC STRUCTURES (233-240) ===
     { buildCubane, "Cubane", CAT_ORGANIC, "C8H8 - Cube-shaped" },
     { buildBuckminsterfullerene, "Buckyball/C60", CAT_ORGANIC, "Carbon soccer ball" },
     { buildAdamantane, "Adamantane", CAT_ORGANIC, "C10H16 - Diamond cage" },
     { buildChlorophyll, "Chlorophyll a", CAT_ENERGY, "Plant pigment core" },
+    { buildXenonDifluoride, "Xenon Difluoride (XeF2)", CAT_OTHER, "Linear noble gas" },
+    { buildRheniumChlorideDimer, "[Re2Cl8]2- Dimer", CAT_OTHER, "Quadruple metal bond" },
+    { buildTungstenHexacarbonyl, "W(CO)6 Hexacarbonyl", CAT_OTHER, "Octahedral carbonyl" },
 };
 
 static const int NUM_MOLECULES = sizeof(molecules) / sizeof(molecules[0]);
