@@ -104,6 +104,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
 
+    // Load default font at larger size (13px * 1.3 = ~17px) for crisp text
+    ImFontConfig fontConfig;
+    fontConfig.SizePixels = 17.0f;
+    io.Fonts->AddFontDefault(&fontConfig);
+
     // Setup Platform/Renderer backends
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
@@ -187,7 +192,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         renderer_render(g_pRenderer, &g_molecule, g_rotX, g_rotY, g_zoom, g_offsetX, g_offsetY);
 
         // Render molecule name overlay using GPU text kernel
-        renderer_render_text(g_pRenderer, g_molecule.name, 10, 10, 2);
+        renderer_render_text(g_pRenderer, g_molecule.name, 10, 10, 3);
 
         // Molecule Viewport Panel
         ImGui::SetNextWindowSize(ImVec2(820, 640), ImGuiCond_FirstUseEver);
