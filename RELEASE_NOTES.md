@@ -1,4 +1,9 @@
+
 # MolVis Release Notes
+
+## v0.3.6 (2026-01-20)
+
+v0.3.6 release.
 
 ## v0.3.5 - macOS Distribution Fix (2026-01)
 

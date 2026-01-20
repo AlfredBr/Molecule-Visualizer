@@ -257,35 +257,14 @@ Write-Host ""
 $ReleaseBody = @"
 ## MolVis v$Version
 
-GPU-accelerated molecular visualization for Windows (CUDA + DirectX 11).
-
-### Downloads
-
-| Platform | File | Notes |
-|----------|------|-------|
-| Windows x64 | ``$ZipName`` | Requires NVIDIA GPU with CUDA support |
-
-### Requirements
-
-- Windows 10/11
-- NVIDIA GPU with CUDA support (Compute Capability 5.0+)
-- CUDA drivers (included in recent NVIDIA Game Ready drivers)
-
-### Installation
-
-1. Download the ZIP file
+### Windows 10/11 Installation
+1. Download the ZIP file: ``$ZipName``
 2. Extract to a folder of your choice
-3. Run ``molvis.exe``
-
-### Verify Download
-
-```powershell
-(Get-FileHash $ZipName -Algorithm SHA256).Hash.ToLower()
-```
-Expected: ``$Hash``
-
----
-See [RELEASE_NOTES.md](RELEASE_NOTES.md) for detailed changes.
+3. Verify Download (optional)
+   - Open a PowerShell terminal in the extracted folder
+   - Run: ``(Get-FileHash $ZipName -Algorithm SHA256).Hash.ToLower()``
+   - Confirm the hash matches: ``$Hash``
+4. Run ``molvis.exe``
 "@
 
 # Check if release already exists
