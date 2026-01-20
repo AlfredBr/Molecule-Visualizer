@@ -14,6 +14,7 @@
 
 #include "renderer/cuda_renderer.h"
 #include "molecule/molecule_db.h"
+#include "include/windowicon.h"
 
 // App config file (stores main window position, last molecule, etc.)
 static char g_configPath[MAX_PATH] = "molvis.ini";
@@ -124,6 +125,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         nullptr, nullptr, wc.hInstance, nullptr
     );
     HWND hwnd = g_hwnd;  // Local alias for convenience
+
+    // Set window icon for title bar and taskbar
+    SetWindowIconFromResource(hwnd);
 
     // Initialize Direct3D
     printf("Creating D3D device...\n");
@@ -504,6 +508,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         SaveWindowConfig();  // Save before closing
         break;
     case WM_DESTROY:
+        CleanupWindowIcons();  // Clean up icon handles
         PostQuitMessage(0);
         return 0;
     }

@@ -43,8 +43,8 @@ CXXFLAGS     = /nologo /W3 /O2 /EHsc /std:c++17 /D_CRT_SECURE_NO_WARNINGS
 NVCCFLAGS    = -O3 -arch=sm_86 -allow-unsupported-compiler
 
 # Include paths
-INCLUDES     = /I$(SRC_DIR) /I$(IMGUI_DIR) /I$(IMGUI_DIR)/backends /I"$(CUDA_INC)"
-CUDA_INC_FLAGS = -I$(SRC_DIR) -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
+INCLUDES     = /I. /I$(SRC_DIR) /Iinclude /I$(IMGUI_DIR) /I$(IMGUI_DIR)/backends /I"$(CUDA_INC)"
+CUDA_INC_FLAGS = -I. -I$(SRC_DIR) -Iinclude -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
 
 # Libraries
 LIBS         = user32.lib gdi32.lib d3d11.lib dxgi.lib d3dcompiler.lib cudart.lib
@@ -73,6 +73,7 @@ IMGUI_SOURCES = \
 
 # Object files
 CUDA_OBJ     = $(BUILD_DIR)/cuda_renderer.obj
+RES_OBJ      = $(BUILD_DIR)/resource.res
 
 #==============================================================================
 # Build Targets
@@ -94,11 +95,15 @@ dirs:
 $(CUDA_OBJ): $(CUDA_SOURCES)
 	$(NVCC) $(NVCCFLAGS) $(CUDA_INC_FLAGS) -c $** -o $@
 
+# Compile Windows resource file (for app icon)
+$(RES_OBJ): resource.rc
+	rc /nologo /fo $@ $**
+
 # Link everything
-$(TARGET): $(CUDA_OBJ) $(APP_SOURCES) $(IMGUI_SOURCES)
+$(TARGET): $(CUDA_OBJ) $(RES_OBJ) $(APP_SOURCES) $(IMGUI_SOURCES)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) /Fe:$@ /Fo:$(BUILD_DIR)/ \
 		$(APP_SOURCES) $(IMGUI_SOURCES) $(CUDA_OBJ) \
-		/link $(LIB_PATHS) $(LIBS)
+		/link $(LIB_PATHS) $(LIBS) $(RES_OBJ)
 
 run: all
 	@echo Starting MolVis...
@@ -121,6 +126,7 @@ clean:
 	@echo Cleaning build artifacts...
 	@if exist $(TARGET) del /Q $(TARGET)
 	@if exist $(BUILD_DIR)\*.obj del /Q $(BUILD_DIR)\*.obj
+	@if exist $(BUILD_DIR)\*.res del /Q $(BUILD_DIR)\*.res
 	@if exist *.obj del /Q *.obj
 	@if exist *.exp del /Q *.exp
 	@if exist *.lib del /Q *.lib
