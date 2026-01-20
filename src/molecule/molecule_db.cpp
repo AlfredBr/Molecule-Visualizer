@@ -11597,7 +11597,7 @@ void buildTrefoilKnot(Molecule* mol) {
     mol->numBonds = 0;
     strcpy(mol->name, "Molecular Trefoil Knot");
 
-    // Parametric trefoil knot: 
+    // Parametric trefoil knot:
     // x = sin(t) + 2*sin(2t)
     // y = cos(t) - 2*cos(2t)
     // z = -sin(3t)
@@ -11731,7 +11731,7 @@ void buildTetrahedrane(Molecule* mol) {
 
     // Perfect tetrahedron vertices
     float a = 1.0f;  // scale
-    // Tetrahedral coordinates: 
+    // Tetrahedral coordinates:
     // (1,1,1), (1,-1,-1), (-1,1,-1), (-1,-1,1) normalized
     float v = a * 0.577350269f;  // 1/sqrt(3)
 
