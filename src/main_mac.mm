@@ -37,12 +37,14 @@ struct WindowConfig {
 };
 
 static char g_configPath[1024] = "";
+static char g_imguiIniPath[1024] = "";
 
 void InitConfigPath() {
     // Get user's home directory for config file
     const char* home = getenv("HOME");
     if (home) {
         snprintf(g_configPath, sizeof(g_configPath), "%s/.config/molvis.ini", home);
+        snprintf(g_imguiIniPath, sizeof(g_imguiIniPath), "%s/.config/molvis_imgui.ini", home);
 
         // Create .config directory if it doesn't exist
         char configDir[1024];
@@ -50,6 +52,7 @@ void InitConfigPath() {
         mkdir(configDir, 0755);
     } else {
         strcpy(g_configPath, CONFIG_FILENAME);
+        strcpy(g_imguiIniPath, "molvis_imgui.ini");
     }
 }
 
@@ -172,6 +175,10 @@ int main(int argc, char* argv[]) {
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+        // Set ImGui ini file path to persist window positions
+        io.IniFilename = g_imguiIniPath;
+        printf("ImGui config path: %s\n", g_imguiIniPath);
 
         // Setup Dear ImGui style
         ImGui::StyleColorsDark();
