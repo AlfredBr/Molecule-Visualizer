@@ -103,19 +103,6 @@ open build_mac/bin/MolVis.app
 - If CMake can't find SDL2, ensure Homebrew is in your PATH: `eval "$(/opt/homebrew/bin/brew shellenv)"`
 - For Apple Silicon Macs, Homebrew installs to `/opt/homebrew`. For Intel Macs, it's `/usr/local`
 
-### 📦 Packaging for Distribution (macOS)
-
-To create a DMG installer for distribution:
-
-```bash
-./package_mac.sh
-```
-
-This creates `dist/MolVis-x.x.x-macOS.dmg` with:
-- The application bundle
-- Drag-to-Applications symlink
-- SHA256 checksum file
-
 ## 🧪 Supported Elements
 
 18 elements with CPK coloring:
