@@ -2,7 +2,7 @@
 
 **GPU-Accelerated Molecular Visualization**
 
-MolVis is a real-time 3D molecular visualization application powered by NVIDIA CUDA and Dear ImGui. It renders beautiful ball-and-stick molecular models with realistic atomic colors, metallic shading, and interactive controls through a modern GUI.
+MolVis is a real-time 3D molecular visualization application powered by NVIDIA CUDA and Dear ImGui. It renders beautiful ball-and-stick molecular models with realistic atomic colors, metallic shading, and interactive controls.
 
 ![MolVis Screenshot](docs/screenshot.png)
 
@@ -16,7 +16,6 @@ MolVis is a real-time 3D molecular visualization application powered by NVIDIA C
 - **Ball-and-Stick Models** — Clear visualization of molecular structure with single, double, and triple bonds
 - **Interactive Controls** — Rotation speed, direction, position offset, zoom—all from the GUI
 - **Metallic Shading** — Specular highlights and realistic lighting for depth perception
-- **Window Persistence** — Remembers your window size and position between sessions
 
 ## 🖥️ Interface
 
@@ -24,10 +23,9 @@ MolVis is a real-time 3D molecular visualization application powered by NVIDIA C
 
 | Panel | Description |
 |-------|-------------|
-| **Molecule Selector** | Browse 249 molecules by category or search by name |
+| **Molecule Selector** | Browse 249 molecules by category or search by name (coming soon) |
+| **Molecule Viewport** | Interactive 3D model of the selected molecule |
 | **View Controls** | Adjust rotation speed, direction, and position offset |
-| **Atom Inspector** | View atom count, bond count, and molecular details |
-| **Render Settings** | Adjust lighting and display options |
 | **Performance** | Real-time FPS and GPU statistics |
 
 ### Categories
@@ -85,18 +83,6 @@ MolVis/
 ├── Makefile                  # nmake build configuration
 └── build.bat                 # One-click build script
 ```
-
-## 🗺️ Roadmap
-
-- [x] Dear ImGui integration with dockable panels
-- [x] 249 molecule library across 16 categories
-- [x] Search and filter functionality
-- [x] View controls (rotation, position, zoom)
-- [x] Window state persistence
-- [ ] Molecule file import (PDB, MOL2, XYZ)
-- [ ] Measurement tools (bond lengths, angles)
-- [ ] Screenshot/video export
-- [ ] Advanced rendering (ambient occlusion, depth of field)
 
 ## 📄 License
 
