@@ -161,9 +161,9 @@ MolVis - Molecule Visualizer
 Installation:
   1. Drag MolVis.app to the Applications folder
   2. IMPORTANT: Open Terminal and run:
-     
+
      xattr -cr /Applications/MolVis.app
-     
+
   3. Open MolVis from Applications
 
 Why step 2? This app is not code-signed with an Apple Developer

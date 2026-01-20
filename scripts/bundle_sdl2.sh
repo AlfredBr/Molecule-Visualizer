@@ -69,10 +69,10 @@ SDL2_REF=$(otool -L "$EXECUTABLE" | grep SDL2 | awk '{print $1}')
 
 if [ -n "$SDL2_REF" ]; then
     echo "Updating executable reference from: $SDL2_REF"
-    
+
     # Remove code signature first (install_name_tool can't modify signed binaries)
     codesign --remove-signature "$EXECUTABLE" 2>/dev/null || true
-    
+
     install_name_tool -change "$SDL2_REF" \
         "@executable_path/../Frameworks/libSDL2-2.0.0.dylib" \
         "$EXECUTABLE"
