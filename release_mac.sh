@@ -135,73 +135,79 @@ build_app() {
 
 # Package as DMG
 package_app() {
-    print_status "Packaging as DMG..."
+        print_status "Packaging as DMG..."
 
-    # Update version in package script temporarily or use our own packaging
-    DMG_NAME="${APP_NAME}-${VERSION}-macOS"
+        DMG_NAME="${APP_NAME}-${VERSION}-macOS"
+        mkdir -p "$DIST_DIR"
+        DMG_TEMP="$DIST_DIR/dmg_temp"
+        rm -rf "$DMG_TEMP"
+        mkdir -p "$DMG_TEMP"
+        cp -R "$BUILD_DIR/bin/${APP_NAME}.app" "$DMG_TEMP/"
+        ln -s /Applications "$DMG_TEMP/Applications"
 
-    mkdir -p "$DIST_DIR"
-
-    # Create temporary directory for DMG contents
-    DMG_TEMP="$DIST_DIR/dmg_temp"
-    rm -rf "$DMG_TEMP"
-    mkdir -p "$DMG_TEMP"
-
-    # Copy app to temp directory
-    cp -R "$BUILD_DIR/bin/${APP_NAME}.app" "$DMG_TEMP/"
-
-    # Create symlink to Applications folder
-    ln -s /Applications "$DMG_TEMP/Applications"
-
-    # Create README
-    cat > "$DMG_TEMP/README.txt" << 'EOF'
+        cat > "$DMG_TEMP/README.txt" << 'EOF'
 MolVis - Molecule Visualizer
 ============================
 
 Installation:
-  1. Drag MolVis.app to the Applications folder
-  2. IMPORTANT: Open Terminal and run:
-
-     xattr -cr /Applications/MolVis.app
-
-  3. Open MolVis from Applications
-
-Why step 2? This app is not code-signed with an Apple Developer
-certificate. macOS Gatekeeper will show "app is damaged" without
-this step. The command removes the quarantine flag.
+    1. Drag MolVis.app to the Applications folder
+    2. If you see a warning, right-click and choose Open, or run:
+         xattr -cr /Applications/MolVis.app
+    3. Open MolVis from Applications
 
 Requirements:
-  - macOS 11.0 (Big Sur) or later
-  - Any Mac with Metal support (Intel or Apple Silicon)
+    - macOS 11.0 (Big Sur) or later
+    - Any Mac with Metal support (Intel or Apple Silicon)
 
 Usage:
-  - Browse molecules by category in the sidebar
-  - Drag to rotate, scroll to zoom
-  - Adjust view settings in the View Controls panel
+    - Browse molecules by category in the sidebar
+    - Drag to rotate, scroll to zoom
+    - Adjust view settings in the View Controls panel
 
 For more information, visit:
-  https://github.com/AlfredBr/Molecule-Visualizer
-
+    https://github.com/AlfredBr/Molecule-Visualizer
 EOF
 
-    # Remove old DMG if exists
-    rm -f "$DIST_DIR/${DMG_NAME}.dmg"
+        # Remove old DMG if exists
+        rm -f "$DIST_DIR/${DMG_NAME}.dmg"
 
-    # Create DMG
-    hdiutil create -volname "$APP_NAME" \
-        -srcfolder "$DMG_TEMP" \
-        -ov -format UDZO \
-        "$DIST_DIR/${DMG_NAME}.dmg"
+        # --- SIGNING AND NOTARIZATION ---
+        # Use Developer ID Application if available
+        if [ -n "$APPLE_IDENTITY" ]; then
+                print_status "Signing app and SDL2 dylib with Developer ID..."
+                codesign --force --deep --options runtime --sign "$APPLE_IDENTITY" "$DMG_TEMP/${APP_NAME}.app/Contents/Frameworks/libSDL2-2.0.0.dylib"
+                codesign --force --deep --options runtime --sign "$APPLE_IDENTITY" "$DMG_TEMP/${APP_NAME}.app"
+        fi
 
-    # Cleanup
-    rm -rf "$DMG_TEMP"
+        # Create DMG
+        hdiutil create -volname "$APP_NAME" \
+                -srcfolder "$DMG_TEMP" \
+                -ov -format UDZO \
+                "$DIST_DIR/${DMG_NAME}.dmg"
 
-    # Calculate checksum
-    cd "$DIST_DIR"
-    shasum -a 256 "${DMG_NAME}.dmg" > "${DMG_NAME}.dmg.sha256"
+        # Cleanup
+        rm -rf "$DMG_TEMP"
 
-    print_status "Package created: $DIST_DIR/${DMG_NAME}.dmg"
-    echo "SHA256: $(cat ${DMG_NAME}.dmg.sha256)"
+        # Sign DMG if identity is set
+        if [ -n "$APPLE_IDENTITY" ]; then
+                print_status "Signing DMG with Developer ID..."
+                codesign --force --sign "$APPLE_IDENTITY" "$DIST_DIR/${DMG_NAME}.dmg"
+        fi
+
+        # Notarize if credentials are set
+        if [ -n "$APPLE_KEYCHAIN_PROFILE" ]; then
+                print_status "Submitting DMG for notarization..."
+                xcrun notarytool submit "$DIST_DIR/${DMG_NAME}.dmg" --keychain-profile "$APPLE_KEYCHAIN_PROFILE" --wait
+                print_status "Stapling notarization ticket..."
+                xcrun stapler staple "$DIST_DIR/${DMG_NAME}.dmg"
+        fi
+
+        # Calculate checksum
+        cd "$DIST_DIR"
+        shasum -a 256 "${DMG_NAME}.dmg" > "${DMG_NAME}.dmg.sha256"
+
+        print_status "Package created: $DIST_DIR/${DMG_NAME}.dmg"
+        echo "SHA256: $(cat ${DMG_NAME}.dmg.sha256)"
 }
 
 # Create GitHub release
@@ -251,25 +257,6 @@ create_release() {
         RELEASE_CMD="$RELEASE_CMD --draft"
     fi
 
-    # Append macOS installation note to release notes
-    MACOS_INSTALL_NOTE="
-
----
-
-### ⚠️ macOS Installation Note
-
-This app is not code-signed with an Apple Developer certificate. After downloading:
-
-1. Mount the DMG and drag MolVis to Applications
-2. Open Terminal and run:
-   \`\`\`bash
-   xattr -cr /Applications/MolVis.app
-   \`\`\`
-3. Open MolVis normally
-
-This removes the quarantine flag that causes the \"app is damaged\" error."
-
-    RELEASE_NOTES="${RELEASE_NOTES}${MACOS_INSTALL_NOTE}"
 
     # Create release with files
     if [ "$DRAFT" = true ]; then
