@@ -1,5 +1,19 @@
 # MolVis Release Notes
 
+## v0.3.5 - macOS Distribution Fix (2026-01)
+
+### Bug Fixes
+- **Fixed SDL2 dependency** - SDL2 library is now bundled inside the app
+- **No Homebrew required** - App now runs on any Mac without needing SDL2 installed
+- **Fixed "app is damaged" workaround** - Added clear installation instructions
+
+### Changes
+- Added `scripts/bundle_sdl2.sh` to bundle SDL2 into the app bundle
+- Updated build process to automatically bundle dependencies
+- DMG README now includes Gatekeeper bypass instructions
+
+---
+
 ## v0.3.2 - Application Icon Support (2026-01)
 
 ### New Features
