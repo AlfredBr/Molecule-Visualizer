@@ -91,7 +91,7 @@ EOF
 
     # Create DMG
     print_status "Building DMG file..."
-    
+
     # Check if create-dmg is available (prettier DMGs)
     if command -v create-dmg &>/dev/null; then
         create-dmg \
@@ -129,10 +129,10 @@ EOF
 # Calculate checksum
 create_checksum() {
     print_status "Calculating SHA256 checksum..."
-    
+
     cd "$DIST_DIR"
     shasum -a 256 "${DMG_NAME}.dmg" > "${DMG_NAME}.dmg.sha256"
-    
+
     echo ""
     echo "Checksum:"
     cat "${DMG_NAME}.dmg.sha256"
@@ -143,7 +143,7 @@ create_checksum() {
 show_info() {
     DMG_PATH="$DIST_DIR/${DMG_NAME}.dmg"
     DMG_SIZE=$(ls -lh "$DMG_PATH" | awk '{print $5}')
-    
+
     echo ""
     echo "================================================"
     echo "  Package created successfully!"
