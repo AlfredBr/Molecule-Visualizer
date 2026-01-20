@@ -11,11 +11,21 @@
 
 // Molecule categories for UI organization
 enum MoleculeCategory {
-    CAT_SIMPLE = 0,     // Simple molecules (Water, Ammonia, etc.)
-    CAT_ORGANIC,        // Organic compounds (Ethanol, Benzene, etc.)
-    CAT_BIOCHEM,        // Biochemistry (ATP, Glucose, etc.)
-    CAT_DRUGS,          // Pharmaceuticals (Aspirin, Caffeine, etc.)
-    CAT_HOUSEHOLD,      // Household chemicals (Salt, Baking Soda, etc.)
+    CAT_SIMPLE = 0,     // Simple molecules (Water, Ammonia, gases)
+    CAT_ORGANIC,        // Organic compounds (Alcohols, Ethers, etc.)
+    CAT_AMINO_ACIDS,    // Amino acids
+    CAT_SUGARS,         // Sugars and carbohydrates
+    CAT_VITAMINS,       // Vitamins
+    CAT_NEUROTRANS,     // Neurotransmitters
+    CAT_HORMONES,       // Steroid hormones
+    CAT_PHARMA,         // Pharmaceuticals & drugs
+    CAT_HOUSEHOLD,      // Household chemicals
+    CAT_ACIDS,          // Acids
+    CAT_PLASTICS,       // Plastic monomers/polymers
+    CAT_FATS,           // Fatty acids
+    CAT_METALS,         // Metal compounds
+    CAT_ENERGY,         // Energy molecules (ATP, etc.)
+    CAT_FLAVORS,        // Fragrances and flavors
     CAT_OTHER,          // Other / Random
     CAT_COUNT
 };

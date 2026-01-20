@@ -28,7 +28,12 @@ static int                      g_currentMolecule = 0;
 static float                    g_rotX = 0.3f;
 static float                    g_rotY = 0.0f;
 static float                    g_zoom = 10.0f;
+static float                    g_offsetX = 0.0f;
+static float                    g_offsetY = 0.0f;
 static bool                     g_autoRotate = true;
+static float                    g_rotSpeed = 1.0f;
+static bool                     g_rotateX = false;
+static bool                     g_rotateY = true;
 
 // Forward declarations
 bool CreateDeviceD3D(HWND hWnd);
@@ -173,11 +178,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         }
 
         // Auto-rotate
-        if (g_autoRotate)
-            g_rotY += 0.01f;
+        if (g_autoRotate) {
+            if (g_rotateX) g_rotX += 0.01f * g_rotSpeed;
+            if (g_rotateY) g_rotY += 0.01f * g_rotSpeed;
+        }
 
         // Render molecule to CUDA texture
-        renderer_render(g_pRenderer, &g_molecule, g_rotX, g_rotY, g_zoom);
+        renderer_render(g_pRenderer, &g_molecule, g_rotX, g_rotY, g_zoom, g_offsetX, g_offsetY);
 
         // Render molecule name overlay using GPU text kernel
         renderer_render_text(g_pRenderer, g_molecule.name, 10, 10, 2);
@@ -268,10 +275,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         ImGui::End();
 
         // View Controls Panel
-        ImGui::SetNextWindowSize(ImVec2(250, 180), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(250, 220), ImGuiCond_FirstUseEver);
         ImGui::Begin("View Controls");
         {
             ImGui::Checkbox("Auto-Rotate", &g_autoRotate);
+            if (g_autoRotate) {
+                ImGui::SliderFloat("Speed", &g_rotSpeed, -3.0f, 3.0f, "%.1fx");
+                ImGui::Checkbox("Rotate X", &g_rotateX);
+                ImGui::SameLine();
+                ImGui::Checkbox("Rotate Y", &g_rotateY);
+            }
             ImGui::Separator();
 
             ImGui::Text("Camera:");
@@ -280,11 +293,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             ImGui::SliderFloat("Rotation Y", &g_rotY, -3.14159f, 3.14159f);
 
             ImGui::Separator();
+            ImGui::Text("Position:");
+            ImGui::SliderFloat("Horizontal", &g_offsetX, -2.0f, 2.0f);
+            ImGui::SliderFloat("Vertical", &g_offsetY, -2.0f, 2.0f);
+
+            ImGui::Separator();
             if (ImGui::Button("Reset View"))
             {
                 g_rotX = 0.3f;
                 g_rotY = 0.0f;
                 g_zoom = 10.0f;
+                g_offsetX = 0.0f;
+                g_offsetY = 0.0f;
             }
             ImGui::SameLine();
             if (ImGui::Button("Top View"))

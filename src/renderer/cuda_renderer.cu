@@ -325,7 +325,8 @@ __global__ void renderMoleculeKernel(
     unsigned char* pixels, int width, int height,
     Atom* atoms, int numAtoms,
     Bond* bonds, int numBonds,
-    float rotX, float rotY, float zoom)
+    float rotX, float rotY, float zoom,
+    float offsetX, float offsetY)
 {
     int x = blockIdx.x * blockDim.x + threadIdx.x;
     int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -336,8 +337,8 @@ __global__ void renderMoleculeKernel(
     float aspectRatio = (float)width / height;
     float fovScale = tanf(0.5f * 0.8f);
 
-    float ndcX = (2.0f * x / width - 1.0f) * aspectRatio * fovScale;
-    float ndcY = (1.0f - 2.0f * y / height) * fovScale;
+    float ndcX = (2.0f * x / width - 1.0f) * aspectRatio * fovScale - offsetX;
+    float ndcY = (1.0f - 2.0f * y / height) * fovScale - offsetY;
 
     // Ray direction
     float3 rd = normalize3(make_float3(ndcX, ndcY, 1.0f));
@@ -605,7 +606,7 @@ bool renderer_resize(CudaRenderer* r, int width, int height) {
     return createRenderTarget(r, width, height);
 }
 
-void renderer_render(CudaRenderer* r, const Molecule* mol, float rotX, float rotY, float zoom) {
+void renderer_render(CudaRenderer* r, const Molecule* mol, float rotX, float rotY, float zoom, float offsetX, float offsetY) {
     if (!r || !mol) return;
 
     // Copy molecule data to device
@@ -622,7 +623,7 @@ void renderer_render(CudaRenderer* r, const Molecule* mol, float rotX, float rot
         r->d_pixels, r->width, r->height,
         r->d_atoms, mol->numAtoms,
         r->d_bonds, mol->numBonds,
-        rotX, rotY, zoom);
+        rotX, rotY, zoom, offsetX, offsetY);
 
     cudaDeviceSynchronize();
 

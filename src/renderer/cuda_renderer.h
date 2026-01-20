@@ -73,9 +73,11 @@ bool renderer_resize(CudaRenderer* renderer, int width, int height);
 // Render a molecule to the internal texture
 // rotX, rotY: camera rotation angles
 // zoom: camera distance
+// offsetX, offsetY: horizontal/vertical offset (default 0)
 void renderer_render(CudaRenderer* renderer,
                      const Molecule* molecule,
-                     float rotX, float rotY, float zoom);
+                     float rotX, float rotY, float zoom,
+                     float offsetX = 0.0f, float offsetY = 0.0f);
 
 // Render text overlay on the current frame
 // text: null-terminated string to render
