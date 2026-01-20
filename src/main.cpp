@@ -22,6 +22,9 @@ static char g_configPath[MAX_PATH] = "molvis.ini";
 // Global window handle for config save on close
 static HWND g_hwnd = nullptr;
 
+// Current molecule index
+static int g_currentMolecule = 0;
+
 struct WindowConfig {
     int x = 100;
     int y = 100;
@@ -49,6 +52,7 @@ void SaveWindowConfig() {
             fprintf(f, "[MainWindow]\n");
             fprintf(f, "Pos=%d,%d\n", rect.left, rect.top);
             fprintf(f, "Size=%d,%d\n", rect.right - rect.left, rect.bottom - rect.top);
+			fprintf(f, "LastMolecule=%d\n", g_currentMolecule);
             fflush(f);
             fclose(f);
         }
@@ -63,6 +67,7 @@ WindowConfig LoadWindowConfig() {
         while (fgets(line, sizeof(line), f)) {
             sscanf(line, "Pos=%d,%d", &cfg.x, &cfg.y);
             sscanf(line, "Size=%d,%d", &cfg.width, &cfg.height);
+			sscanf(line, "LastMolecule=%d", &g_currentMolecule);
         }
         fclose(f);
     }
@@ -78,7 +83,6 @@ static ID3D11RenderTargetView*  g_mainRenderTargetView = nullptr;
 // CUDA Renderer
 static CudaRenderer*            g_pRenderer = nullptr;
 static Molecule                 g_molecule = {};
-static int                      g_currentMolecule = 0;
 static float                    g_rotX = 0.3f;
 static float                    g_rotY = 0.0f;
 static float                    g_zoom = 10.0f;
