@@ -10796,6 +10796,187 @@ void buildRandomMolecule(Molecule* mol) {
     centerMolecule(mol);
 }
 
+// Build Cubane (C8H8) - cube-shaped hydrocarbon
+void buildCubane(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Cubane (C8H8)");
+
+    // Cubane has 8 carbons at the vertices of a cube
+    // Cube edge length ~1.55 Angstroms for C-C bond
+    float s = 0.9f;  // Half edge length
+
+    // 8 Carbon atoms at cube vertices
+    addAtom(mol, -s, -s, -s, ATOM_C);  // 0
+    addAtom(mol,  s, -s, -s, ATOM_C);  // 1
+    addAtom(mol,  s,  s, -s, ATOM_C);  // 2
+    addAtom(mol, -s,  s, -s, ATOM_C);  // 3
+    addAtom(mol, -s, -s,  s, ATOM_C);  // 4
+    addAtom(mol,  s, -s,  s, ATOM_C);  // 5
+    addAtom(mol,  s,  s,  s, ATOM_C);  // 6
+    addAtom(mol, -s,  s,  s, ATOM_C);  // 7
+
+    // 8 Hydrogen atoms pointing outward from each carbon
+    float h = 1.5f;
+    addAtom(mol, -h, -h, -h, ATOM_H);  // 8
+    addAtom(mol,  h, -h, -h, ATOM_H);  // 9
+    addAtom(mol,  h,  h, -h, ATOM_H);  // 10
+    addAtom(mol, -h,  h, -h, ATOM_H);  // 11
+    addAtom(mol, -h, -h,  h, ATOM_H);  // 12
+    addAtom(mol,  h, -h,  h, ATOM_H);  // 13
+    addAtom(mol,  h,  h,  h, ATOM_H);  // 14
+    addAtom(mol, -h,  h,  h, ATOM_H);  // 15
+
+    // C-C bonds (12 edges of the cube)
+    // Bottom face
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 0, 1);
+    // Top face
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 6, 1);
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 4, 1);
+    // Vertical edges
+    addBond(mol, 0, 4, 1);
+    addBond(mol, 1, 5, 1);
+    addBond(mol, 2, 6, 1);
+    addBond(mol, 3, 7, 1);
+
+    // C-H bonds
+    for (int i = 0; i < 8; i++) {
+        addBond(mol, i, i + 8, 1);
+    }
+
+    centerMolecule(mol);
+}
+
+// Build Buckminsterfullerene (C60) - spherical carbon cage
+void buildBuckminsterfullerene(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Buckminsterfullerene C60");
+
+    // C60 has 60 carbon atoms arranged in a truncated icosahedron
+    // (like a soccer ball - 12 pentagons and 20 hexagons)
+    // Each carbon bonds to exactly 3 others, giving 90 bonds total
+
+    float r = 2.5f;  // Radius scaling factor for visualization
+
+    // Golden ratio
+    float phi = (1.0f + sqrtf(5.0f)) / 2.0f;  // ~1.618
+
+    // Truncated icosahedron vertices (normalized)
+    // These come from three types of coordinate permutations:
+    // Type A: (0, ±1, ±3φ) and cyclic permutations - 12 vertices
+    // Type B: (±2, ±(1+2φ), ±φ) and cyclic permutations - 24 vertices
+    // Type C: (±1, ±(2+φ), ±2φ) and cyclic permutations - 24 vertices
+
+    float coords[60][3];
+    int idx = 0;
+
+    // Normalization factor (all vertices lie on same sphere)
+    float norm = sqrtf(9.0f * phi * phi + 1.0f);
+
+    // Type A: (0, ±1, ±3φ) - 4 vertices, then cyclic permutations
+    float a_coords[4][3] = {
+        {0, 1, 3*phi}, {0, 1, -3*phi}, {0, -1, 3*phi}, {0, -1, -3*phi}
+    };
+    for (int i = 0; i < 4; i++) {
+        coords[idx][0] = a_coords[i][0] / norm;
+        coords[idx][1] = a_coords[i][1] / norm;
+        coords[idx][2] = a_coords[i][2] / norm;
+        idx++;
+    }
+    // Cyclic permutation (y, z, x)
+    for (int i = 0; i < 4; i++) {
+        coords[idx][0] = a_coords[i][1] / norm;
+        coords[idx][1] = a_coords[i][2] / norm;
+        coords[idx][2] = a_coords[i][0] / norm;
+        idx++;
+    }
+    // Cyclic permutation (z, x, y)
+    for (int i = 0; i < 4; i++) {
+        coords[idx][0] = a_coords[i][2] / norm;
+        coords[idx][1] = a_coords[i][0] / norm;
+        coords[idx][2] = a_coords[i][1] / norm;
+        idx++;
+    }
+
+    // Type B: (±2, ±(1+2φ), ±φ) - 8 vertices, then cyclic permutations
+    float b1 = 2.0f, b2 = 1.0f + 2.0f * phi, b3 = phi;
+    float b_signs[8][3] = {
+        {1,1,1}, {1,1,-1}, {1,-1,1}, {1,-1,-1},
+        {-1,1,1}, {-1,1,-1}, {-1,-1,1}, {-1,-1,-1}
+    };
+    for (int i = 0; i < 8; i++) {
+        coords[idx][0] = b_signs[i][0] * b1 / norm;
+        coords[idx][1] = b_signs[i][1] * b2 / norm;
+        coords[idx][2] = b_signs[i][2] * b3 / norm;
+        idx++;
+    }
+    for (int i = 0; i < 8; i++) {
+        coords[idx][0] = b_signs[i][1] * b2 / norm;
+        coords[idx][1] = b_signs[i][2] * b3 / norm;
+        coords[idx][2] = b_signs[i][0] * b1 / norm;
+        idx++;
+    }
+    for (int i = 0; i < 8; i++) {
+        coords[idx][0] = b_signs[i][2] * b3 / norm;
+        coords[idx][1] = b_signs[i][0] * b1 / norm;
+        coords[idx][2] = b_signs[i][1] * b2 / norm;
+        idx++;
+    }
+
+    // Type C: (±1, ±(2+φ), ±2φ) - 8 vertices, then cyclic permutations
+    float c1 = 1.0f, c2 = 2.0f + phi, c3 = 2.0f * phi;
+    for (int i = 0; i < 8; i++) {
+        coords[idx][0] = b_signs[i][0] * c1 / norm;
+        coords[idx][1] = b_signs[i][1] * c2 / norm;
+        coords[idx][2] = b_signs[i][2] * c3 / norm;
+        idx++;
+    }
+    for (int i = 0; i < 8; i++) {
+        coords[idx][0] = b_signs[i][1] * c2 / norm;
+        coords[idx][1] = b_signs[i][2] * c3 / norm;
+        coords[idx][2] = b_signs[i][0] * c1 / norm;
+        idx++;
+    }
+    for (int i = 0; i < 8; i++) {
+        coords[idx][0] = b_signs[i][2] * c3 / norm;
+        coords[idx][1] = b_signs[i][0] * c1 / norm;
+        coords[idx][2] = b_signs[i][1] * c2 / norm;
+        idx++;
+    }
+
+    // Add all 60 carbon atoms
+    for (int i = 0; i < 60; i++) {
+        addAtom(mol, coords[i][0] * r, coords[i][1] * r, coords[i][2] * r, ATOM_C);
+    }
+
+    // C60 has 90 bonds - each carbon bonds to exactly 3 others
+    // Bond length in normalized coords: pentagon edges and hexagon edges
+    // Find the bond threshold by looking at nearest neighbor distance
+    float bondThreshold = 0.42f;  // Adjusted for normalized coordinates
+
+    int bondCount = 0;
+    for (int i = 0; i < 60; i++) {
+        for (int j = i + 1; j < 60; j++) {
+            float dx = coords[i][0] - coords[j][0];
+            float dy = coords[i][1] - coords[j][1];
+            float dz = coords[i][2] - coords[j][2];
+            float dist = sqrtf(dx*dx + dy*dy + dz*dz);
+            if (dist < bondThreshold) {
+                addBond(mol, i, j, 1);
+                bondCount++;
+            }
+        }
+    }
+
+    centerMolecule(mol);
+}
+
 // ============== MOLECULE REGISTRY (233 molecules) ==============
 
 typedef void (*MoleculeBuilder)(Molecule*);
@@ -11065,6 +11246,9 @@ static MoleculeInfo molecules[] = {
     { buildMescaline, "Mescaline/Peyote", CAT_PHARMA, "Peyote cactus" },
     // === RANDOM (232) ===
     { buildRandomMolecule, "Random", CAT_OTHER, "Random structure" },
+    // === EXOTIC STRUCTURES (233-234) ===
+    { buildCubane, "Cubane", CAT_ORGANIC, "C8H8 - Cube-shaped" },
+    { buildBuckminsterfullerene, "Buckyball/C60", CAT_ORGANIC, "Carbon soccer ball" },
 };
 
 static const int NUM_MOLECULES = sizeof(molecules) / sizeof(molecules[0]);
