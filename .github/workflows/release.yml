@@ -103,9 +103,108 @@ jobs:
           name: MolVis-Windows-x64-checksum
           path: release/*.sha256
 
+  build-macos:
+    name: Build macOS (Metal)
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew install sdl2 cmake
+
+      - name: Get version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate macOS icon
+        run: |
+          if [ -f "molvis-icon.png" ]; then
+            chmod +x scripts/generate_macos_icon.sh
+            ./scripts/generate_macos_icon.sh
+          fi
+
+      - name: Build MolVis
+        run: |
+          mkdir -p build_mac
+          cd build_mac
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          cmake --build . --config Release -j$(sysctl -n hw.ncpu)
+
+      - name: Create DMG package
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          APP_NAME="MolVis"
+          DMG_NAME="${APP_NAME}-${VERSION}-macOS"
+          
+          # Create dist directory
+          mkdir -p dist
+          
+          # Create temporary directory for DMG contents
+          DMG_TEMP="dist/dmg_temp"
+          rm -rf "$DMG_TEMP"
+          mkdir -p "$DMG_TEMP"
+          
+          # Copy app to temp directory
+          cp -R "build_mac/bin/${APP_NAME}.app" "$DMG_TEMP/"
+          
+          # Create symlink to Applications folder
+          ln -s /Applications "$DMG_TEMP/Applications"
+          
+          # Create README
+          cat > "$DMG_TEMP/README.txt" << 'EOF'
+          MolVis - Molecule Visualizer
+          ============================
+          
+          Installation:
+            Drag MolVis.app to the Applications folder.
+          
+          Requirements:
+            - macOS 11.0 (Big Sur) or later
+            - Any Mac with Metal support (Intel or Apple Silicon)
+          
+          For more information, visit:
+            https://github.com/AlfredBr/Molecule-Visualizer
+          EOF
+          
+          # Create DMG using hdiutil
+          hdiutil create -volname "$APP_NAME" \
+              -srcfolder "$DMG_TEMP" \
+              -ov -format UDZO \
+              "dist/${DMG_NAME}.dmg"
+          
+          # Cleanup
+          rm -rf "$DMG_TEMP"
+          
+          # Calculate checksum
+          cd dist
+          shasum -a 256 "${DMG_NAME}.dmg" > "${DMG_NAME}.dmg.sha256"
+          
+          echo "Created: dist/${DMG_NAME}.dmg"
+          cat "${DMG_NAME}.dmg.sha256"
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MolVis-macOS
+          path: dist/*.dmg
+
+      - name: Upload macOS checksum artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MolVis-macOS-checksum
+          path: dist/*.sha256
+
   release:
     name: Create GitHub Release
-    needs: [build-windows]
+    needs: [build-windows, build-macos]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     
@@ -132,13 +231,14 @@ jobs:
           body: |
             ## MolVis v${{ steps.version.outputs.version }}
             
-            GPU-accelerated molecular visualization for Windows (CUDA + DirectX 11).
+            GPU-accelerated molecular visualization for Windows and macOS.
             
             ### Downloads
             
             | Platform | File | Notes |
             |----------|------|-------|
             | Windows x64 | `MolVis-${{ steps.version.outputs.version }}-Windows-x64.zip` | Requires NVIDIA GPU with CUDA support |
+            | macOS | `MolVis-${{ steps.version.outputs.version }}-macOS.dmg` | Universal binary (Intel + Apple Silicon) |
             
             ### Requirements
             
@@ -147,24 +247,31 @@ jobs:
             - NVIDIA GPU with CUDA support (Compute Capability 5.0+)
             - CUDA drivers installed (included in recent NVIDIA Game Ready drivers)
             
+            **macOS:**
+            - macOS 11.0 (Big Sur) or later
+            - Any Mac with Metal support (2012 or newer)
+            
             ### Installation
             
-            1. Download the ZIP file for your platform
+            **Windows:**
+            1. Download the ZIP file
             2. Extract to a folder of your choice
             3. Run `molvis.exe`
             
+            **macOS:**
+            1. Download the DMG file
+            2. Open the DMG and drag MolVis to Applications
+            3. On first launch, right-click → Open (to bypass Gatekeeper)
+            
             ### Verify Download (optional)
             
-            Check the SHA256 checksum:
-            ```powershell
-            (Get-FileHash MolVis-${{ steps.version.outputs.version }}-Windows-x64.zip).Hash
-            ```
-            Compare with the `.sha256` file.
+            Check the SHA256 checksum against the `.sha256` files.
             
             ---
             See [RELEASE_NOTES.md](RELEASE_NOTES.md) for detailed changes.
           files: |
             artifacts/**/*.zip
+            artifacts/**/*.dmg
             artifacts/**/*.sha256
           draft: false
           prerelease: false
