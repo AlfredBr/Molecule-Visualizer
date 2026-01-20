@@ -118,7 +118,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     RegisterClassExW(&wc);
 
     g_hwnd = CreateWindowW(
-        wc.lpszClassName, L"MolVis - Molecular Visualization",
+        wc.lpszClassName, L"MolVis - Molecule Visualizer",
         WS_OVERLAPPEDWINDOW,
         winCfg.x, winCfg.y, winCfg.width, winCfg.height,
         nullptr, nullptr, wc.hInstance, nullptr
