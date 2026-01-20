@@ -1,6 +1,6 @@
 /*
  * MolVis - Molecule Database Implementation
- * 
+ *
  * Complete database of 233 molecules organized by category.
  * Molecule builders imported from legacy cuda_molecule.cu
  */
