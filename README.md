@@ -1,4 +1,4 @@
-# MolVis 🧬
+# 🧬 MolVis - Molecule Visualizer for Windows
 
 **GPU-Accelerated Molecular Visualization**
 
