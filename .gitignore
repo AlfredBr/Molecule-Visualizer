@@ -43,3 +43,4 @@ Thumbs.db
 
 # Legacy binaries
 /legacy/*.exe
+molvis.ini

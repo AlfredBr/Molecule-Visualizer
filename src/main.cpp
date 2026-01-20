@@ -15,6 +15,59 @@
 #include "renderer/cuda_renderer.h"
 #include "molecule/molecule_db.h"
 
+// App config file (stores main window position, last molecule, etc.)
+static char g_configPath[MAX_PATH] = "molvis.ini";
+
+// Global window handle for config save on close
+static HWND g_hwnd = nullptr;
+
+struct WindowConfig {
+    int x = 100;
+    int y = 100;
+    int width = 1280;
+    int height = 800;
+};
+
+void InitConfigPath() {
+    // Get executable directory for config file
+    char exePath[MAX_PATH];
+    GetModuleFileNameA(NULL, exePath, MAX_PATH);
+    char* lastSlash = strrchr(exePath, '\\');
+    if (lastSlash) {
+        *(lastSlash + 1) = '\0';
+        snprintf(g_configPath, MAX_PATH, "%smolvis.ini", exePath);
+    }
+}
+
+void SaveWindowConfig() {
+    if (!g_hwnd) return;
+    RECT rect;
+    if (GetWindowRect(g_hwnd, &rect)) {
+        FILE* f = fopen(g_configPath, "w");
+        if (f) {
+            fprintf(f, "[MainWindow]\n");
+            fprintf(f, "Pos=%d,%d\n", rect.left, rect.top);
+            fprintf(f, "Size=%d,%d\n", rect.right - rect.left, rect.bottom - rect.top);
+            fflush(f);
+            fclose(f);
+        }
+    }
+}
+
+WindowConfig LoadWindowConfig() {
+    WindowConfig cfg;
+    FILE* f = fopen(g_configPath, "r");
+    if (f) {
+        char line[256];
+        while (fgets(line, sizeof(line), f)) {
+            sscanf(line, "Pos=%d,%d", &cfg.x, &cfg.y);
+            sscanf(line, "Size=%d,%d", &cfg.width, &cfg.height);
+        }
+        fclose(f);
+    }
+    return cfg;
+}
+
 // DirectX 11 globals
 static ID3D11Device*            g_pd3dDevice = nullptr;
 static ID3D11DeviceContext*     g_pd3dDeviceContext = nullptr;
@@ -50,6 +103,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     freopen("CONOUT$", "w", stderr);
     printf("MolVis starting...\n");
 
+    // Initialize config path to executable directory
+    InitConfigPath();
+
+    // Load window config from molvis.ini
+    WindowConfig winCfg = LoadWindowConfig();
+
     // Create application window
     WNDCLASSEXW wc = {
         sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L,
@@ -58,12 +117,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     };
     RegisterClassExW(&wc);
 
-    HWND hwnd = CreateWindowW(
+    g_hwnd = CreateWindowW(
         wc.lpszClassName, L"MolVis - Molecular Visualization",
         WS_OVERLAPPEDWINDOW,
-        100, 100, 1280, 800,
+        winCfg.x, winCfg.y, winCfg.width, winCfg.height,
         nullptr, nullptr, wc.hInstance, nullptr
     );
+    HWND hwnd = g_hwnd;  // Local alias for convenience
 
     // Initialize Direct3D
     printf("Creating D3D device...\n");
@@ -345,6 +405,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         g_pSwapChain->Present(1, 0); // Present with vsync
     }
 
+    // Save window config to molvis.ini
+    SaveWindowConfig();
+
     // Cleanup
     renderer_cleanup(g_pRenderer);
     ImGui_ImplDX11_Shutdown();
@@ -436,6 +499,9 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_SYSCOMMAND:
         if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
             return 0;
+        break;
+    case WM_CLOSE:
+        SaveWindowConfig();  // Save before closing
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
