@@ -10977,6 +10977,233 @@ void buildBuckminsterfullerene(Molecule* mol) {
     centerMolecule(mol);
 }
 
+// Build Adamantane (C10H16) - diamond-like cage structure
+void buildAdamantane(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Adamantane (C10H16)");
+
+    // Adamantane has a diamond cubic lattice structure
+    // 4 "bridgehead" carbons (CH) at tetrahedral positions
+    // 6 "bridge" carbons (CH2) between them
+
+    float s = 0.9f;  // Scale factor
+
+    // 4 bridgehead carbons (CH) at tetrahedral positions
+    addAtom(mol,  s,  s,  s, ATOM_C);  // 0
+    addAtom(mol,  s, -s, -s, ATOM_C);  // 1
+    addAtom(mol, -s,  s, -s, ATOM_C);  // 2
+    addAtom(mol, -s, -s,  s, ATOM_C);  // 3
+
+    // 6 bridge carbons (CH2) at edge midpoints
+    addAtom(mol,  0,  0,  s*1.5f, ATOM_C);  // 4 - between 0,3
+    addAtom(mol,  0,  s*1.5f,  0, ATOM_C);  // 5 - between 0,2
+    addAtom(mol,  s*1.5f,  0,  0, ATOM_C);  // 6 - between 0,1
+    addAtom(mol,  0,  0, -s*1.5f, ATOM_C);  // 7 - between 1,2
+    addAtom(mol,  0, -s*1.5f,  0, ATOM_C);  // 8 - between 1,3
+    addAtom(mol, -s*1.5f,  0,  0, ATOM_C);  // 9 - between 2,3
+
+    // Hydrogens on bridgehead carbons (1 each, pointing outward)
+    float h = 1.8f;
+    addAtom(mol,  h,  h,  h, ATOM_H);  // 10 on C0
+    addAtom(mol,  h, -h, -h, ATOM_H);  // 11 on C1
+    addAtom(mol, -h,  h, -h, ATOM_H);  // 12 on C2
+    addAtom(mol, -h, -h,  h, ATOM_H);  // 13 on C3
+
+    // Hydrogens on bridge carbons (2 each)
+    float hb = 0.9f;
+    // C4 (0,0,s*1.5)
+    addAtom(mol,  hb,  hb, s*1.5f + hb*0.5f, ATOM_H);  // 14
+    addAtom(mol, -hb, -hb, s*1.5f + hb*0.5f, ATOM_H);  // 15
+    // C5 (0,s*1.5,0)
+    addAtom(mol,  hb, s*1.5f + hb*0.5f,  hb, ATOM_H);  // 16
+    addAtom(mol, -hb, s*1.5f + hb*0.5f, -hb, ATOM_H);  // 17
+    // C6 (s*1.5,0,0)
+    addAtom(mol, s*1.5f + hb*0.5f,  hb,  hb, ATOM_H);  // 18
+    addAtom(mol, s*1.5f + hb*0.5f, -hb, -hb, ATOM_H);  // 19
+    // C7 (0,0,-s*1.5)
+    addAtom(mol,  hb,  hb, -s*1.5f - hb*0.5f, ATOM_H);  // 20
+    addAtom(mol, -hb, -hb, -s*1.5f - hb*0.5f, ATOM_H);  // 21
+    // C8 (0,-s*1.5,0)
+    addAtom(mol,  hb, -s*1.5f - hb*0.5f,  hb, ATOM_H);  // 22
+    addAtom(mol, -hb, -s*1.5f - hb*0.5f, -hb, ATOM_H);  // 23
+    // C9 (-s*1.5,0,0)
+    addAtom(mol, -s*1.5f - hb*0.5f,  hb,  hb, ATOM_H);  // 24
+    addAtom(mol, -s*1.5f - hb*0.5f, -hb, -hb, ATOM_H);  // 25
+
+    // C-C bonds: bridgehead to bridge carbons (12 bonds)
+    // C0 connects to C4, C5, C6
+    addBond(mol, 0, 4, 1);
+    addBond(mol, 0, 5, 1);
+    addBond(mol, 0, 6, 1);
+    // C1 connects to C6, C7, C8
+    addBond(mol, 1, 6, 1);
+    addBond(mol, 1, 7, 1);
+    addBond(mol, 1, 8, 1);
+    // C2 connects to C5, C7, C9
+    addBond(mol, 2, 5, 1);
+    addBond(mol, 2, 7, 1);
+    addBond(mol, 2, 9, 1);
+    // C3 connects to C4, C8, C9
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 3, 8, 1);
+    addBond(mol, 3, 9, 1);
+
+    // C-H bonds
+    addBond(mol, 0, 10, 1);
+    addBond(mol, 1, 11, 1);
+    addBond(mol, 2, 12, 1);
+    addBond(mol, 3, 13, 1);
+    addBond(mol, 4, 14, 1);
+    addBond(mol, 4, 15, 1);
+    addBond(mol, 5, 16, 1);
+    addBond(mol, 5, 17, 1);
+    addBond(mol, 6, 18, 1);
+    addBond(mol, 6, 19, 1);
+    addBond(mol, 7, 20, 1);
+    addBond(mol, 7, 21, 1);
+    addBond(mol, 8, 22, 1);
+    addBond(mol, 8, 23, 1);
+    addBond(mol, 9, 24, 1);
+    addBond(mol, 9, 25, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Chlorophyll a (C55H72MgN4O5) - simplified porphyrin core
+void buildChlorophyll(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Chlorophyll a (core)");
+
+    // Chlorophyll has a porphyrin ring with Mg at center
+    // We'll build the core porphyrin macrocycle with Mg
+    // Full chlorophyll has a long phytol tail which we'll simplify
+
+    // Central Magnesium atom (using Fe slot since we don't have Mg)
+    // Note: Mg would be index 18+ but we'll use a placeholder
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_FE);  // 0 - Mg center (shown as Fe color)
+
+    // Porphyrin ring: 4 pyrrole rings connected by methine bridges
+    float r1 = 2.0f;   // Inner ring radius (N atoms)
+    float r2 = 2.8f;   // Outer ring radius (C atoms)
+    float r3 = 3.6f;   // Methine bridge radius
+
+    // 4 Nitrogen atoms coordinating to Mg (pyrrole nitrogens)
+    for (int i = 0; i < 4; i++) {
+        float angle = i * PI / 2.0f;
+        addAtom(mol, r1 * cosf(angle), r1 * sinf(angle), 0.0f, ATOM_N);
+    }
+    // N atoms are 1, 2, 3, 4
+
+    // Build each pyrrole ring (4 pyrroles, each with 5 atoms including N)
+    // Each pyrrole: N already placed, add 4 carbons around it
+    for (int p = 0; p < 4; p++) {
+        float baseAngle = p * PI / 2.0f;
+
+        // Alpha carbons (adjacent to N, inner)
+        float a1 = baseAngle - 0.35f;
+        float a2 = baseAngle + 0.35f;
+        addAtom(mol, r2 * cosf(a1), r2 * sinf(a1), 0.0f, ATOM_C);
+        addAtom(mol, r2 * cosf(a2), r2 * sinf(a2), 0.0f, ATOM_C);
+
+        // Beta carbons (outer edge of pyrrole)
+        float b1 = baseAngle - 0.25f;
+        float b2 = baseAngle + 0.25f;
+        float rb = 3.5f;
+        addAtom(mol, rb * cosf(b1), rb * sinf(b1), 0.0f, ATOM_C);
+        addAtom(mol, rb * cosf(b2), rb * sinf(b2), 0.0f, ATOM_C);
+    }
+    // Pyrrole carbons: 5-20 (4 per pyrrole x 4 pyrroles)
+
+    // Methine bridges between pyrroles (4 CH bridges)
+    for (int i = 0; i < 4; i++) {
+        float angle = i * PI / 2.0f + PI / 4.0f;  // 45 degrees offset
+        addAtom(mol, r3 * cosf(angle), r3 * sinf(angle), 0.0f, ATOM_C);
+    }
+    // Methine carbons: 21, 22, 23, 24
+
+    // Add some methyl groups on the pyrroles (characteristic of chlorophyll)
+    float rm = 4.5f;
+    for (int i = 0; i < 4; i++) {
+        float angle = i * PI / 2.0f;
+        addAtom(mol, rm * cosf(angle), rm * sinf(angle), 0.3f, ATOM_C);
+    }
+    // Methyl carbons: 25, 26, 27, 28
+
+    // Add hydrogens on methine bridges
+    for (int i = 0; i < 4; i++) {
+        float angle = i * PI / 2.0f + PI / 4.0f;
+        addAtom(mol, (r3 + 0.9f) * cosf(angle), (r3 + 0.9f) * sinf(angle), 0.0f, ATOM_H);
+    }
+    // Hydrogens: 29, 30, 31, 32
+
+    // Simplified phytol tail (just a few carbons to suggest the chain)
+    addAtom(mol, 4.0f, -2.0f, 0.0f, ATOM_C);  // 33
+    addAtom(mol, 5.2f, -2.5f, 0.0f, ATOM_C);  // 34
+    addAtom(mol, 6.4f, -2.0f, 0.0f, ATOM_C);  // 35
+    addAtom(mol, 7.6f, -2.5f, 0.0f, ATOM_C);  // 36
+    addAtom(mol, 8.8f, -2.0f, 0.0f, ATOM_C);  // 37
+
+    // Carbonyl oxygen (part of the isocyclic ring in real chlorophyll)
+    addAtom(mol, 3.0f, -3.5f, 0.0f, ATOM_O);  // 38
+
+    // Bonds: Mg to nitrogens
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 0, 2, 1);
+    addBond(mol, 0, 3, 1);
+    addBond(mol, 0, 4, 1);
+
+    // Pyrrole ring bonds
+    for (int p = 0; p < 4; p++) {
+        int n = 1 + p;           // Nitrogen index
+        int c1 = 5 + p * 4;      // First alpha carbon
+        int c2 = 5 + p * 4 + 1;  // Second alpha carbon
+        int c3 = 5 + p * 4 + 2;  // First beta carbon
+        int c4 = 5 + p * 4 + 3;  // Second beta carbon
+
+        addBond(mol, n, c1, 1);
+        addBond(mol, n, c2, 1);
+        addBond(mol, c1, c3, 2);
+        addBond(mol, c2, c4, 2);
+        addBond(mol, c3, c4, 1);
+    }
+
+    // Methine bridge bonds (connecting pyrroles)
+    for (int i = 0; i < 4; i++) {
+        int methine = 21 + i;
+        int pyrrole1 = i;
+        int pyrrole2 = (i + 1) % 4;
+        int c1 = 5 + pyrrole1 * 4 + 1;  // Alpha carbon of current pyrrole
+        int c2 = 5 + pyrrole2 * 4;      // Alpha carbon of next pyrrole
+        addBond(mol, methine, c1, 1);
+        addBond(mol, methine, c2, 1);
+    }
+
+    // Methine to hydrogen bonds
+    for (int i = 0; i < 4; i++) {
+        addBond(mol, 21 + i, 29 + i, 1);
+    }
+
+    // Methyl group bonds
+    for (int i = 0; i < 4; i++) {
+        int beta = 5 + i * 4 + 2;  // Beta carbon
+        addBond(mol, 25 + i, beta, 1);
+    }
+
+    // Phytol tail bonds
+    addBond(mol, 5 + 3 * 4 + 3, 33, 1);  // Connect to last pyrrole
+    addBond(mol, 33, 34, 1);
+    addBond(mol, 34, 35, 1);
+    addBond(mol, 35, 36, 1);
+    addBond(mol, 36, 37, 1);
+
+    // Carbonyl bond
+    addBond(mol, 33, 38, 2);
+
+    centerMolecule(mol);
+}
+
 // ============== MOLECULE REGISTRY (233 molecules) ==============
 
 typedef void (*MoleculeBuilder)(Molecule*);
@@ -11249,6 +11476,8 @@ static MoleculeInfo molecules[] = {
     // === EXOTIC STRUCTURES (233-234) ===
     { buildCubane, "Cubane", CAT_ORGANIC, "C8H8 - Cube-shaped" },
     { buildBuckminsterfullerene, "Buckyball/C60", CAT_ORGANIC, "Carbon soccer ball" },
+    { buildAdamantane, "Adamantane", CAT_ORGANIC, "C10H16 - Diamond cage" },
+    { buildChlorophyll, "Chlorophyll a", CAT_ENERGY, "Plant pigment core" },
 };
 
 static const int NUM_MOLECULES = sizeof(molecules) / sizeof(molecules[0]);
