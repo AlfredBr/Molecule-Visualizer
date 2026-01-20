@@ -159,17 +159,25 @@ MolVis - Molecule Visualizer
 ============================
 
 Installation:
-  Drag MolVis.app to the Applications folder.
+  1. Drag MolVis.app to the Applications folder
+  2. IMPORTANT: Open Terminal and run:
+     
+     xattr -cr /Applications/MolVis.app
+     
+  3. Open MolVis from Applications
+
+Why step 2? This app is not code-signed with an Apple Developer
+certificate. macOS Gatekeeper will show "app is damaged" without
+this step. The command removes the quarantine flag.
 
 Requirements:
   - macOS 11.0 (Big Sur) or later
   - Any Mac with Metal support (Intel or Apple Silicon)
 
 Usage:
-  1. Open MolVis from Applications
-  2. Browse molecules by category in the sidebar
-  3. Use mouse to rotate (drag) and zoom (scroll)
-  4. Adjust view settings in the View Controls panel
+  - Browse molecules by category in the sidebar
+  - Drag to rotate, scroll to zoom
+  - Adjust view settings in the View Controls panel
 
 For more information, visit:
   https://github.com/AlfredBr/Molecule-Visualizer
@@ -242,6 +250,26 @@ create_release() {
     if [ "$DRAFT" = true ]; then
         RELEASE_CMD="$RELEASE_CMD --draft"
     fi
+
+    # Append macOS installation note to release notes
+    MACOS_INSTALL_NOTE="
+
+---
+
+### ⚠️ macOS Installation Note
+
+This app is not code-signed with an Apple Developer certificate. After downloading:
+
+1. Mount the DMG and drag MolVis to Applications
+2. Open Terminal and run:
+   \`\`\`bash
+   xattr -cr /Applications/MolVis.app
+   \`\`\`
+3. Open MolVis normally
+
+This removes the quarantine flag that causes the \"app is damaged\" error."
+
+    RELEASE_NOTES="${RELEASE_NOTES}${MACOS_INSTALL_NOTE}"
 
     # Create release with files
     if [ "$DRAFT" = true ]; then

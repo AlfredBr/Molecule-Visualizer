@@ -170,6 +170,18 @@ if(MOLVIS_BUILD_MACOS)
         )
     endif()
 
+    # Bundle SDL2 dylib for distribution (so users don't need Homebrew)
+    add_custom_command(TARGET MolVis POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_BUNDLE_DIR:MolVis>/Contents/Frameworks"
+        COMMENT "Creating Frameworks directory..."
+    )
+
+    # Find and copy SDL2 dylib, then fix the library path
+    add_custom_command(TARGET MolVis POST_BUILD
+        COMMAND ${CMAKE_SOURCE_DIR}/scripts/bundle_sdl2.sh "$<TARGET_BUNDLE_DIR:MolVis>"
+        COMMENT "Bundling SDL2 library..."
+    )
+
     message(STATUS "macOS build configured successfully")
 endif()
 
