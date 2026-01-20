@@ -1947,7 +1947,7 @@ void buildRumenicAcid(Molecule* mol) {
     addBond(mol, 11, 12, 2);  // Cis C9=C10
     addBond(mol, 12, 13, 1);  // Single bond in conjugated system
     addBond(mol, 13, 14, 2);  // Trans C11=C12
-    for (int i = 14; i < 19; i++) {
+    for (int i = 14; i < 20; i++) {
         addBond(mol, i, i+1, 1);
     }
 
