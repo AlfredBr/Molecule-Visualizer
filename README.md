@@ -6,6 +6,11 @@ MolVis is a real-time 3D molecular visualization application powered by NVIDIA C
 
 ![MolVis Screenshot](docs/screenshot.png)
 
+## SHA256 Checksum for included MolVis.exe calculated by Microsoft DevToys
+
+```db1d5baefe73f0f865a35fd4c363908a4ca3b0488cf91ccdbe3bdcc1d59b432c```
+
+
 ## ✨ Features
 
 - **Real-time GPU Rendering** — CUDA-powered parallel ray-sphere intersection for smooth performance
