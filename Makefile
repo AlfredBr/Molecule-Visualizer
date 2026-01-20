@@ -1,94 +1,157 @@
 # MolVis - CUDA Molecular Visualization
-# Makefile for Windows with NVCC and MSVC host compiler
+# Makefile for Windows with MSVC and NVCC
 #
-# Target: RTX 3080 (Compute Capability 8.6)
+# Usage:
+#   build.bat         - Build the application (recommended)
+#   build.bat clean   - Clean build artifacts
+#   build.bat run     - Build and run
 #
-# IMPORTANT: This Makefile must be run from a Visual Studio Developer Command Prompt
-# or after running vcvarsall.bat to set up the MSVC environment.
-# Use the provided build.bat or setup_env.ps1 scripts for automatic setup.
+# Or from VS Developer Command Prompt:
+#   nmake
+#   nmake clean
+#   nmake run
 
 #==============================================================================
 # Configuration
 #==============================================================================
 
-# Application name
-APP_NAME = molvis
+APP_NAME     = molvis
+TARGET       = $(APP_NAME).exe
 
-# Compiler
-NVCC = nvcc
+# Compilers
+CXX          = cl
+NVCC         = nvcc
 
-# NVCC flags
-# -arch: Target GPU architecture (sm_86 for RTX 3080, adjust for your GPU)
-# -allow-unsupported-compiler: Allow newer VS versions not yet officially supported
-NVCCFLAGS = -O3 -arch=sm_86 -allow-unsupported-compiler
+# Directories
+SRC_DIR      = src
+BUILD_DIR    = build
+IMGUI_DIR    = third_party/imgui
+LEGACY_DIR   = legacy
 
-# Debug flags (uncomment for debug builds)
-# NVCCFLAGS = -g -G -arch=sm_86 -allow-unsupported-compiler
-
-# Windows libraries
-LIBS = gdi32.lib user32.lib
-
-# Source files
-CUDA_SOURCES = cuda_molecule.cu
-HEADERS = win32_display.h
-
-# Output
-TARGET = $(APP_NAME).exe
+# CUDA paths
+CUDA_INC     = $(CUDA_PATH)/include
+CUDA_LIB     = $(CUDA_PATH)/lib/x64
 
 #==============================================================================
-# Dear ImGui Integration (future)
+# Compiler Flags
 #==============================================================================
 
-# IMGUI_DIR = third_party/imgui
-# IMGUI_SOURCES = $(IMGUI_DIR)/imgui.cpp \
-#                 $(IMGUI_DIR)/imgui_draw.cpp \
-#                 $(IMGUI_DIR)/imgui_tables.cpp \
-#                 $(IMGUI_DIR)/imgui_widgets.cpp \
-#                 $(IMGUI_DIR)/backends/imgui_impl_win32.cpp \
-#                 $(IMGUI_DIR)/backends/imgui_impl_dx11.cpp
+# MSVC flags
+CXXFLAGS     = /nologo /W3 /O2 /EHsc /std:c++17 /D_CRT_SECURE_NO_WARNINGS
+
+# NVCC flags (sm_86 = RTX 3080, adjust for your GPU)
+NVCCFLAGS    = -O3 -arch=sm_86 -allow-unsupported-compiler
+
+# Include paths
+INCLUDES     = /I$(SRC_DIR) /I$(IMGUI_DIR) /I$(IMGUI_DIR)/backends /I"$(CUDA_INC)"
+CUDA_INC_FLAGS = -I$(SRC_DIR) -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
+
+# Libraries
+LIBS         = user32.lib gdi32.lib d3d11.lib dxgi.lib d3dcompiler.lib cudart.lib
+LIB_PATHS    = /LIBPATH:"$(CUDA_LIB)"
+
+#==============================================================================
+# Source Files
+#==============================================================================
+
+# Application sources
+APP_SOURCES  = \
+	$(SRC_DIR)/main.cpp \
+	$(SRC_DIR)/molecule/molecule_db.cpp
+
+# CUDA sources
+CUDA_SOURCES = $(SRC_DIR)/renderer/cuda_renderer.cu
+
+# Dear ImGui sources
+IMGUI_SOURCES = \
+	$(IMGUI_DIR)/imgui.cpp \
+	$(IMGUI_DIR)/imgui_draw.cpp \
+	$(IMGUI_DIR)/imgui_tables.cpp \
+	$(IMGUI_DIR)/imgui_widgets.cpp \
+	$(IMGUI_DIR)/backends/imgui_impl_win32.cpp \
+	$(IMGUI_DIR)/backends/imgui_impl_dx11.cpp
+
+# Object files
+CUDA_OBJ     = $(BUILD_DIR)/cuda_renderer.obj
 
 #==============================================================================
 # Build Targets
 #==============================================================================
 
-.PHONY: all clean help run
+.PHONY: all clean run legacy help dirs
 
-all: $(TARGET)
+all: dirs $(TARGET)
 	@echo.
-	@echo === MolVis built successfully! ===
-	@echo Run with: $(TARGET)
+	@echo ========================================
+	@echo   MolVis built successfully!
+	@echo   Run with: $(TARGET)
+	@echo ========================================
 
-$(TARGET): $(CUDA_SOURCES) $(HEADERS)
-	$(NVCC) $(NVCCFLAGS) -o $(TARGET) $(CUDA_SOURCES) $(LIBS)
+dirs:
+	@if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
 
-run: $(TARGET)
-	$(TARGET)
+# Compile CUDA sources
+$(CUDA_OBJ): $(CUDA_SOURCES)
+	$(NVCC) $(NVCCFLAGS) $(CUDA_INC_FLAGS) -c $** -o $@
+
+# Link everything
+$(TARGET): $(CUDA_OBJ) $(APP_SOURCES) $(IMGUI_SOURCES)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) /Fe:$@ /Fo:$(BUILD_DIR)/ \
+		$(APP_SOURCES) $(IMGUI_SOURCES) $(CUDA_OBJ) \
+		/link $(LIB_PATHS) $(LIBS)
+
+run: all
+	@echo Starting MolVis...
+	@$(TARGET)
+
+#==============================================================================
+# Legacy Build (original CUDA-only version)
+#==============================================================================
+
+legacy: $(LEGACY_DIR)/cuda_molecule.cu $(LEGACY_DIR)/win32_display.h
+	$(NVCC) $(NVCCFLAGS) -o $(LEGACY_DIR)/molvis_legacy.exe \
+		$(LEGACY_DIR)/cuda_molecule.cu gdi32.lib user32.lib
+	@echo Built: $(LEGACY_DIR)/molvis_legacy.exe
+
+#==============================================================================
+# Clean
+#==============================================================================
 
 clean:
+	@echo Cleaning build artifacts...
 	@if exist $(TARGET) del /Q $(TARGET)
+	@if exist $(BUILD_DIR)\*.obj del /Q $(BUILD_DIR)\*.obj
 	@if exist *.obj del /Q *.obj
 	@if exist *.exp del /Q *.exp
 	@if exist *.lib del /Q *.lib
 	@if exist *.pdb del /Q *.pdb
-	@echo Cleaned build artifacts.
+	@if exist *.ilk del /Q *.ilk
+	@if exist imgui.ini del /Q imgui.ini
+	@echo Done.
+
+#==============================================================================
+# Help
+#==============================================================================
 
 help:
 	@echo.
 	@echo MolVis Build System
-	@echo ====================
+	@echo ========================================
 	@echo.
 	@echo Targets:
-	@echo   all     - Build the application (default)
-	@echo   run     - Build and run the application
-	@echo   clean   - Remove build artifacts
-	@echo   help    - Show this help message
+	@echo   all      Build the application (default)
+	@echo   run      Build and run
+	@echo   clean    Remove build artifacts
+	@echo   legacy   Build original CUDA-only version
+	@echo   help     Show this message
 	@echo.
 	@echo Configuration:
-	@echo   GPU Architecture: sm_86 (RTX 3080)
-	@echo   Compiler: NVCC with MSVC host
+	@echo   GPU:     sm_86 (RTX 3080)
+	@echo   Compiler: MSVC + NVCC
 	@echo.
-	@echo Prerequisites:
-	@echo   - NVIDIA CUDA Toolkit
+	@echo Requirements:
 	@echo   - Visual Studio with C++ workload
-	@echo   - Run from VS Developer Command Prompt or use build.bat
+	@echo   - NVIDIA CUDA Toolkit
+	@echo   - Run from VS Developer Command Prompt
+	@echo     or use build.bat
 	@echo.

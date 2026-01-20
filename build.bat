@@ -1,17 +1,24 @@
 @echo off
-REM Windows CUDA Demos Build Script
-REM Sets up MSVC environment and runs make
+REM ============================================================================
+REM MolVis Build Script
+REM ============================================================================
+REM Sets up MSVC environment and runs nmake
 REM
 REM Usage: build.bat [target]
-REM   build.bat          - Build all demos
+REM   build.bat          - Build the application
+REM   build.bat run      - Build and run
 REM   build.bat clean    - Clean build artifacts
-REM   build.bat cuda_XXX - Build specific demo
+REM   build.bat legacy   - Build original CUDA-only version
+REM   build.bat help     - Show all targets
+REM ============================================================================
 
 setlocal EnableDelayedExpansion
 
-echo ====================================
-echo CUDA Graphics Demos - Windows Build
-echo ====================================
+echo.
+echo  ╔═══════════════════════════════════════╗
+echo  ║  MolVis - Molecular Visualization     ║
+echo  ║  CUDA + Dear ImGui + DirectX 11       ║
+echo  ╚═══════════════════════════════════════╝
 echo.
 
 REM Try to find Visual Studio installation
@@ -97,13 +104,19 @@ echo.
 REM Change to the script's directory
 cd /d "%~dp0"
 
+REM Kill any running instance before building
+taskkill /F /IM molvis.exe >nul 2>&1
+
+REM Ensure build directory exists
+if not exist build mkdir build
+
 REM Run make with the provided target (or 'all' by default)
 if "%~1"=="" (
-    echo Building all demos...
+    echo Building MolVis...
     echo.
     nmake /nologo /f Makefile all
 ) else (
-    echo Building target: %~1
+    echo Target: %~1
     echo.
     nmake /nologo /f Makefile %~1
 )

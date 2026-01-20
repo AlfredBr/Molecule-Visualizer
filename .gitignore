@@ -1,0 +1,45 @@
+# MolVis - Build artifacts
+*.exe
+*.obj
+*.exp
+*.lib
+*.pdb
+*.ilk
+*.idb
+
+# Build directory
+/build/
+
+# Visual Studio
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+
+# ImGui settings (regenerated)
+imgui.ini
+
+# CUDA compiled files
+*.cubin
+*.ptx
+*.fatbin
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+
+# Dependencies (if not committed)
+# /third_party/imgui/
+
+# Legacy binaries
+/legacy/*.exe

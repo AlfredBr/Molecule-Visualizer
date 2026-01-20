@@ -67,12 +67,25 @@ nmake
 
 ```
 MolVis/
-├── cuda_molecule.cu    # Main CUDA application
-├── win32_display.h     # Win32 windowing abstraction
-├── Makefile            # Build configuration
-├── build.bat           # Automated build script
-├── setup_env.ps1       # PowerShell environment setup
-└── README.md           # This file
+├── src/
+│   ├── main.cpp                  # Application entry point with ImGui
+│   ├── renderer/
+│   │   ├── cuda_renderer.h       # CUDA renderer interface
+│   │   └── cuda_renderer.cu      # GPU rendering kernels
+│   └── molecule/
+│       ├── molecule_db.h         # Molecule database interface
+│       └── molecule_db.cpp       # Molecule presets
+├── third_party/
+│   └── imgui/                    # Dear ImGui library
+├── legacy/
+│   ├── cuda_molecule.cu          # Original CUDA-only version
+│   └── win32_display.h           # Legacy Win32 abstraction
+├── build/                        # Build artifacts (.obj files)
+├── include/                      # Shared headers (future)
+├── Makefile                      # Build configuration
+├── build.bat                     # Automated build script
+├── setup_env.ps1                 # PowerShell environment setup
+└── README.md                     # This file
 ```
 
 ## 🔧 Configuration
@@ -93,7 +106,10 @@ NVCCFLAGS = -O3 -arch=sm_86 -allow-unsupported-compiler
 
 ## 🗺️ Roadmap
 
-- [ ] **Dear ImGui Integration** - Modern GUI with dockable panels
+- [x] **Dear ImGui Integration** - Modern GUI with dockable panels
+- [x] **Molecule Presets** - 10 built-in molecules (Water, Methane, Benzene, etc.)
+- [x] **Interactive Viewport** - Mouse controls for rotation and zoom
+- [ ] **Docking Support** - Detachable panels (requires ImGui docking branch)
 - [ ] **Molecule File Import** - Load PDB, MOL2, XYZ formats
 - [ ] **Advanced Rendering** - Ambient occlusion, depth of field
 - [ ] **Measurement Tools** - Bond lengths, angles, dihedral angles

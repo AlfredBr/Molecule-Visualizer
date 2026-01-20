@@ -9,39 +9,33 @@ MolVis is a GPU-accelerated molecular visualization application built with CUDA 
 - **Language**: CUDA C++ (.cu files)
 - **GPU Framework**: NVIDIA CUDA Runtime API
 - **Target GPU**: RTX 3080 (Compute Capability 8.6) - configurable via Makefile
-- **Platform**: Windows (Win32 API for windowing)
-- **Planned GUI**: Dear ImGui
-- **Build System**: GNU Make with NVCC + MSVC host compiler
+- **Platform**: Windows only (Win32 API + DirectX 11)
+- **GUI**: Dear ImGui (Win32 + DX11 backends)
+- **Build System**: nmake with NVCC + MSVC host compiler
 
 ## Architecture
 
-### Current Structure
-- `cuda_molecule.cu` - Main application with CUDA kernels and rendering logic
-- `win32_display.h` - Win32 abstraction layer for window management and input
-- `Makefile` - Build configuration
-- `build.bat` - Automated build script (sets up MSVC environment)
-- `setup_env.ps1` - PowerShell environment setup script
-
-### Planned Structure (with Dear ImGui)
+### Project Structure
 ```
 MolVis/
 ├── src/
-│   ├── main.cu              # Application entry point
+│   ├── main.cpp              # Application entry point (ImGui + Win32 + DX11)
 │   ├── renderer/
-│   │   ├── cuda_renderer.cu # CUDA rendering kernels
-│   │   └── cuda_renderer.h
-│   ├── molecule/
-│   │   ├── molecule.h       # Molecule data structures
-│   │   └── molecule_db.cu   # Molecule presets and generation
-│   └── gui/
-│       ├── gui.cpp          # Dear ImGui integration
-│       └── gui.h
+│   │   ├── cuda_renderer.cu  # CUDA rendering kernels
+│   │   └── cuda_renderer.h   # Renderer interface
+│   └── molecule/
+│       ├── molecule_db.h     # Molecule data structures
+│       └── molecule_db.cpp   # Molecule presets and generation
 ├── third_party/
-│   └── imgui/               # Dear ImGui library
-├── include/
-│   └── win32_display.h
-└── assets/
-    └── molecules/           # Molecule data files (future)
+│   └── imgui/                # Dear ImGui library
+├── legacy/
+│   ├── cuda_molecule.cu      # Original CUDA-only version
+│   └── win32_display.h       # Legacy Win32 abstraction
+├── build/                    # Build artifacts (.obj files)
+├── include/                  # Shared headers (future)
+├── Makefile                  # nmake build configuration
+├── build.bat                 # Automated build script (sets up MSVC)
+└── setup_env.ps1             # PowerShell environment setup
 ```
 
 ## Coding Conventions
@@ -125,9 +119,11 @@ nmake
 - Use shared memory for frequently accessed data in kernels
 - Minimize host-device memory transfers
 - Consider using CUDA streams for async operations when adding GUI
+- Always update the RELEASE_NOTES.md after every AI update
 
 ## Testing
 
-- Test on multiple GPU architectures when possible
+- Test on various NVIDIA GPU architectures (sm_75, sm_86, sm_89)
 - Verify molecule rendering accuracy against reference images
 - Profile with NVIDIA Nsight for performance optimization
+- Target platform: Windows 10/11 only (no Linux/macOS support)
