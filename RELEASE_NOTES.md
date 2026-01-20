@@ -1,5 +1,14 @@
 # MolVis Release Notes
 
+## v0.3.1 - Release Automation (2026-01)
+
+### Changes
+- **Removed binary from repo** - molvis.exe is now distributed via GitHub Releases only
+- **GitHub Actions CI/CD** - Automated Windows builds and releases on tag push
+- **Release packaging script** - Added `package_windows.ps1` for local release builds
+
+---
+
 ## v0.3.0 - macOS Support (2026-01)
 
 ### New Features
