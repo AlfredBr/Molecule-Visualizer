@@ -1,5 +1,19 @@
 # MolVis Release Notes
 
+## v0.3.2 - Application Icon Support (2026-01)
+
+### New Features
+- **Custom App Icon** - Support for custom application icon from `molvis-icon.png`
+- **macOS Icon Generation** - Automatic `.icns` generation from PNG for app bundle and DMG
+- **Icon Generation Script** - Added `scripts/generate_macos_icon.sh` for creating macOS icons
+
+### Changes
+- Build scripts now auto-generate macOS icon if `molvis-icon.png` exists
+- CMake updated to copy icon to app bundle Resources
+- Packaging script updated to use the icon for DMG volume
+
+---
+
 ## v0.3.1 - Release Automation (2026-01)
 
 ### Changes

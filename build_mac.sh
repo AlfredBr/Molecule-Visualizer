@@ -85,6 +85,15 @@ clean() {
 build() {
     check_dependencies
 
+    # Generate macOS icon from PNG if available
+    if [ -f "$SCRIPT_DIR/molvis-icon.png" ]; then
+        if [ ! -f "$SCRIPT_DIR/platform/macos/AppIcon.icns" ] || \
+           [ "$SCRIPT_DIR/molvis-icon.png" -nt "$SCRIPT_DIR/platform/macos/AppIcon.icns" ]; then
+            print_status "Generating macOS icon from molvis-icon.png..."
+            "$SCRIPT_DIR/scripts/generate_macos_icon.sh"
+        fi
+    fi
+
     print_status "Creating build directory..."
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"

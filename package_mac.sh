@@ -44,6 +44,17 @@ check_app() {
     fi
 }
 
+# Generate icon if needed
+generate_icon() {
+    if [ -f "$SCRIPT_DIR/molvis-icon.png" ]; then
+        if [ ! -f "$SCRIPT_DIR/platform/macos/AppIcon.icns" ] || \
+           [ "$SCRIPT_DIR/molvis-icon.png" -nt "$SCRIPT_DIR/platform/macos/AppIcon.icns" ]; then
+            print_status "Generating macOS icon..."
+            "$SCRIPT_DIR/scripts/generate_macos_icon.sh"
+        fi
+    fi
+}
+
 # Create DMG
 create_dmg() {
     print_status "Creating DMG package..."
@@ -205,6 +216,7 @@ main() {
     echo "====================="
     echo ""
 
+    generate_icon
     check_app
 
     # Optional code signing

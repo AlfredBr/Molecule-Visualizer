@@ -161,6 +161,15 @@ if(MOLVIS_BUILD_MACOS)
         COMMENT "Copying Metal shaders to app bundle..."
     )
 
+    # Copy application icon to bundle Resources (if it exists)
+    set(MACOS_ICON_FILE ${CMAKE_SOURCE_DIR}/platform/macos/AppIcon.icns)
+    if(EXISTS ${MACOS_ICON_FILE})
+        add_custom_command(TARGET MolVis POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy ${MACOS_ICON_FILE} "$<TARGET_BUNDLE_DIR:MolVis>/Contents/Resources/AppIcon.icns"
+            COMMENT "Copying application icon to app bundle..."
+        )
+    endif()
+
     message(STATUS "macOS build configured successfully")
 endif()
 
