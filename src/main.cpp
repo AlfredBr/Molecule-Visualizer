@@ -281,8 +281,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 ImGui::Image((ImTextureID)srv, viewportSize);
             }
 
-            // Handle mouse interaction in viewport
-            if (ImGui::IsWindowHovered())
+            // Handle mouse interaction in viewport - only when hovering over the image
+            if (ImGui::IsItemHovered())
             {
                 if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
                 {
