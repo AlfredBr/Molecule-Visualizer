@@ -2,165 +2,112 @@
 
 **GPU-Accelerated Molecular Visualization**
 
-MolVis is a real-time 3D molecular visualization application powered by NVIDIA CUDA. It renders beautiful ball-and-stick molecular models with realistic atomic colors, metallic shading, and smooth camera controls.
+MolVis is a real-time 3D molecular visualization application powered by NVIDIA CUDA and Dear ImGui. It renders beautiful ball-and-stick molecular models with realistic atomic colors, metallic shading, and interactive controls through a modern GUI.
 
-![MolVis Screenshot](docs/screenshot.png) <!-- TODO: Add screenshot -->
+![MolVis Screenshot](docs/screenshot.png)
 
 ## ✨ Features
 
-- **Real-time GPU Rendering** - Leverages CUDA for fast, parallel ray-sphere intersection
-- **CPK Color Convention** - Industry-standard atomic coloring (Carbon=gray, Oxygen=red, etc.)
-- **Ball-and-Stick Models** - Clear visualization of molecular structure and bonds
-- **Multiple Molecule Presets** - Organic compounds, DNA bases, and more
-- **Random Molecule Generation** - Explore procedurally generated structures
-- **Interactive Camera** - Rotate, zoom, and auto-rotate views
-- **Metallic Shading** - Specular highlights for depth perception
+- **Real-time GPU Rendering** — CUDA-powered parallel ray-sphere intersection for smooth performance
+- **Dear ImGui Interface** — Modern, responsive GUI with dockable panels
+- **249 Molecule Library** — From simple gases to exotic structures like Buckminsterfullerene (C₆₀)
+- **16 Categories** — Organized by type: Organic, Pharma, Amino Acids, Sugars, Fats, Metals, and more
+- **CPK Color Convention** — Industry-standard atomic coloring (Carbon=gray, Oxygen=red, Nitrogen=blue, etc.)
+- **Ball-and-Stick Models** — Clear visualization of molecular structure with single, double, and triple bonds
+- **Interactive Controls** — Rotation speed, direction, position offset, zoom—all from the GUI
+- **Metallic Shading** — Specular highlights and realistic lighting for depth perception
+- **Window Persistence** — Remembers your window size and position between sessions
 
-## 🎮 Controls
+## 🖥️ Interface
 
-| Key | Action |
-|-----|--------|
-| `1-9` | Select molecule preset |
-| `R` | Generate random molecule |
-| `Arrow Keys` | Rotate view |
-| `W/S` | Zoom in/out |
-| `A` | Toggle auto-rotate |
-| `Space` | Pause/resume rotation |
-| `Q` / `Escape` | Quit |
+### Panels
+
+| Panel | Description |
+|-------|-------------|
+| **Molecule Selector** | Browse 249 molecules by category or search by name |
+| **View Controls** | Adjust rotation speed, direction, and position offset |
+| **Atom Inspector** | View atom count, bond count, and molecular details |
+| **Render Settings** | Adjust lighting and display options |
+| **Performance** | Real-time FPS and GPU statistics |
+
+### Categories
+
+- Simple Molecules (H₂O, CO₂, NH₃...)
+- Organic Compounds (Benzene, Ethanol, Caffeine...)
+- Amino Acids (all 20 standard)
+- Nucleobases (DNA/RNA bases)
+- Sugars & Carbohydrates
+- Lipids & Fatty Acids
+- Pharmaceuticals (Aspirin, Ibuprofen, Morphine...)
+- Neurotransmitters (Dopamine, Serotonin, GABA...)
+- Metal Compounds (Ferrocene, Cisplatin...)
+- Plastics & Polymers
+- Energy Molecules (ATP, NADH...)
+- Exotic Structures (C₆₀, Cubane, Catenanes, Molecular Knots...)
 
 ## 🛠️ Requirements
 
-### Hardware
-- NVIDIA GPU with Compute Capability 5.0+ (GTX 900 series or newer)
-- Recommended: RTX 3080 or equivalent
+- **OS**: Windows 10/11
+- **GPU**: NVIDIA GPU with CUDA support (Compute Capability 5.0+)
+- **CUDA Toolkit**: 12.0 or newer
+- **Compiler**: Visual Studio 2019/2022/2025 with C++ workload
 
-### Software
-- Windows 10/11
-- [NVIDIA CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) (12.0+)
-- [Visual Studio](https://visualstudio.microsoft.com/) 2019/2022/2025 with "Desktop development with C++" workload
-- GNU Make (included with Git for Windows or install separately)
+## 🧪 Supported Elements
 
-## 🚀 Quick Start
+18 elements with CPK coloring:
 
-### Building
-
-```powershell
-# Clone the repository
-git clone https://github.com/yourusername/MolVis.git
-cd MolVis
-
-# Build using the automated script (recommended)
-.\build.bat
-
-# Or manually set up environment and build
-. .\setup_env.ps1
-nmake
-```
-
-### Running
-
-```powershell
-.\molvis.exe
-```
+| Element | Color | Element | Color |
+|---------|-------|---------|-------|
+| Hydrogen (H) | White | Sodium (Na) | Purple |
+| Carbon (C) | Dark Gray | Silicon (Si) | Tan |
+| Nitrogen (N) | Blue | Boron (B) | Salmon |
+| Oxygen (O) | Red | Iron (Fe) | Orange |
+| Phosphorus (P) | Orange | Copper (Cu) | Copper |
+| Sulfur (S) | Yellow | Aluminum (Al) | Silver |
+| Chlorine (Cl) | Green | Titanium (Ti) | Gray |
+| Bromine (Br) | Dark Red | Platinum (Pt) | Silver |
+| Fluorine (F) | Light Green | Iodine (I) | Purple |
 
 ## 📁 Project Structure
 
 ```
 MolVis/
 ├── src/
-│   ├── main.cpp                  # Application entry point with ImGui
+│   ├── main.cpp              # ImGui application + Win32/DX11
 │   ├── renderer/
-│   │   ├── cuda_renderer.h       # CUDA renderer interface
-│   │   └── cuda_renderer.cu      # GPU rendering kernels
+│   │   ├── cuda_renderer.h   # Renderer interface & atom types
+│   │   └── cuda_renderer.cu  # CUDA ray-tracing kernels
 │   └── molecule/
-│       ├── molecule_db.h         # Molecule database interface
-│       └── molecule_db.cpp       # Molecule presets
+│       ├── molecule_db.h     # Molecule database API
+│       └── molecule_db.cpp   # 249 molecule definitions
 ├── third_party/
-│   └── imgui/                    # Dear ImGui library
-├── legacy/
-│   ├── cuda_molecule.cu          # Original CUDA-only version
-│   └── win32_display.h           # Legacy Win32 abstraction
-├── build/                        # Build artifacts (.obj files)
-├── include/                      # Shared headers (future)
-├── Makefile                      # Build configuration
-├── build.bat                     # Automated build script
-├── setup_env.ps1                 # PowerShell environment setup
-└── README.md                     # This file
-```
-
-## 🔧 Configuration
-
-### GPU Architecture
-
-The default target is RTX 3080 (sm_86). To change for your GPU, edit the `Makefile`:
-
-```makefile
-# Common architectures:
-# sm_50 - GTX 900 series (Maxwell)
-# sm_61 - GTX 1000 series (Pascal)
-# sm_75 - RTX 2000 series (Turing)
-# sm_86 - RTX 3000 series (Ampere)
-# sm_89 - RTX 4000 series (Ada Lovelace)
-NVCCFLAGS = -O3 -arch=sm_86 -allow-unsupported-compiler
+│   └── imgui/                # Dear ImGui (Win32 + DX11 backends)
+├── Makefile                  # nmake build configuration
+└── build.bat                 # One-click build script
 ```
 
 ## 🗺️ Roadmap
 
-- [x] **Dear ImGui Integration** - Modern GUI with dockable panels
-- [x] **Molecule Presets** - 10 built-in molecules (Water, Methane, Benzene, etc.)
-- [x] **Interactive Viewport** - Mouse controls for rotation and zoom
-- [ ] **Docking Support** - Detachable panels (requires ImGui docking branch)
-- [ ] **Molecule File Import** - Load PDB, MOL2, XYZ formats
-- [ ] **Advanced Rendering** - Ambient occlusion, depth of field
-- [ ] **Measurement Tools** - Bond lengths, angles, dihedral angles
-- [ ] **Animation** - Molecular dynamics playback
-- [ ] **Export** - Screenshot and video capture
-
-## 🧪 Supported Elements
-
-MolVis supports visualization of 18 elements with CPK coloring:
-
-| Element | Symbol | Color |
-|---------|--------|-------|
-| Hydrogen | H | White |
-| Carbon | C | Dark Gray |
-| Nitrogen | N | Blue |
-| Oxygen | O | Red |
-| Phosphorus | P | Orange |
-| Sulfur | S | Yellow |
-| Chlorine | Cl | Green |
-| Bromine | Br | Dark Red |
-| Fluorine | F | Light Green |
-| Iodine | I | Purple |
-| Sodium | Na | Metallic Purple |
-| Silicon | Si | Tan |
-| Boron | B | Salmon |
-| Iron | Fe | Orange/Brown |
-| Copper | Cu | Copper |
-| Aluminum | Al | Silver |
-| Titanium | Ti | Gray |
-| Platinum | Pt | White/Silver |
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- [x] Dear ImGui integration with dockable panels
+- [x] 249 molecule library across 16 categories
+- [x] Search and filter functionality
+- [x] View controls (rotation, position, zoom)
+- [x] Window state persistence
+- [ ] Molecule file import (PDB, MOL2, XYZ)
+- [ ] Measurement tools (bond lengths, angles)
+- [ ] Screenshot/video export
+- [ ] Advanced rendering (ambient occlusion, depth of field)
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License — see [LICENSE](LICENSE) for details.
 
 ## 🙏 Acknowledgments
 
-- CPK coloring convention by Corey, Pauling, and Koltun
-- NVIDIA for the CUDA toolkit and documentation
-- Dear ImGui by Omar Cornut (upcoming integration)
+- **CPK coloring** — Corey, Pauling, and Koltun convention
+- **Dear ImGui** — Omar Cornut's immediate-mode GUI
+- **NVIDIA CUDA** — GPU computing platform
 
 ---
 
-Made with 💜 and CUDA and Claude Opus 4.5
+Made with 💜 CUDA and Claude Opus 4.5
