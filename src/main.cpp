@@ -405,7 +405,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             ImGui::TextWrapped("%s", molecule_get_long_description(g_currentMolecule));
             ImGui::Spacing();
             ImGui::Separator();
-            
+
             // Molecule Info
             ImGui::Text("Atoms: %d", g_molecule.numAtoms);
             ImGui::Text("Bonds: %d", g_molecule.numBonds);
