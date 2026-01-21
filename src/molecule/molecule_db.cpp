@@ -9411,6 +9411,235 @@ void buildSucrose(Molecule* mol) {
     centerMolecule(mol);
 }
 
+// Build Lactose (C12H22O11) - Milk sugar (glucose + galactose disaccharide)
+void buildLactose(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Lactose (C12H22O11)");
+
+    // Glucose ring (6-membered pyranose)
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);         // 0: C1 (anomeric)
+    addAtom(mol, 1.2f, 0.7f, 0.3f, ATOM_C);         // 1: C2
+    addAtom(mol, 2.4f, 0.0f, 0.0f, ATOM_C);         // 2: C3
+    addAtom(mol, 2.4f, -1.4f, 0.5f, ATOM_C);        // 3: C4
+    addAtom(mol, 1.2f, -2.1f, 0.2f, ATOM_C);        // 4: C5
+    addAtom(mol, 0.0f, -1.4f, 0.5f, ATOM_O);        // 5: ring O
+
+    // Glucose hydroxyl groups and CH2OH
+    addAtom(mol, -1.0f, 0.5f, 0.5f, ATOM_O);        // 6: OH on C1 (anomeric)
+    addAtom(mol, 1.2f, 2.1f, 0.0f, ATOM_O);         // 7: OH on C2
+    addAtom(mol, 3.5f, 0.7f, 0.3f, ATOM_O);         // 8: OH on C3
+    addAtom(mol, 3.5f, -2.1f, 0.2f, ATOM_O);        // 9: OH on C4
+    addAtom(mol, 1.2f, -3.5f, 0.5f, ATOM_C);        // 10: C6 (CH2OH)
+    addAtom(mol, 1.2f, -4.2f, 1.5f, ATOM_O);        // 11: OH on C6
+
+    // Galactose ring (6-membered pyranose, glucose C4 epimer)
+    // Connected via glycosidic bond from glucose C1 to galactose C4
+    addAtom(mol, -2.2f, 0.5f, -0.3f, ATOM_C);       // 12: C1 (CH2OH)
+    addAtom(mol, -3.4f, -0.2f, 0.0f, ATOM_C);       // 13: C2
+    addAtom(mol, -4.6f, 0.5f, 0.7f, ATOM_C);        // 14: C3 (galactose - flipped stereochemistry)
+    addAtom(mol, -4.6f, 1.9f, -0.6f, ATOM_C);       // 15: C4 (galactose epimer)
+    addAtom(mol, -3.4f, 2.6f, -0.1f, ATOM_C);       // 16: C5
+    addAtom(mol, -2.2f, 1.9f, 0.2f, ATOM_O);        // 17: ring O
+
+    // Galactose hydroxyl groups and CH2OH
+    addAtom(mol, -1.0f, -0.3f, 0.0f, ATOM_O);       // 18: OH on C1
+    addAtom(mol, -3.4f, -1.6f, -0.5f, ATOM_O);      // 19: OH on C2
+    addAtom(mol, -5.8f, 1.2f, 1.0f, ATOM_O);        // 20: OH on C3 (galactose position)
+    addAtom(mol, -5.8f, 1.2f, -0.9f, ATOM_O);       // 21: OH on C4 (galactose position)
+    addAtom(mol, -3.4f, 4.0f, 0.2f, ATOM_C);        // 22: C6 (CH2OH)
+    addAtom(mol, -3.4f, 4.7f, -0.8f, ATOM_O);       // 23: OH on C6
+
+    // Selected hydrogens for clarity
+    addAtom(mol, 0.0f, 0.0f, 1.0f, ATOM_H);         // 24: H on glucose C1
+    addAtom(mol, 1.2f, 0.7f, 1.3f, ATOM_H);         // 25: H on glucose C2
+    addAtom(mol, -4.6f, 1.9f, 1.2f, ATOM_H);        // 26: H on galactose C4
+
+    // Glucose ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);  // ring closure
+
+    // Glucose substituents
+    addBond(mol, 0, 6, 1);  // C1-OH (anomeric)
+    addBond(mol, 1, 7, 1);  // C2-OH
+    addBond(mol, 2, 8, 1);  // C3-OH
+    addBond(mol, 3, 9, 1);  // C4-OH
+    addBond(mol, 4, 10, 1); // C5-C6
+    addBond(mol, 10, 11, 1);// C6-OH
+
+    // Glycosidic bond (glucose C1 O to galactose C4)
+    addBond(mol, 6, 15, 1);
+
+    // Galactose ring bonds
+    addBond(mol, 12, 13, 1);
+    addBond(mol, 13, 14, 1);
+    addBond(mol, 14, 15, 1);
+    addBond(mol, 15, 16, 1);
+    addBond(mol, 16, 17, 1);
+    addBond(mol, 17, 12, 1); // ring closure
+
+    // Galactose substituents
+    addBond(mol, 12, 18, 1); // C1-OH
+    addBond(mol, 13, 19, 1); // C2-OH
+    addBond(mol, 14, 20, 1); // C3-OH
+    addBond(mol, 15, 21, 1); // C4-OH
+    addBond(mol, 16, 22, 1); // C5-C6
+    addBond(mol, 22, 23, 1); // C6-OH
+
+    // Selected hydrogen bonds
+    addBond(mol, 0, 24, 1);
+    addBond(mol, 1, 25, 1);
+    addBond(mol, 15, 26, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Maltose (C12H22O11) - Malt sugar (two glucose units)
+void buildMaltose(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Maltose (C12H22O11)");
+
+    // Glucose ring 1 (6-membered pyranose)
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);         // 0: C1 (anomeric)
+    addAtom(mol, 1.2f, 0.7f, 0.3f, ATOM_C);         // 1: C2
+    addAtom(mol, 2.4f, 0.0f, 0.0f, ATOM_C);         // 2: C3
+    addAtom(mol, 2.4f, -1.4f, 0.5f, ATOM_C);        // 3: C4
+    addAtom(mol, 1.2f, -2.1f, 0.2f, ATOM_C);        // 4: C5
+    addAtom(mol, 0.0f, -1.4f, 0.5f, ATOM_O);        // 5: ring O
+
+    // Glucose 1 hydroxyl groups and CH2OH
+    addAtom(mol, -1.0f, 0.5f, 0.5f, ATOM_O);        // 6: OH on C1 (anomeric)
+    addAtom(mol, 1.2f, 2.1f, 0.0f, ATOM_O);         // 7: OH on C2
+    addAtom(mol, 3.5f, 0.7f, 0.3f, ATOM_O);         // 8: OH on C3
+    addAtom(mol, 3.5f, -2.1f, 0.2f, ATOM_O);        // 9: OH on C4
+    addAtom(mol, 1.2f, -3.5f, 0.5f, ATOM_C);        // 10: C6 (CH2OH)
+    addAtom(mol, 1.2f, -4.2f, 1.5f, ATOM_O);        // 11: OH on C6
+
+    // Glucose ring 2 (6-membered pyranose)
+    // Connected via glycosidic bond from glucose1 C1 to glucose2 C4
+    addAtom(mol, -2.2f, 0.5f, -0.3f, ATOM_C);       // 12: C1 (CH2OH)
+    addAtom(mol, -3.4f, -0.2f, 0.0f, ATOM_C);       // 13: C2
+    addAtom(mol, -4.6f, 0.5f, -0.3f, ATOM_C);       // 14: C3
+    addAtom(mol, -4.6f, 1.9f, 0.2f, ATOM_C);        // 15: C4 (glycosidic linkage)
+    addAtom(mol, -3.4f, 2.6f, -0.1f, ATOM_C);       // 16: C5
+    addAtom(mol, -2.2f, 1.9f, 0.2f, ATOM_O);        // 17: ring O
+
+    // Glucose 2 hydroxyl groups and CH2OH
+    addAtom(mol, -1.0f, -0.3f, 0.0f, ATOM_O);       // 18: OH on C1
+    addAtom(mol, -3.4f, -1.6f, -0.5f, ATOM_O);      // 19: OH on C2
+    addAtom(mol, -5.8f, -0.2f, -0.6f, ATOM_O);      // 20: OH on C3
+    addAtom(mol, -5.8f, 2.6f, 0.5f, ATOM_O);        // 21: OH on C4
+    addAtom(mol, -3.4f, 4.0f, 0.2f, ATOM_C);        // 22: C6 (CH2OH)
+    addAtom(mol, -3.4f, 4.7f, -0.8f, ATOM_O);       // 23: OH on C6
+
+    // Selected hydrogens
+    addAtom(mol, 0.0f, 0.0f, 1.0f, ATOM_H);         // 24: H on glucose1 C1
+    addAtom(mol, 1.2f, 0.7f, 1.3f, ATOM_H);         // 25: H on glucose1 C2
+    addAtom(mol, -4.6f, 1.9f, 1.2f, ATOM_H);        // 26: H on glucose2 C4
+
+    // Glucose 1 ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);  // ring closure
+
+    // Glucose 1 substituents
+    addBond(mol, 0, 6, 1);  // C1-OH (anomeric)
+    addBond(mol, 1, 7, 1);  // C2-OH
+    addBond(mol, 2, 8, 1);  // C3-OH
+    addBond(mol, 3, 9, 1);  // C4-OH
+    addBond(mol, 4, 10, 1); // C5-C6
+    addBond(mol, 10, 11, 1);// C6-OH
+
+    // Glycosidic bond (glucose1 C1 O to glucose2 C4)
+    addBond(mol, 6, 15, 1);
+
+    // Glucose 2 ring bonds
+    addBond(mol, 12, 13, 1);
+    addBond(mol, 13, 14, 1);
+    addBond(mol, 14, 15, 1);
+    addBond(mol, 15, 16, 1);
+    addBond(mol, 16, 17, 1);
+    addBond(mol, 17, 12, 1); // ring closure
+
+    // Glucose 2 substituents
+    addBond(mol, 12, 18, 1); // C1-OH
+    addBond(mol, 13, 19, 1); // C2-OH
+    addBond(mol, 14, 20, 1); // C3-OH
+    addBond(mol, 15, 21, 1); // C4-OH
+    addBond(mol, 16, 22, 1); // C5-C6
+    addBond(mol, 22, 23, 1); // C6-OH
+
+    // Selected hydrogen bonds
+    addBond(mol, 0, 24, 1);
+    addBond(mol, 1, 25, 1);
+    addBond(mol, 15, 26, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Galactose (C6H12O6) - Milk sugar monosaccharide (glucose epimer)
+void buildGalactose(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Galactose (C6H12O6)");
+
+    // Galactose ring (6-membered pyranose)
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);         // 0: C1 (anomeric)
+    addAtom(mol, 1.2f, 0.7f, 0.3f, ATOM_C);         // 1: C2
+    addAtom(mol, 2.4f, 0.0f, 0.0f, ATOM_C);         // 2: C3
+    addAtom(mol, 2.4f, -1.4f, 0.5f, ATOM_C);        // 3: C4 (differs from glucose)
+    addAtom(mol, 1.2f, -2.1f, 0.2f, ATOM_C);        // 4: C5
+    addAtom(mol, 0.0f, -1.4f, 0.5f, ATOM_O);        // 5: ring O
+
+    // Hydroxyl groups and CH2OH
+    addAtom(mol, -1.0f, 0.5f, 0.5f, ATOM_O);        // 6: OH on C1 (anomeric)
+    addAtom(mol, 1.2f, 2.1f, 0.0f, ATOM_O);         // 7: OH on C2
+    addAtom(mol, 3.5f, 0.7f, 0.3f, ATOM_O);         // 8: OH on C3
+    addAtom(mol, 3.5f, -2.1f, 0.2f, ATOM_O);        // 9: OH on C4 (axial, differs from glucose)
+    addAtom(mol, 1.2f, -3.5f, 0.5f, ATOM_C);        // 10: C6 (CH2OH)
+    addAtom(mol, 1.2f, -4.2f, 1.5f, ATOM_O);        // 11: OH on C6
+
+    // Hydrogens
+    addAtom(mol, 0.0f, 0.0f, 1.0f, ATOM_H);         // 12: H on C1
+    addAtom(mol, 1.2f, 0.7f, 1.3f, ATOM_H);         // 13: H on C2
+    addAtom(mol, 2.4f, 0.0f, -1.0f, ATOM_H);        // 14: H on C3
+    addAtom(mol, 2.4f, -1.4f, 1.5f, ATOM_H);        // 15: H on C4
+    addAtom(mol, 1.2f, -2.1f, -0.8f, ATOM_H);       // 16: H on C5
+
+    // Ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);  // ring closure
+
+    // Hydroxyl and CH2OH bonds
+    addBond(mol, 0, 6, 1);  // C1-OH (anomeric)
+    addBond(mol, 1, 7, 1);  // C2-OH
+    addBond(mol, 2, 8, 1);  // C3-OH
+    addBond(mol, 3, 9, 1);  // C4-OH
+    addBond(mol, 4, 10, 1); // C5-C6
+    addBond(mol, 10, 11, 1);// C6-OH
+
+    // Hydrogen bonds
+    addBond(mol, 0, 12, 1);
+    addBond(mol, 1, 13, 1);
+    addBond(mol, 2, 14, 1);
+    addBond(mol, 3, 15, 1);
+    addBond(mol, 4, 16, 1);
+
+    centerMolecule(mol);
+}
+
 // Build Aspartame (C14H18N2O5) - Diet soda sweetener (aspartyl-phenylalanine methyl ester)
 void buildAspartame(Molecule* mol) {
     mol->numAtoms = 0;
@@ -15278,9 +15507,15 @@ static MoleculeInfo molecules[] = {
       "Nitroglycerin relieves angina (heart pain) by dilating blood vessels, improving blood flow. It was first synthesized in 1847 but took until the 1870s to recognize medical use. Ironically, Nobel Prize creator Alfred Nobel discovered this use treating his chest pain." },
     { buildRDX, "RDX", CAT_OTHER, "Military explosive",
       "RDX is a military explosive more powerful than TNT, used in detonators and shaped charges. It's less stable than TNT, requiring careful handling. Modern ammunition often uses RDX in primer formulations." },
-    // === SWEETENERS (212-215) ===
+    // === SWEETENERS (212-218) ===
     { buildSucrose, "Sucrose/Table Sugar", CAT_SUGARS, "Disaccharide",
       "Sucrose is table sugar made by plants combining glucose and fructose. Plants make it for energy storage; animals can't synthesize it. Sucrose was once rare and precious; now it's leading contributor to obesity and diabetes." },
+    { buildLactose, "Lactose", CAT_SUGARS, "Milk sugar disaccharide",
+      "Lactose is the natural sugar in milk, found in mammals from birth. It's made of glucose and galactose joined together. Many humans lose lactase enzyme after childhood, causing lactose intolerance. Lactose-free milk is made by breaking lactose into simple sugars." },
+    { buildMaltose, "Maltose", CAT_SUGARS, "Malt sugar disaccharide",
+      "Maltose is created when enzymes break down starch in grains and potatoes. Brewers use it to ferment beer; your saliva starts breaking starch into maltose when chewing. Malt sugar is slightly less sweet than table sugar but has a pleasant, subtle flavor." },
+    { buildGalactose, "Galactose", CAT_SUGARS, "C6H12O6 - Milk monosaccharide",
+      "Galactose is a monosaccharide derived from lactose in milk. It differs from glucose by the position of one hydroxyl group, yet this tiny difference makes it crucial for brain development. Your body uses galactose to make galactose-cerebroside, a critical component of myelin insulation." },
     { buildAspartame, "Aspartame", CAT_OTHER, "NutraSweet",
       "Aspartame is a sweetener 200 times sweeter than sugar with no calories. It's made from aspartic acid and phenylalanine, amino acids. People with phenylketonuria (PKU) cannot safely consume aspartame due to phenylalanine." },
     { buildSaccharin, "Saccharin", CAT_OTHER, "Sweet'N Low",

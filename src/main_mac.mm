@@ -24,6 +24,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <cctype>
 
 // ============== Configuration ==============
 
@@ -38,6 +39,11 @@ struct WindowConfig {
 
 static char g_configPath[1024] = "";
 static char g_imguiIniPath[1024] = "";
+static char g_searchBuffer[256] = "";  // Search buffer for molecule browser
+static int g_currentMolecule = 0;       // Current molecule index
+
+// Forward declaration
+static bool StringContains(const char* str, const char* search);
 
 void InitConfigPath() {
     // Get user's home directory for config file
@@ -68,6 +74,8 @@ void SaveWindowConfig(SDL_Window* window) {
         fprintf(f, "[MainWindow]\n");
         fprintf(f, "Pos=%d,%d\n", x, y);
         fprintf(f, "Size=%d,%d\n", w, h);
+        fprintf(f, "[UserSettings]\n");
+        fprintf(f, "LastMolecule=%d\n", g_currentMolecule);
         fflush(f);
         fclose(f);
         printf("Saved window config to %s\n", g_configPath);
@@ -82,6 +90,7 @@ WindowConfig LoadWindowConfig() {
         while (fgets(line, sizeof(line), f)) {
             sscanf(line, "Pos=%d,%d", &cfg.x, &cfg.y);
             sscanf(line, "Size=%d,%d", &cfg.width, &cfg.height);
+            sscanf(line, "LastMolecule=%d", &g_currentMolecule);
         }
         fclose(f);
         printf("Loaded window config from %s\n", g_configPath);
@@ -156,7 +165,7 @@ int main(int argc, char* argv[]) {
 
         // Application state (matching Windows version)
         Molecule molecule = {};
-        int currentMolecule = 0;
+        // Note: g_currentMolecule is initialized from saved config via LoadWindowConfig()
         float rotX = 0.3f;
         float rotY = 0.0f;
         float zoom = 10.0f;
@@ -168,7 +177,7 @@ int main(int argc, char* argv[]) {
         bool rotateY = true;
 
         // Load initial molecule
-        molecule_build(currentMolecule, &molecule);
+        molecule_build(g_currentMolecule, &molecule);
 
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
@@ -252,9 +261,9 @@ int main(int argc, char* argv[]) {
                             if (ImGui::BeginMenu(molecule_get_category_name(cat))) {
                                 for (int i = 0; i < molecule_get_count(); i++) {
                                     if (molecule_get_category(i) == cat) {
-                                        if (ImGui::MenuItem(molecule_get_name(i), nullptr, currentMolecule == i)) {
-                                            currentMolecule = i;
-                                            molecule_build(currentMolecule, &molecule);
+                                        if (ImGui::MenuItem(molecule_get_name(i), nullptr, g_currentMolecule == i)) {
+                                            g_currentMolecule = i;
+                                            molecule_build(g_currentMolecule, &molecule);
                                         }
                                     }
                                 }
@@ -328,38 +337,98 @@ int main(int argc, char* argv[]) {
                 }
                 ImGui::End();
 
-                // Molecule Info Panel
-                ImGui::SetNextWindowSize(ImVec2(320, 350), ImGuiCond_FirstUseEver);
-                ImGui::Begin("Molecule Info");
+                // Browse Molecules Panel
+                ImGui::SetNextWindowSize(ImVec2(280, 400), ImGuiCond_FirstUseEver);
+                ImGui::Begin("Browse Molecules");
                 {
-                    ImGui::Text("Name: %s", molecule.name);
-                    ImGui::TextWrapped("Description: %s", molecule_get_description(currentMolecule));
+                    // Search input field with clear button
+                    ImGui::InputTextWithHint("##search", "Search molecules...", g_searchBuffer, sizeof(g_searchBuffer));
+                    ImGui::SameLine();
+                    if (ImGui::Button("Clear", ImVec2(50, 0)))
+                    {
+                        g_searchBuffer[0] = '\0';
+                    }
                     ImGui::Separator();
 
-                    ImGui::Text("Atoms: %d", molecule.numAtoms);
-                    ImGui::Text("Bonds: %d", molecule.numBonds);
-                    ImGui::Text("Category: %s", molecule_get_category_name(molecule_get_category(currentMolecule)));
-                    ImGui::Separator();
+                    // Browse molecules with search filtering
+                    bool hasSearchResults = false;
 
-                    // Molecule browser by category
-                    ImGui::Text("Browse Molecules:");
-                    for (int cat = 0; cat < CAT_COUNT; cat++) {
-                        if (ImGui::TreeNode(molecule_get_category_name(cat))) {
-                            for (int i = 0; i < molecule_get_count(); i++) {
-                                if (molecule_get_category(i) == cat) {
-                                    bool isSelected = (currentMolecule == i);
-                                    if (ImGui::Selectable(molecule_get_name(i), isSelected)) {
-                                        currentMolecule = i;
-                                        molecule_build(currentMolecule, &molecule);
-                                    }
-                                    if (ImGui::IsItemHovered()) {
-                                        ImGui::SetTooltip("%s", molecule_get_description(i));
+                    if (g_searchBuffer[0] == '\0')
+                    {
+                        // No search: show categories
+                        for (int cat = 0; cat < CAT_COUNT; cat++)
+                        {
+                            if (ImGui::TreeNode(molecule_get_category_name(cat)))
+                            {
+                                for (int i = 0; i < molecule_get_count(); i++)
+                                {
+                                    if (molecule_get_category(i) == cat)
+                                    {
+                                        bool isSelected = (g_currentMolecule == i);
+                                        if (ImGui::Selectable(molecule_get_name(i), isSelected))
+                                        {
+                                            g_currentMolecule = i;
+                                            molecule_build(g_currentMolecule, &molecule);
+                                        }
+                                        if (ImGui::IsItemHovered())
+                                        {
+                                            ImGui::SetTooltip("%s", molecule_get_description(i));
+                                        }
                                     }
                                 }
+                                ImGui::TreePop();
                             }
-                            ImGui::TreePop();
                         }
                     }
+                    else
+                    {
+                        // Search: show matching molecules across all categories
+                        for (int i = 0; i < molecule_get_count(); i++)
+                        {
+                            const char* name = molecule_get_name(i);
+                            const char* desc = molecule_get_description(i);
+
+                            if (StringContains(name, g_searchBuffer) || StringContains(desc, g_searchBuffer))
+                            {
+                                hasSearchResults = true;
+                                bool isSelected = (g_currentMolecule == i);
+                                if (ImGui::Selectable(name, isSelected))
+                                {
+                                    g_currentMolecule = i;
+                                    molecule_build(g_currentMolecule, &molecule);
+                                }
+                                if (ImGui::IsItemHovered())
+                                {
+                                    ImGui::SetTooltip("%s", desc);
+                                }
+                            }
+                        }
+
+                        if (!hasSearchResults)
+                        {
+                            ImGui::TextDisabled("No matches found");
+                        }
+                    }
+                }
+                ImGui::End();
+
+                // Description Panel - Educational info about the current molecule
+                ImGui::SetNextWindowSize(ImVec2(350, 280), ImGuiCond_FirstUseEver);
+                ImGui::Begin("Description");
+                {
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.7f, 1.0f)); // Warm yellow text
+                    ImGui::TextWrapped("%s", molecule.name);
+                    ImGui::PopStyleColor();
+                    ImGui::Separator();
+                    ImGui::Spacing();
+                    ImGui::TextWrapped("%s", molecule_get_long_description(g_currentMolecule));
+                    ImGui::Spacing();
+                    ImGui::Separator();
+
+                    // Molecule Info
+                    ImGui::Text("Atoms: %d", molecule.numAtoms);
+                    ImGui::Text("Bonds: %d", molecule.numBonds);
+                    ImGui::Text("Category: %s", molecule_get_category_name(molecule_get_category(g_currentMolecule)));
                 }
                 ImGui::End();
 
@@ -416,6 +485,67 @@ int main(int argc, char* argv[]) {
                 }
                 ImGui::End();
 
+                // CPK Color Reference Panel
+                ImGui::SetNextWindowSize(ImVec2(280, 450), ImGuiCond_FirstUseEver);
+                ImGui::Begin("CPK Color Reference");
+                {
+                    ImGui::Text("CPK Atom Colors:");
+                    ImGui::Separator();
+
+                    // Define colors matching the Metal renderer
+                    ImVec4 cpkColors[] = {
+                        {0.95f, 0.95f, 0.95f, 1.0f},  // H - white
+                        {0.2f,  0.2f,  0.2f,  1.0f},  // C - dark gray
+                        {0.2f,  0.3f,  0.9f,  1.0f},  // N - blue
+                        {0.9f,  0.2f,  0.2f,  1.0f},  // O - red
+                        {1.0f,  0.5f,  0.0f,  1.0f},  // P - orange
+                        {0.9f,  0.8f,  0.2f,  1.0f},  // S - yellow
+                        {0.2f,  0.9f,  0.2f,  1.0f},  // Cl - green
+                        {0.6f,  0.1f,  0.1f,  1.0f},  // Br - dark red
+                        {0.5f,  0.9f,  0.5f,  1.0f},  // F - light green
+                        {0.5f,  0.1f,  0.5f,  1.0f},  // I - purple
+                        {0.7f,  0.5f,  0.9f,  1.0f},  // Na - metallic purple
+                        {0.85f, 0.75f, 0.55f, 1.0f},  // Si - tan
+                        {1.0f,  0.65f, 0.65f, 1.0f},  // B - salmon
+                        {0.88f, 0.4f,  0.2f,  1.0f},  // Fe - orange/brown
+                        {0.85f, 0.55f, 0.2f,  1.0f},  // Cu - copper
+                        {0.75f, 0.75f, 0.8f,  1.0f},  // Al - silver
+                        {0.6f,  0.6f,  0.65f, 1.0f},  // Ti - gray
+                        {0.85f, 0.85f, 0.88f, 1.0f},  // Pt - white
+                    };
+
+                    const char* atomNames[] = {
+                        "H - Hydrogen (White)",
+                        "C - Carbon (Dark Gray)",
+                        "N - Nitrogen (Blue)",
+                        "O - Oxygen (Red)",
+                        "P - Phosphorus (Orange)",
+                        "S - Sulfur (Yellow)",
+                        "Cl - Chlorine (Green)",
+                        "Br - Bromine (Dark Red)",
+                        "F - Fluorine (Light Green)",
+                        "I - Iodine (Purple)",
+                        "Na - Sodium (Metallic Purple)",
+                        "Si - Silicon (Tan)",
+                        "B - Boron (Salmon)",
+                        "Fe - Iron (Orange/Brown)",
+                        "Cu - Copper (Copper)",
+                        "Al - Aluminum (Silver)",
+                        "Ti - Titanium (Gray)",
+                        "Pt - Platinum (White)",
+                    };
+
+                    // Display color swatches in a grid
+                    for (int i = 0; i < 18; i++) {
+                        char id[32];
+                        snprintf(id, sizeof(id), "##cpk_color_%d", i);
+                        ImGui::ColorButton(id, cpkColors[i], ImGuiColorEditFlags_NoBorder | ImGuiColorEditFlags_NoTooltip, ImVec2(20, 20));
+                        ImGui::SameLine();
+                        ImGui::Text("%s", atomNames[i]);
+                    }
+                }
+                ImGui::End();
+
                 // Rendering
                 ImGui::Render();
 
@@ -450,4 +580,32 @@ int main(int argc, char* argv[]) {
         printf("MolVis terminated\n");
         return 0;
     }
+}
+
+// === Helper Functions ===
+
+// Case-insensitive string search
+static bool StringContains(const char* str, const char* search)
+{
+    if (!str || !search || search[0] == '\0')
+        return true;  // Empty search matches everything
+
+    // Simple case-insensitive substring search
+    for (size_t i = 0; str[i]; ++i)
+    {
+        bool match = true;
+        for (size_t j = 0; search[j]; ++j)
+        {
+            char c1 = tolower((unsigned char)str[i + j]);
+            char c2 = tolower((unsigned char)search[j]);
+            if (c1 != c2)
+            {
+                match = false;
+                break;
+            }
+        }
+        if (match)
+            return true;
+    }
+    return false;
 }

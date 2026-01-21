@@ -1,7 +1,25 @@
 
 # MolVis Release Notes
 
-## v0.3.6 (2026-01-20)
+## v0.3.7 (2026-01-21)
+
+### New Features
+- **Added Missing Dietary Sugars** - Lactose, Maltose, and Galactose molecule presets
+  - **Lactose** (C12H22O11) - Milk sugar disaccharide (glucose + galactose)
+  - **Maltose** (C12H22O11) - Malt sugar disaccharide (two glucose units)
+  - **Galactose** (C6H12O6) - Milk monosaccharide (glucose epimer)
+
+### Educational Content
+- Added detailed descriptions explaining:
+  - Lactose's role in milk and lactose intolerance mechanisms
+  - Maltose production from grain starch and its use in brewing
+  - Galactose's importance for brain development and myelin formation
+- All three molecules added to Sugar & Carbohydrate category for easy discovery
+
+### Bug Fixes
+- **Fixed Lactose/Galactose Stereochemistry** - Lactose now correctly displays galactose ring with proper C3/C4 stereochemistry, distinguishing it visually from Maltose
+
+---
 
 v0.3.6 release.
 
