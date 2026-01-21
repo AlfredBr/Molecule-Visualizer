@@ -49,6 +49,9 @@ int molecule_get_category(int index);
 // Get the description of a molecule preset by index
 const char* molecule_get_description(int index);
 
+// Get the long educational description of a molecule preset by index
+const char* molecule_get_long_description(int index);
+
 // Build a molecule by index
 void molecule_build(int index, Molecule* mol);
 

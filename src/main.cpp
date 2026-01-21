@@ -307,21 +307,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         }
         ImGui::End();
 
-        // Molecule Info Panel
-        ImGui::SetNextWindowSize(ImVec2(320, 350), ImGuiCond_FirstUseEver);
-        ImGui::Begin("Molecule Info");
+        // Browse Molecules Panel
+        ImGui::SetNextWindowSize(ImVec2(280, 300), ImGuiCond_FirstUseEver);
+        ImGui::Begin("Browse Molecules");
         {
-            ImGui::Text("Name: %s", g_molecule.name);
-            ImGui::TextWrapped("Description: %s", molecule_get_description(g_currentMolecule));
-            ImGui::Separator();
-
-            ImGui::Text("Atoms: %d", g_molecule.numAtoms);
-            ImGui::Text("Bonds: %d", g_molecule.numBonds);
-            ImGui::Text("Category: %s", molecule_get_category_name(molecule_get_category(g_currentMolecule)));
-            ImGui::Separator();
-
-            // Molecule browser by category
-            ImGui::Text("Browse Molecules:");
             for (int cat = 0; cat < CAT_COUNT; cat++)
             {
                 if (ImGui::TreeNode(molecule_get_category_name(cat)))
@@ -401,6 +390,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         {
             ImGui::Text("%.3f ms/frame", 1000.0f / io.Framerate);
             ImGui::Text("%.1f FPS", io.Framerate);
+        }
+        ImGui::End();
+
+        // Description Panel - Educational info about the current molecule
+        ImGui::SetNextWindowSize(ImVec2(350, 280), ImGuiCond_FirstUseEver);
+        ImGui::Begin("Description");
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.7f, 1.0f)); // Warm yellow text
+            ImGui::TextWrapped("%s", g_molecule.name);
+            ImGui::PopStyleColor();
+            ImGui::Separator();
+            ImGui::Spacing();
+            ImGui::TextWrapped("%s", molecule_get_long_description(g_currentMolecule));
+            ImGui::Spacing();
+            ImGui::Separator();
+            
+            // Molecule Info
+            ImGui::Text("Atoms: %d", g_molecule.numAtoms);
+            ImGui::Text("Bonds: %d", g_molecule.numBonds);
+            ImGui::Text("Category: %s", molecule_get_category_name(molecule_get_category(g_currentMolecule)));
         }
         ImGui::End();
 

@@ -4,6 +4,23 @@
 
 MolVis is a GPU-accelerated molecular visualization application built with CUDA and targeting Windows. The application renders 3D ball-and-stick molecular models with realistic atomic colors (CPK convention), metallic shading, and interactive camera controls.
 
+## Claude API Extended Thinking Requirements
+
+When using Claude API with extended thinking enabled:
+
+1. **Assistant message structure**: Every assistant message MUST start with a thinking block before any other content
+2. **Valid block order**: `thinking` → `text` → `tool_use` (if applicable)
+3. **Include previous thinking**: When continuing conversations, include thinking blocks from previous turns
+4. **Alternative**: If you don't need extended thinking, disable it in your API request
+
+### Code Implementation Notes:
+- Check if `thinking` feature is enabled in your request
+- If enabled, ensure assistant messages have structure: `[{type: "thinking", ...}, {type: "text", ...}]`
+- If you're getting this error, either:
+  - Restructure messages to include thinking blocks first, OR
+  - Remove the thinking parameter from your API request
+
+
 ## Technology Stack
 
 - **Language**: CUDA C++ (.cu files)
