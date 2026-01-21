@@ -10723,6 +10723,2478 @@ void buildMescaline(Molecule* mol) {
     centerMolecule(mol);
 }
 
+// Build PCP - Phencyclidine (C17H25N)
+void buildPCP(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "PCP (C17H25N)");
+
+    // 1-phenylcyclohexyl piperidine
+    // Cyclohexyl ring
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);         // 0: C1 (with phenyl)
+    addAtom(mol, 1.4f, 0.5f, 0.0f, ATOM_C);         // 1: C2
+    addAtom(mol, 2.0f, 1.8f, 0.5f, ATOM_C);         // 2: C3
+    addAtom(mol, 1.2f, 2.8f, 0.8f, ATOM_C);         // 3: C4
+    addAtom(mol, -0.2f, 2.3f, 0.8f, ATOM_C);        // 4: C5
+    addAtom(mol, -0.8f, 1.0f, 0.3f, ATOM_C);        // 5: C6
+
+    // Phenyl ring attached to C1
+    float r = 1.4f;
+    float baseX = -1.2f, baseY = -1.0f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, baseX + r * cosf(angle), baseY + r * sinf(angle), 0.0f, ATOM_C);  // 6-11
+    }
+
+    // Piperidine ring attached to C1
+    addAtom(mol, 0.2f, -0.5f, 1.4f, ATOM_N);        // 12: N
+    addAtom(mol, -0.8f, -1.3f, 1.6f, ATOM_C);       // 13: CH2
+    addAtom(mol, -1.6f, -2.2f, 0.8f, ATOM_C);       // 14: CH2
+    addAtom(mol, -0.8f, -3.0f, -0.2f, ATOM_C);      // 15: CH2
+    addAtom(mol, 0.6f, -2.8f, -0.4f, ATOM_C);       // 16: CH2
+    addAtom(mol, 1.4f, -1.9f, 0.4f, ATOM_C);        // 17: CH2
+
+    // Cyclohexyl ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);
+
+    // Phenyl ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, 6 + i, 6 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Phenyl attachment
+    addBond(mol, 0, 6, 1);
+
+    // Piperidine ring bonds
+    addBond(mol, 0, 12, 1);  // C1-N
+    addBond(mol, 12, 13, 1); // N-CH2
+    addBond(mol, 13, 14, 1); // CH2-CH2
+    addBond(mol, 14, 15, 1); // CH2-CH2
+    addBond(mol, 15, 16, 1); // CH2-CH2
+    addBond(mol, 16, 17, 1); // CH2-CH2
+    addBond(mol, 17, 12, 1); // CH2-N (closing ring)
+
+    centerMolecule(mol);
+}
+
+// Build MDMA - 3,4-Methylenedioxymethamphetamine (C11H15NO2)
+void buildMDMA(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "MDMA/Ecstasy (C11H15NO2)");
+
+    // Methylenedioxy benzene ring
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Methylenedioxy bridge (OCH2O) at positions 2,3 (C3,C4)
+    addAtom(mol, r * cosf(2*PI/3) - 0.8f, r * sinf(2*PI/3) + 0.8f, 0.5f, ATOM_O);     // 6: O
+    addAtom(mol, r * cosf(2*PI/3) - 0.8f, r * sinf(2*PI/3) + 0.8f, -0.5f, ATOM_C);    // 7: CH2
+    addAtom(mol, r * cosf(PI) - 0.8f, r * sinf(PI) + 0.8f, -0.5f, ATOM_O);            // 8: O
+
+    // Methamphetamine side chain: -CH2-CH(CH3)-NH(CH3) at C0
+    addAtom(mol, r + 1.3f, 0.0f, 0.0f, ATOM_C);         // 9: CH2
+    addAtom(mol, r + 2.6f, 0.5f, 0.0f, ATOM_C);         // 10: CH (chiral center)
+    addAtom(mol, r + 2.8f, 1.9f, 0.0f, ATOM_C);         // 11: CH3 (methyl on chiral)
+    addAtom(mol, r + 3.8f, -0.3f, 0.0f, ATOM_N);        // 12: NH
+    addAtom(mol, r + 5.1f, 0.3f, 0.0f, ATOM_C);         // 13: CH3 (N-methyl)
+
+    // Hydrogens on benzene
+    float rH = 2.4f;
+    addAtom(mol, rH * cosf(PI/3), rH * sinf(PI/3), 0.0f, ATOM_H);           // 14: H on C1
+    addAtom(mol, rH * cosf(5*PI/3), rH * sinf(5*PI/3), 0.0f, ATOM_H);       // 15: H on C5
+
+    // Hydrogen on amine
+    addAtom(mol, r + 4.0f, -1.2f, 0.0f, ATOM_H);        // 16: H on NH
+
+    // Benzene ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Methylenedioxy bonds
+    addBond(mol, 2, 6, 1);   // C-O
+    addBond(mol, 6, 7, 1);   // O-CH2
+    addBond(mol, 7, 8, 1);   // CH2-O
+    addBond(mol, 8, 3, 1);   // O-C
+
+    // Side chain bonds
+    addBond(mol, 0, 9, 1);   // C(ring)-CH2
+    addBond(mol, 9, 10, 1);  // CH2-CH
+    addBond(mol, 10, 11, 1); // CH-CH3
+    addBond(mol, 10, 12, 1); // CH-NH
+    addBond(mol, 12, 13, 1); // NH-CH3
+
+    // Hydrogen bonds
+    addBond(mol, 1, 14, 1);
+    addBond(mol, 5, 15, 1);
+    addBond(mol, 12, 16, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Methylone - Bath Salts (C11H13NO2)
+void buildMethylone(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Methylone/Bath Salts (C11H13NO2)");
+
+    // Methylenedioxy benzene ring
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Methylenedioxy bridge (OCH2O) at positions 2,3 (C3,C4)
+    addAtom(mol, r * cosf(2*PI/3) - 0.8f, r * sinf(2*PI/3) + 0.8f, 0.5f, ATOM_O);     // 6: O
+    addAtom(mol, r * cosf(2*PI/3) - 0.8f, r * sinf(2*PI/3) + 0.8f, -0.5f, ATOM_C);    // 7: CH2
+    addAtom(mol, r * cosf(PI) - 0.8f, r * sinf(PI) + 0.8f, -0.5f, ATOM_O);            // 8: O
+
+    // Cathinone side chain: -CH2-CO-CH(CH3)-NH2 at C0
+    addAtom(mol, r + 1.3f, 0.0f, 0.0f, ATOM_C);         // 9: CH2
+    addAtom(mol, r + 2.6f, 0.5f, 0.0f, ATOM_C);         // 10: C=O (carbonyl)
+    addAtom(mol, r + 2.6f, 0.5f, 1.3f, ATOM_O);         // 11: O (ketone)
+    addAtom(mol, r + 3.8f, -0.3f, -0.5f, ATOM_C);       // 12: CH
+    addAtom(mol, r + 4.0f, 0.6f, -1.8f, ATOM_C);        // 13: CH3
+    addAtom(mol, r + 5.2f, -0.9f, -0.2f, ATOM_N);       // 14: NH2
+
+    // Hydrogens on benzene
+    float rH = 2.4f;
+    addAtom(mol, rH * cosf(PI/3), rH * sinf(PI/3), 0.0f, ATOM_H);           // 15: H on C1
+    addAtom(mol, rH * cosf(5*PI/3), rH * sinf(5*PI/3), 0.0f, ATOM_H);       // 16: H on C5
+
+    // Hydrogens on amine
+    addAtom(mol, r + 5.7f, -1.6f, -0.7f, ATOM_H);       // 17: H on NH2
+    addAtom(mol, r + 5.7f, -0.8f, 0.5f, ATOM_H);        // 18: H on NH2
+
+    // Hydrogen on chiral center
+    addAtom(mol, r + 3.8f, -1.2f, -0.5f, ATOM_H);       // 19: H on CH
+
+    // Benzene ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Methylenedioxy bonds
+    addBond(mol, 2, 6, 1);   // C-O
+    addBond(mol, 6, 7, 1);   // O-CH2
+    addBond(mol, 7, 8, 1);   // CH2-O
+    addBond(mol, 8, 3, 1);   // O-C
+
+    // Side chain bonds
+    addBond(mol, 0, 9, 1);   // C(ring)-CH2
+    addBond(mol, 9, 10, 1);  // CH2-C(=O)
+    addBond(mol, 10, 11, 2); // C=O (ketone)
+    addBond(mol, 10, 12, 1); // C-CH
+    addBond(mol, 12, 13, 1); // CH-CH3
+    addBond(mol, 12, 14, 1); // CH-NH2
+
+    // Hydrogen bonds
+    addBond(mol, 1, 15, 1);
+    addBond(mol, 5, 16, 1);
+    addBond(mol, 14, 17, 1);
+    addBond(mol, 14, 18, 1);
+    addBond(mol, 12, 19, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Valium - Diazepam (C16H13ClN2O)
+void buildValium(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Valium/Diazepam (C16H13ClN2O)");
+
+    // Fused ring system: benzene-7-membered ring-benzene
+    // First benzene ring (top)
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f + PI/2;
+        addAtom(mol, r * cosf(angle), r * sinf(angle) + 1.2f, 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Seven-membered middle ring
+    addAtom(mol, 0.0f, 1.2f, 0.0f, ATOM_C);           // 6: shared with ring 1
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);           // 7
+    addAtom(mol, -1.4f, -0.7f, 0.0f, ATOM_C);         // 8
+    addAtom(mol, -1.4f, -2.0f, 0.0f, ATOM_N);         // 9: N
+    addAtom(mol, 0.0f, -2.7f, 0.0f, ATOM_C);          // 10
+    addAtom(mol, 1.4f, -2.0f, 0.0f, ATOM_N);          // 11: N
+    addAtom(mol, 1.4f, -0.7f, 0.0f, ATOM_C);          // 12: shared with ring 2
+
+    // Second benzene ring (bottom)
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f + PI/2;
+        addAtom(mol, r * cosf(angle), r * sinf(angle) - 1.2f, 0.0f, ATOM_C);  // 13-18
+    }
+
+    // Chlorine at position on first ring
+    addAtom(mol, r * cosf(PI/3 + PI/2) + 0.8f, r * sinf(PI/3 + PI/2) + 1.2f, 0.0f, ATOM_CL);  // 19
+
+    // Methyl group on N
+    addAtom(mol, -2.6f, -2.8f, 0.0f, ATOM_C);         // 20: CH3
+
+    // Carbonyl oxygen on middle ring
+    addAtom(mol, 0.0f, -4.0f, 0.0f, ATOM_O);          // 21: C=O
+
+    // Hydrogens (simplified)
+    float rH = 2.4f;
+    addAtom(mol, rH * cosf(PI/6 + PI/2), rH * sinf(PI/6 + PI/2) + 1.2f, 0.0f, ATOM_H);  // 22
+    addAtom(mol, rH * cosf(5*PI/6 + PI/2), rH * sinf(5*PI/6 + PI/2) + 1.2f, 0.0f, ATOM_H);  // 23
+
+    // First ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Second ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, 13 + i, 13 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Middle ring bonds
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 8, 9, 1);
+    addBond(mol, 9, 10, 1);
+    addBond(mol, 10, 11, 1);
+    addBond(mol, 11, 12, 1);
+    addBond(mol, 12, 6, 1);
+
+    // Ring connections
+    addBond(mol, 0, 6, 1);   // First ring to middle
+    addBond(mol, 12, 13, 1); // Middle to second ring
+
+    // Chlorine bond
+    addBond(mol, 1, 19, 1);
+
+    // Methyl bond
+    addBond(mol, 9, 20, 1);
+
+    // Carbonyl bond
+    addBond(mol, 10, 21, 2);
+
+    // Hydrogen bonds
+    addBond(mol, 5, 22, 1);
+    addBond(mol, 4, 23, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Methamphetamine - Crystal Meth (C10H15N)
+void buildMethamphetamine(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Methamphetamine/Crystal Meth (C10H15N)");
+
+    // Benzene ring
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Methamphetamine side chain: -CH2-CH(CH3)-NH(CH3)
+    addAtom(mol, r + 1.3f, 0.0f, 0.0f, ATOM_C);       // 6: CH2
+    addAtom(mol, r + 2.6f, 0.5f, 0.0f, ATOM_C);       // 7: CH (chiral center)
+    addAtom(mol, r + 2.8f, 1.9f, 0.0f, ATOM_C);       // 8: CH3 (on chiral)
+    addAtom(mol, r + 3.8f, -0.3f, 0.0f, ATOM_N);      // 9: NH
+    addAtom(mol, r + 5.1f, 0.3f, 0.0f, ATOM_C);       // 10: CH3 (N-methyl)
+
+    // Hydrogens on benzene
+    float rH = 2.4f;
+    addAtom(mol, rH * cosf(PI/3), rH * sinf(PI/3), 0.0f, ATOM_H);     // 11: H on C1
+    addAtom(mol, rH * cosf(5*PI/3), rH * sinf(5*PI/3), 0.0f, ATOM_H); // 12: H on C5
+
+    // Hydrogens on amine
+    addAtom(mol, r + 4.0f, -1.2f, 0.0f, ATOM_H);      // 13: H on NH
+
+    // Hydrogens on methyl groups (simplified)
+    addAtom(mol, r + 3.4f, 2.4f, 0.0f, ATOM_H);       // 14: H on CH3
+    addAtom(mol, r + 5.5f, 1.2f, 0.0f, ATOM_H);       // 15: H on N-CH3
+
+    // Benzene ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Side chain bonds
+    addBond(mol, 0, 6, 1);   // C(ring)-CH2
+    addBond(mol, 6, 7, 1);   // CH2-CH
+    addBond(mol, 7, 8, 1);   // CH-CH3
+    addBond(mol, 7, 9, 1);   // CH-NH
+    addBond(mol, 9, 10, 1);  // NH-CH3
+
+    // Hydrogen bonds
+    addBond(mol, 1, 11, 1);
+    addBond(mol, 5, 12, 1);
+    addBond(mol, 9, 13, 1);
+    addBond(mol, 8, 14, 1);
+    addBond(mol, 10, 15, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Codeine (C18H21NO3)
+void buildCodeine(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Codeine (C18H21NO3)");
+
+    // Phenanthrene-like core (fused ring system)
+    // Top benzene-like ring
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f + PI/2;
+        addAtom(mol, r * cosf(angle) - 1.0f, r * sinf(angle) + 1.5f, 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Middle fused ring
+    addAtom(mol, -0.5f, 1.5f, 0.0f, ATOM_C);          // 6
+    addAtom(mol, -0.5f, 0.2f, 0.0f, ATOM_C);          // 7
+    addAtom(mol, -1.9f, -0.5f, 0.0f, ATOM_C);         // 8
+    addAtom(mol, -1.9f, -1.8f, 0.0f, ATOM_N);         // 9: N
+    addAtom(mol, -0.5f, -2.5f, 0.0f, ATOM_C);         // 10
+    addAtom(mol, 0.9f, -1.8f, 0.0f, ATOM_C);          // 11
+
+    // Bottom benzene ring
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f + PI/2;
+        addAtom(mol, r * cosf(angle) + 1.0f, r * sinf(angle) - 1.5f, 0.0f, ATOM_C);  // 12-17
+    }
+
+    // Methoxy group at position 3
+    addAtom(mol, -2.4f, 2.4f, 0.0f, ATOM_O);          // 18: O (methoxy)
+    addAtom(mol, -3.6f, 2.4f, 0.0f, ATOM_C);          // 19: CH3
+
+    // Hydroxyl group at position 6
+    addAtom(mol, 2.4f, -2.4f, 0.0f, ATOM_O);          // 20: OH
+    addAtom(mol, 3.2f, -3.2f, 0.0f, ATOM_H);          // 21: H
+
+    // N-methyl group
+    addAtom(mol, -2.8f, -2.6f, 0.0f, ATOM_C);         // 22: CH3 on N
+
+    // Top ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Bottom ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, 12 + i, 12 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Middle ring bonds
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 8, 9, 1);
+    addBond(mol, 9, 10, 1);
+    addBond(mol, 10, 11, 1);
+    addBond(mol, 11, 6, 1);
+
+    // Ring connections
+    addBond(mol, 0, 6, 1);
+    addBond(mol, 11, 12, 1);
+
+    // Methoxy bonds
+    addBond(mol, 5, 18, 1);
+    addBond(mol, 18, 19, 1);
+
+    // Hydroxyl bond
+    addBond(mol, 17, 20, 1);
+    addBond(mol, 20, 21, 1);
+
+    // N-methyl bond
+    addBond(mol, 9, 22, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Methadone (C21H27NO)
+void buildMethadone(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Methadone (C21H27NO)");
+
+    // Two phenyl rings connected by a chain
+    // First phenyl ring (left)
+    float r = 1.4f;
+    float baseX1 = -5.0f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, baseX1 + r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Second phenyl ring (right)
+    float baseX2 = 5.0f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, baseX2 + r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 6-11
+    }
+
+    // Connecting chain: (C2H5)C(CH3)(C2H5)-CO-CH2-CH2-N(CH3)2
+    addAtom(mol, -2.5f, 0.0f, 0.0f, ATOM_C);          // 12: Quaternary C
+    addAtom(mol, -1.2f, -1.2f, 0.0f, ATOM_C);         // 13: CH2
+    addAtom(mol, 0.2f, -1.2f, 0.0f, ATOM_C);          // 14: C=O (carbonyl)
+    addAtom(mol, 0.2f, -1.2f, 1.3f, ATOM_O);          // 15: O (ketone)
+    addAtom(mol, 1.5f, -1.2f, -0.5f, ATOM_C);         // 16: CH2
+    addAtom(mol, 2.8f, -1.2f, -0.5f, ATOM_C);         // 17: CH2
+    addAtom(mol, 4.1f, -1.2f, -0.5f, ATOM_N);         // 18: N
+
+    // Methyl groups and ethyl substituents on quaternary C
+    addAtom(mol, -2.5f, 0.0f, 1.4f, ATOM_C);          // 19: CH3
+    addAtom(mol, -2.7f, -1.4f, -0.5f, ATOM_C);        // 20: CH2 (ethyl 1)
+    addAtom(mol, -3.5f, -2.2f, 0.2f, ATOM_C);         // 21: CH3 (ethyl 1)
+    addAtom(mol, -2.7f, 1.4f, -0.5f, ATOM_C);         // 22: CH2 (ethyl 2)
+    addAtom(mol, -3.5f, 2.2f, 0.2f, ATOM_C);          // 23: CH3 (ethyl 2)
+
+    // N-methyl groups
+    addAtom(mol, 4.3f, -2.6f, -0.5f, ATOM_C);         // 24: CH3 (N-methyl 1)
+    addAtom(mol, 4.3f, 0.2f, -0.5f, ATOM_C);          // 25: CH3 (N-methyl 2)
+
+    // Hydrogens on phenyl rings
+    float rH = 2.4f;
+    addAtom(mol, baseX1 + rH * cosf(PI/3), rH * sinf(PI/3), 0.0f, ATOM_H);     // 26
+    addAtom(mol, baseX2 + rH * cosf(PI/3), rH * sinf(PI/3), 0.0f, ATOM_H);     // 27
+
+    // First phenyl ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Second phenyl ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, 6 + i, 6 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Chain bonds
+    addBond(mol, 0, 12, 1);   // Phenyl1-quaternary C
+    addBond(mol, 12, 13, 1);  // Quaternary C-CH2
+    addBond(mol, 13, 14, 1);  // CH2-C=O
+    addBond(mol, 14, 15, 2);  // C=O
+    addBond(mol, 14, 16, 1);  // C-CH2
+    addBond(mol, 16, 17, 1);  // CH2-CH2
+    addBond(mol, 17, 18, 1);  // CH2-N
+    addBond(mol, 6, 18, 1);   // Phenyl2-N (connection through chain)
+
+    // Substituent bonds
+    addBond(mol, 12, 19, 1);  // Quaternary C-CH3
+    addBond(mol, 12, 20, 1);  // Quaternary C-CH2
+    addBond(mol, 20, 21, 1);  // CH2-CH3
+    addBond(mol, 12, 22, 1);  // Quaternary C-CH2
+    addBond(mol, 22, 23, 1);  // CH2-CH3
+
+    // N-methyl bonds
+    addBond(mol, 18, 24, 1);  // N-CH3
+    addBond(mol, 18, 25, 1);  // N-CH3
+
+    // Hydrogen bonds
+    addBond(mol, 5, 26, 1);
+    addBond(mol, 11, 27, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Diphenhydramine/Benadryl (C17H21NO) - 1st generation antihistamine
+void buildDiphenhydramine(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Diphenhydramine/Benadryl (C17H21NO)");
+
+    // Two phenyl rings connected by ethoxy chain
+    // First phenyl ring (left)
+    float r = 1.4f;
+    float baseX1 = -4.0f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, baseX1 + r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Second phenyl ring (right)
+    float baseX2 = 4.0f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, baseX2 + r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 6-11
+    }
+
+    // Connecting chain: Ph-CH(OCH2CH2N(CH3)2)-Ph
+    addAtom(mol, 0.0f, 1.0f, 0.0f, ATOM_C);            // 12: CH (chiral)
+    addAtom(mol, 0.0f, 2.3f, 0.0f, ATOM_O);            // 13: O (ether)
+    addAtom(mol, -1.3f, 3.0f, 0.0f, ATOM_C);           // 14: CH2
+    addAtom(mol, -1.3f, 4.3f, 0.0f, ATOM_C);           // 15: CH2
+    addAtom(mol, 0.0f, 5.0f, 0.0f, ATOM_N);            // 16: N
+    addAtom(mol, -0.5f, 6.2f, 0.0f, ATOM_C);           // 17: CH3 (N-methyl)
+    addAtom(mol, 1.3f, 5.2f, 0.0f, ATOM_C);            // 18: CH3 (N-methyl)
+
+    // Hydrogens on phenyl rings
+    float rH = 2.4f;
+    addAtom(mol, baseX1 + rH * cosf(PI/3), rH * sinf(PI/3), 0.0f, ATOM_H);     // 19
+    addAtom(mol, baseX2 + rH * cosf(PI/3), rH * sinf(PI/3), 0.0f, ATOM_H);     // 20
+
+    // First phenyl ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Second phenyl ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, 6 + i, 6 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Chain bonds
+    addBond(mol, 0, 12, 1);   // Phenyl1-CH
+    addBond(mol, 12, 6, 1);   // CH-Phenyl2
+    addBond(mol, 12, 13, 1);  // CH-O
+    addBond(mol, 13, 14, 1);  // O-CH2
+    addBond(mol, 14, 15, 1);  // CH2-CH2
+    addBond(mol, 15, 16, 1);  // CH2-N
+    addBond(mol, 16, 17, 1);  // N-CH3
+    addBond(mol, 16, 18, 1);  // N-CH3
+
+    // Hydrogen bonds
+    addBond(mol, 5, 19, 1);
+    addBond(mol, 11, 20, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Chlorpheniramine/Chlor-Trimeton (C16H19ClN2) - 1st generation antihistamine
+void buildChlorpheniramine(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Chlorpheniramine/Chlor-Trimeton (C16H19ClN2)");
+
+    // Dibenzothiazepine-like core with piperidine
+    // Benzene ring 1
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f + PI/2;
+        addAtom(mol, r * cosf(angle) - 1.0f, r * sinf(angle) + 1.5f, 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Middle fused ring with N
+    addAtom(mol, -0.5f, 1.5f, 0.0f, ATOM_C);           // 6
+    addAtom(mol, -0.5f, 0.2f, 0.0f, ATOM_C);           // 7
+    addAtom(mol, -1.9f, -0.5f, 0.0f, ATOM_C);          // 8
+    addAtom(mol, -1.9f, -1.8f, 0.0f, ATOM_N);          // 9: N (ring N)
+    addAtom(mol, -0.5f, -2.5f, 0.0f, ATOM_C);          // 10
+    addAtom(mol, 0.9f, -1.8f, 0.0f, ATOM_C);           // 11
+
+    // Benzene ring 2
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f + PI/2;
+        addAtom(mol, r * cosf(angle) + 1.0f, r * sinf(angle) - 1.5f, 0.0f, ATOM_C);  // 12-17
+    }
+
+    // Chlorine substituent
+    addAtom(mol, -2.4f, 2.4f, 0.0f, ATOM_CL);          // 18: Cl
+
+    // Piperidine ring attached to N
+    addAtom(mol, -3.2f, -2.6f, 0.0f, ATOM_C);          // 19: CH2
+    addAtom(mol, -4.5f, -2.0f, 0.0f, ATOM_C);          // 20: CH2
+    addAtom(mol, -4.7f, -0.6f, 0.0f, ATOM_C);          // 21: CH2
+    addAtom(mol, -3.5f, 0.2f, 0.0f, ATOM_N);           // 22: N (piperidine)
+    addAtom(mol, -2.2f, -0.4f, 0.0f, ATOM_C);          // 23: CH2
+    addAtom(mol, -2.0f, -1.8f, 0.0f, ATOM_C);          // 24: CH2
+
+    // Methyl on piperidine N
+    addAtom(mol, -3.5f, 1.6f, 0.0f, ATOM_C);           // 25: CH3
+
+    // Hydrogens on aromatic rings
+    float rH = 2.4f;
+    addAtom(mol, rH * cosf(PI/6 + PI/2) - 1.0f, rH * sinf(PI/6 + PI/2) + 1.5f, 0.0f, ATOM_H);  // 26
+    addAtom(mol, rH * cosf(5*PI/6 + PI/2) + 1.0f, rH * sinf(5*PI/6 + PI/2) - 1.5f, 0.0f, ATOM_H);  // 27
+
+    // Benzene ring 1 bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Benzene ring 2 bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, 12 + i, 12 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Middle ring bonds
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 8, 9, 1);
+    addBond(mol, 9, 10, 1);
+    addBond(mol, 10, 11, 1);
+    addBond(mol, 11, 6, 1);
+
+    // Ring connections
+    addBond(mol, 0, 6, 1);
+    addBond(mol, 11, 12, 1);
+
+    // Chlorine bond
+    addBond(mol, 5, 18, 1);
+
+    // Piperidine ring bonds
+    addBond(mol, 9, 19, 1);
+    addBond(mol, 19, 20, 1);
+    addBond(mol, 20, 21, 1);
+    addBond(mol, 21, 22, 1);
+    addBond(mol, 22, 23, 1);
+    addBond(mol, 23, 24, 1);
+    addBond(mol, 24, 9, 1);
+
+    // Methyl on piperidine
+    addBond(mol, 22, 25, 1);
+
+    // Hydrogen bonds
+    addBond(mol, 4, 26, 1);
+    addBond(mol, 16, 27, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Loratadine/Claritin (C22H23ClN2O) - 2nd generation antihistamine
+void buildLoratadine(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Loratadine/Claritin (C22H23ClN2O)");
+
+    // Tricyclic core: benzimidazole fused to quinoline
+    // Main aromatic system
+    float r = 1.4f;
+
+    // Benzene ring
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle), r * sinf(angle) + 1.0f, 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Imidazole ring
+    addAtom(mol, 1.2f, 0.0f, 0.0f, ATOM_C);            // 6
+    addAtom(mol, 0.6f, -1.0f, 0.0f, ATOM_N);           // 7: N
+    addAtom(mol, -0.6f, -1.0f, 0.0f, ATOM_C);          // 8
+    addAtom(mol, -1.2f, 0.0f, 0.0f, ATOM_N);           // 9: N
+
+    // Chlorophenyl substituent
+    float baseX = -3.0f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, baseX + r * cosf(angle), r * sinf(angle) - 2.0f, 0.0f, ATOM_C);  // 10-15
+    }
+
+    // Chlorine on substituent
+    addAtom(mol, baseX - 1.0f, r * sinf(-PI/3) - 2.0f - 0.8f, 0.0f, ATOM_CL);  // 16
+
+    // Piperidine ring
+    addAtom(mol, 2.8f, 0.5f, 0.0f, ATOM_C);            // 17: CH2
+    addAtom(mol, 4.0f, 1.3f, 0.0f, ATOM_C);            // 18: CH2
+    addAtom(mol, 3.5f, 2.7f, 0.0f, ATOM_N);            // 19: N
+    addAtom(mol, 2.3f, 2.5f, 0.0f, ATOM_C);            // 20: CH2
+    addAtom(mol, 1.1f, 3.3f, 0.0f, ATOM_C);            // 21: CH2
+
+    // Carbonyl and side chain
+    addAtom(mol, 4.7f, 3.5f, 0.0f, ATOM_C);            // 22: C=O
+    addAtom(mol, 4.7f, 3.5f, 1.3f, ATOM_O);            // 23: O (carbonyl)
+
+    // Hydrogens
+    float rH = 2.4f;
+    addAtom(mol, rH * cosf(PI/3), rH * sinf(PI/3) + 1.0f, 0.0f, ATOM_H);  // 24
+
+    // Benzene ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Chlorophenyl ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, 10 + i, 10 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Imidazole bonds
+    addBond(mol, 1, 6, 1);
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 8, 9, 1);
+    addBond(mol, 9, 4, 1);
+
+    // Connection to chlorophenyl
+    addBond(mol, 8, 10, 1);
+
+    // Chlorine bond
+    addBond(mol, 12, 16, 1);
+
+    // Piperidine bonds
+    addBond(mol, 6, 17, 1);
+    addBond(mol, 17, 18, 1);
+    addBond(mol, 18, 19, 1);
+    addBond(mol, 19, 20, 1);
+    addBond(mol, 20, 21, 1);
+    addBond(mol, 21, 6, 1);
+
+    // Carbonyl bonds
+    addBond(mol, 19, 22, 1);
+    addBond(mol, 22, 23, 2);
+
+    // Hydrogen bonds
+    addBond(mol, 5, 24, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Cetirizine/Zyrtec (C21H25ClN2O) - 2nd generation antihistamine
+void buildCetirizine(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Cetirizine/Zyrtec (C21H25ClN2O)");
+
+    // Similar to loratadine but with piperazine side chain and carboxylic acid
+    // Benzimidazole core
+    float r = 1.4f;
+
+    // Benzene ring
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle), r * sinf(angle) + 1.0f, 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Imidazole ring
+    addAtom(mol, 1.2f, 0.0f, 0.0f, ATOM_C);            // 6
+    addAtom(mol, 0.6f, -1.0f, 0.0f, ATOM_N);           // 7: N
+    addAtom(mol, -0.6f, -1.0f, 0.0f, ATOM_C);          // 8
+    addAtom(mol, -1.2f, 0.0f, 0.0f, ATOM_N);           // 9: N
+
+    // Chlorophenyl substituent
+    float baseX = -3.0f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, baseX + r * cosf(angle), r * sinf(angle) - 2.0f, 0.0f, ATOM_C);  // 10-15
+    }
+
+    // Chlorine on substituent
+    addAtom(mol, baseX - 1.0f, r * sinf(-PI/3) - 2.0f - 0.8f, 0.0f, ATOM_CL);  // 16
+
+    // Piperazine ring
+    addAtom(mol, 2.8f, 0.5f, 0.0f, ATOM_C);            // 17: CH2
+    addAtom(mol, 4.0f, 1.3f, 0.0f, ATOM_C);            // 18: CH2
+    addAtom(mol, 4.0f, 2.7f, 0.0f, ATOM_N);            // 19: N
+    addAtom(mol, 2.8f, 3.5f, 0.0f, ATOM_C);            // 20: CH2
+    addAtom(mol, 1.6f, 2.7f, 0.0f, ATOM_C);            // 21: CH2
+
+    // Carboxylic acid side chain
+    addAtom(mol, 4.0f, 4.1f, 0.0f, ATOM_C);            // 22: CH2
+    addAtom(mol, 5.3f, 4.8f, 0.0f, ATOM_C);            // 23: COOH
+    addAtom(mol, 5.3f, 4.8f, 1.3f, ATOM_O);            // 24: O (carbonyl)
+    addAtom(mol, 6.5f, 5.6f, 0.0f, ATOM_O);            // 25: OH
+    addAtom(mol, 7.3f, 5.6f, 0.0f, ATOM_H);            // 26: H (on OH)
+
+    // Hydrogens
+    float rH = 2.4f;
+    addAtom(mol, rH * cosf(PI/3), rH * sinf(PI/3) + 1.0f, 0.0f, ATOM_H);  // 27
+
+    // Benzene ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Chlorophenyl ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, 10 + i, 10 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Imidazole bonds
+    addBond(mol, 1, 6, 1);
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 8, 9, 1);
+    addBond(mol, 9, 4, 1);
+
+    // Connection to chlorophenyl
+    addBond(mol, 8, 10, 1);
+
+    // Chlorine bond
+    addBond(mol, 12, 16, 1);
+
+    // Piperazine bonds
+    addBond(mol, 6, 17, 1);
+    addBond(mol, 17, 18, 1);
+    addBond(mol, 18, 19, 1);
+    addBond(mol, 19, 20, 1);
+    addBond(mol, 20, 21, 1);
+    addBond(mol, 21, 6, 1);
+
+    // Side chain bonds
+    addBond(mol, 19, 22, 1);
+    addBond(mol, 22, 23, 1);
+    addBond(mol, 23, 24, 2);
+    addBond(mol, 23, 25, 1);
+    addBond(mol, 25, 26, 1);
+
+    // Hydrogen bonds
+    addBond(mol, 5, 27, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Fexofenadine/Allegra (C32H39ClN2O4) - 2nd generation antihistamine
+void buildFexofenadine(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Fexofenadine/Allegra (C32H39ClN2O4)");
+
+    // Larger non-sedating antihistamine with two aromatic rings
+    // First phenyl ring
+    float r = 1.4f;
+    float baseX1 = -5.0f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, baseX1 + r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Second phenyl ring
+    float baseX2 = 5.0f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, baseX2 + r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 6-11
+    }
+
+    // Central piperidine ring
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);            // 12
+    addAtom(mol, -1.3f, 0.7f, 0.0f, ATOM_C);           // 13
+    addAtom(mol, -1.3f, 2.1f, 0.0f, ATOM_N);           // 14: N
+    addAtom(mol, 0.0f, 2.8f, 0.0f, ATOM_C);            // 15
+    addAtom(mol, 1.3f, 2.1f, 0.0f, ATOM_C);            // 16
+    addAtom(mol, 1.3f, 0.7f, 0.0f, ATOM_C);            // 17
+
+    // Chlorine on first phenyl
+    addAtom(mol, baseX1 - 1.0f, r * sinf(-PI/3) - 0.8f, 0.0f, ATOM_CL);  // 18
+
+    // Carboxylic acid side chain on second phenyl
+    addAtom(mol, baseX2 + 2.0f, r * sinf(PI/3) + 1.0f, 0.0f, ATOM_C);     // 19: CH2
+    addAtom(mol, baseX2 + 3.3f, r * sinf(PI/3) + 1.7f, 0.0f, ATOM_C);     // 20: COOH
+    addAtom(mol, baseX2 + 3.3f, r * sinf(PI/3) + 1.7f, 1.3f, ATOM_O);     // 21: O
+    addAtom(mol, baseX2 + 4.5f, r * sinf(PI/3) + 2.5f, 0.0f, ATOM_O);     // 22: OH
+    addAtom(mol, baseX2 + 5.3f, r * sinf(PI/3) + 2.5f, 0.0f, ATOM_H);     // 23: H
+
+    // t-Butyl group on piperidine
+    addAtom(mol, -2.6f, 2.8f, 0.0f, ATOM_C);           // 24: C(quaternary)
+    addAtom(mol, -3.8f, 2.0f, 0.0f, ATOM_C);           // 25: CH3
+    addAtom(mol, -2.8f, 4.2f, 0.0f, ATOM_C);           // 26: CH3
+    addAtom(mol, -3.2f, 3.0f, 1.4f, ATOM_C);           // 27: CH3
+
+    // Hydrogens on aromatic rings
+    float rH = 2.4f;
+    addAtom(mol, baseX1 + rH * cosf(PI/3), rH * sinf(PI/3), 0.0f, ATOM_H);     // 28
+    addAtom(mol, baseX2 + rH * cosf(PI/3), rH * sinf(PI/3), 0.0f, ATOM_H);     // 29
+
+    // First phenyl ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Second phenyl ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, 6 + i, 6 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Piperidine ring bonds
+    addBond(mol, 12, 13, 1);
+    addBond(mol, 13, 14, 1);
+    addBond(mol, 14, 15, 1);
+    addBond(mol, 15, 16, 1);
+    addBond(mol, 16, 17, 1);
+    addBond(mol, 17, 12, 1);
+
+    // Connections to phenyl rings
+    addBond(mol, 0, 12, 1);
+    addBond(mol, 6, 17, 1);
+
+    // Chlorine bond
+    addBond(mol, 2, 18, 1);
+
+    // Carboxylic acid bonds
+    addBond(mol, 8, 19, 1);
+    addBond(mol, 19, 20, 1);
+    addBond(mol, 20, 21, 2);
+    addBond(mol, 20, 22, 1);
+    addBond(mol, 22, 23, 1);
+
+    // t-Butyl bonds
+    addBond(mol, 14, 24, 1);
+    addBond(mol, 24, 25, 1);
+    addBond(mol, 24, 26, 1);
+    addBond(mol, 24, 27, 1);
+
+    // Hydrogen bonds
+    addBond(mol, 5, 28, 1);
+    addBond(mol, 11, 29, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Pseudoephedrine (C9H13NO) - Decongestant
+void buildPseudoephedrine(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Pseudoephedrine (C9H13NO)");
+
+    // Benzene ring
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Side chain: -CH(OH)-CH(NHCH3)-CH3
+    addAtom(mol, r + 1.3f, 0.0f, 0.0f, ATOM_C);        // 6: CH(OH)
+    addAtom(mol, r + 1.5f, -0.5f, 1.3f, ATOM_O);       // 7: OH
+    addAtom(mol, r + 2.6f, 0.7f, 0.0f, ATOM_C);        // 8: CH(NHCH3)
+    addAtom(mol, r + 2.8f, 2.1f, 0.0f, ATOM_C);        // 9: CH3
+    addAtom(mol, r + 3.8f, 0.0f, 0.0f, ATOM_N);        // 10: NH
+    addAtom(mol, r + 5.1f, 0.5f, 0.0f, ATOM_C);        // 11: CH3 (N-methyl)
+
+    // Hydrogens on benzene
+    float rH = 2.4f;
+    addAtom(mol, rH * cosf(PI/3), rH * sinf(PI/3), 0.0f, ATOM_H);     // 12
+    addAtom(mol, rH * cosf(5*PI/3), rH * sinf(5*PI/3), 0.0f, ATOM_H); // 13
+
+    // Hydrogens on OH and NH
+    addAtom(mol, r + 2.0f, -0.9f, 1.8f, ATOM_H);       // 14: H on OH
+    addAtom(mol, r + 4.0f, -1.0f, 0.0f, ATOM_H);       // 15: H on NH
+
+    // Benzene ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Side chain bonds
+    addBond(mol, 0, 6, 1);   // Benzene-CH(OH)
+    addBond(mol, 6, 7, 1);   // CH-OH
+    addBond(mol, 6, 8, 1);   // CH-CH
+    addBond(mol, 8, 9, 1);   // CH-CH3
+    addBond(mol, 8, 10, 1);  // CH-NH
+    addBond(mol, 10, 11, 1); // NH-CH3
+
+    // Hydrogen bonds
+    addBond(mol, 1, 12, 1);
+    addBond(mol, 5, 13, 1);
+    addBond(mol, 7, 14, 1);
+    addBond(mol, 10, 15, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Lisinopril (C21H31N3O5) - ACE Inhibitor
+void buildLisinopril(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Lisinopril (C21H31N3O5)");
+
+    // Biphenyl-like core with carboxylic acid and amine groups
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle) - 2.0f, r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle) + 2.0f, r * sinf(angle), 0.0f, ATOM_C);  // 6-11
+    }
+
+    // Carboxylic acid group
+    addAtom(mol, -3.2f, 1.4f, 0.0f, ATOM_C);       // 12: C=O
+    addAtom(mol, -3.2f, 1.4f, 1.3f, ATOM_O);       // 13: O
+    addAtom(mol, -4.4f, 2.2f, 0.0f, ATOM_O);       // 14: OH
+    addAtom(mol, -5.2f, 2.2f, 0.0f, ATOM_H);       // 15: H
+
+    // Amine side chain
+    addAtom(mol, 3.2f, 1.4f, 0.0f, ATOM_N);        // 16: NH2
+    addAtom(mol, 4.5f, 0.8f, 0.0f, ATOM_C);        // 17: CH3
+    addAtom(mol, 4.5f, -0.6f, 0.0f, ATOM_H);       // 18: H on N
+
+    // Ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+        addBond(mol, 6 + i, 6 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Ring connection
+    addBond(mol, 0, 6, 1);
+
+    // Carboxylic acid bonds
+    addBond(mol, 5, 12, 1);
+    addBond(mol, 12, 13, 2);
+    addBond(mol, 12, 14, 1);
+    addBond(mol, 14, 15, 1);
+
+    // Amine bonds
+    addBond(mol, 11, 16, 1);
+    addBond(mol, 16, 17, 1);
+    addBond(mol, 16, 18, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Enalapril (C20H32N2O5) - ACE Inhibitor
+void buildEnalapril(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Enalapril (C20H32N2O5)");
+
+    // Phenyl ring core
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Aliphatic chain with ester and amine
+    addAtom(mol, r + 1.3f, 0.0f, 0.0f, ATOM_C);    // 6: CH2
+    addAtom(mol, r + 2.6f, 0.7f, 0.0f, ATOM_C);    // 7: C=O (ester)
+    addAtom(mol, r + 2.6f, 0.7f, 1.3f, ATOM_O);    // 8: O
+    addAtom(mol, r + 3.8f, -0.1f, 0.0f, ATOM_O);   // 9: O (ester oxygen)
+    addAtom(mol, r + 5.1f, 0.5f, 0.0f, ATOM_C);    // 10: CH3 (ester methyl)
+
+    // Amine side chain
+    addAtom(mol, r + 2.8f, -1.5f, 0.0f, ATOM_N);   // 11: N
+    addAtom(mol, r + 4.1f, -2.2f, 0.0f, ATOM_C);   // 12: CH3
+    addAtom(mol, r + 2.8f, -2.4f, 0.0f, ATOM_H);   // 13: H on N
+
+    // Hydrogens on ring
+    float rH = 2.4f;
+    addAtom(mol, rH * cosf(PI/3), rH * sinf(PI/3), 0.0f, ATOM_H);     // 14
+
+    // Ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Chain bonds
+    addBond(mol, 0, 6, 1);
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 2);
+    addBond(mol, 7, 9, 1);
+    addBond(mol, 9, 10, 1);
+    addBond(mol, 7, 11, 1);
+    addBond(mol, 11, 12, 1);
+    addBond(mol, 11, 13, 1);
+
+    // Ring hydrogen
+    addBond(mol, 5, 14, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Ramipril (C23H32N2O5) - ACE Inhibitor
+void buildRamipril(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Ramipril (C23H32N2O5)");
+
+    // Similar to Enalapril but with additional substituent
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Aliphatic chain
+    addAtom(mol, r + 1.3f, 0.0f, 0.0f, ATOM_C);    // 6: CH2
+    addAtom(mol, r + 2.6f, 0.7f, 0.0f, ATOM_C);    // 7: C=O
+    addAtom(mol, r + 2.6f, 0.7f, 1.3f, ATOM_O);    // 8: O
+    addAtom(mol, r + 3.9f, 0.0f, 0.0f, ATOM_C);    // 9: CH2
+    addAtom(mol, r + 5.2f, 0.7f, 0.0f, ATOM_C);    // 10: C=O (carboxylic)
+    addAtom(mol, r + 5.2f, 0.7f, 1.3f, ATOM_O);    // 11: O
+    addAtom(mol, r + 6.4f, 1.5f, 0.0f, ATOM_O);    // 12: OH
+    addAtom(mol, r + 7.2f, 1.5f, 0.0f, ATOM_H);    // 13: H
+
+    // Amine
+    addAtom(mol, r + 2.8f, -1.5f, 0.0f, ATOM_N);   // 14: N
+    addAtom(mol, r + 4.1f, -2.2f, 0.0f, ATOM_C);   // 15: CH3
+
+    // Ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Chain bonds
+    addBond(mol, 0, 6, 1);
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 2);
+    addBond(mol, 7, 9, 1);
+    addBond(mol, 9, 10, 1);
+    addBond(mol, 10, 11, 2);
+    addBond(mol, 10, 12, 1);
+    addBond(mol, 12, 13, 1);
+    addBond(mol, 7, 14, 1);
+    addBond(mol, 14, 15, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Losartan (C22H23ClN6O) - ARB
+void buildLosartan(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Losartan (C22H23ClN6O)");
+
+    // Imidazole-tetrazole core
+    float r = 1.4f;
+
+    // Main phenyl ring
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle) - 1.5f, r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Imidazole ring attached to phenyl
+    addAtom(mol, -0.5f, 1.2f, 0.0f, ATOM_C);       // 6
+    addAtom(mol, 0.5f, 0.5f, 0.0f, ATOM_N);        // 7: N
+    addAtom(mol, 0.5f, -0.8f, 0.0f, ATOM_C);       // 8
+    addAtom(mol, -0.5f, -1.0f, 0.0f, ATOM_N);      // 9: N
+
+    // Tetrazole ring
+    addAtom(mol, 1.8f, -1.0f, 0.0f, ATOM_C);       // 10: C
+    addAtom(mol, 3.0f, -0.3f, 0.0f, ATOM_N);       // 11: N
+    addAtom(mol, 3.8f, -1.2f, 0.0f, ATOM_N);       // 12: N
+    addAtom(mol, 3.0f, -2.3f, 0.0f, ATOM_N);       // 13: N
+    addAtom(mol, 1.8f, -2.0f, 0.0f, ATOM_N);       // 14: N
+
+    // Butyl side chain
+    addAtom(mol, -2.8f, 1.2f, 0.0f, ATOM_C);       // 15: CH2
+    addAtom(mol, -4.1f, 0.5f, 0.0f, ATOM_C);       // 16: CH2
+    addAtom(mol, -5.3f, 1.3f, 0.0f, ATOM_C);       // 17: CH2
+    addAtom(mol, -6.5f, 0.6f, 0.0f, ATOM_C);       // 18: CH3
+
+    // Chlorine
+    addAtom(mol, -2.4f, -1.4f, 0.0f, ATOM_CL);     // 19: Cl
+
+    // Carboxylic acid
+    addAtom(mol, 4.4f, 0.8f, 0.0f, ATOM_C);        // 20: C=O
+    addAtom(mol, 4.4f, 0.8f, 1.3f, ATOM_O);        // 21: O
+    addAtom(mol, 5.6f, 1.6f, 0.0f, ATOM_O);        // 22: OH
+    addAtom(mol, 6.4f, 1.6f, 0.0f, ATOM_H);        // 23: H
+
+    // Ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Imidazole bonds
+    addBond(mol, 0, 6, 1);
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 8, 9, 1);
+    addBond(mol, 9, 6, 1);
+
+    // Tetrazole bonds
+    addBond(mol, 8, 10, 1);
+    addBond(mol, 10, 11, 2);
+    addBond(mol, 11, 12, 1);
+    addBond(mol, 12, 13, 2);
+    addBond(mol, 13, 14, 1);
+    addBond(mol, 14, 10, 1);
+
+    // Side chain
+    addBond(mol, 6, 15, 1);
+    addBond(mol, 15, 16, 1);
+    addBond(mol, 16, 17, 1);
+    addBond(mol, 17, 18, 1);
+
+    // Chlorine
+    addBond(mol, 4, 19, 1);
+
+    // Carboxylic acid
+    addBond(mol, 11, 20, 1);
+    addBond(mol, 20, 21, 2);
+    addBond(mol, 20, 22, 1);
+    addBond(mol, 22, 23, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Valsartan (C24H29N5O3) - ARB
+void buildValsartan(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Valsartan (C24H29N5O3)");
+
+    // Similar ARB structure to Losartan
+    float r = 1.4f;
+
+    // Main phenyl ring
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle) - 1.5f, r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Imidazole core
+    addAtom(mol, -0.5f, 1.2f, 0.0f, ATOM_C);       // 6
+    addAtom(mol, 0.5f, 0.5f, 0.0f, ATOM_N);        // 7: N
+    addAtom(mol, 0.5f, -0.8f, 0.0f, ATOM_C);       // 8
+    addAtom(mol, -0.5f, -1.0f, 0.0f, ATOM_N);      // 9: N
+
+    // Carboxylic acid attachment
+    addAtom(mol, 1.8f, -1.0f, 0.0f, ATOM_C);       // 10
+    addAtom(mol, 3.0f, -0.3f, 0.0f, ATOM_C);       // 11: C=O
+    addAtom(mol, 3.0f, -0.3f, 1.3f, ATOM_O);       // 12: O
+    addAtom(mol, 4.2f, 0.5f, 0.0f, ATOM_O);        // 13: OH
+    addAtom(mol, 5.0f, 0.5f, 0.0f, ATOM_H);        // 14: H
+
+    // Isopropyl side chain
+    addAtom(mol, -2.8f, 1.2f, 0.0f, ATOM_C);       // 15: CH
+    addAtom(mol, -3.5f, 2.5f, 0.0f, ATOM_C);       // 16: CH3
+    addAtom(mol, -4.0f, 0.3f, 0.0f, ATOM_C);       // 17: CH3
+
+    // Methyltetrazole
+    addAtom(mol, 1.8f, -2.3f, 0.0f, ATOM_N);       // 18: N
+    addAtom(mol, 3.0f, -3.0f, 0.0f, ATOM_N);       // 19: N
+    addAtom(mol, 4.2f, -2.3f, 0.0f, ATOM_N);       // 20: N
+    addAtom(mol, 3.8f, -1.0f, 0.0f, ATOM_N);       // 21: N
+    addAtom(mol, 0.8f, -3.0f, 0.0f, ATOM_C);       // 22: CH3
+
+    // Ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Imidazole bonds
+    addBond(mol, 0, 6, 1);
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 8, 9, 1);
+    addBond(mol, 9, 6, 1);
+
+    // Carboxylic acid bonds
+    addBond(mol, 8, 10, 1);
+    addBond(mol, 10, 11, 1);
+    addBond(mol, 11, 12, 2);
+    addBond(mol, 11, 13, 1);
+    addBond(mol, 13, 14, 1);
+
+    // Isopropyl bonds
+    addBond(mol, 6, 15, 1);
+    addBond(mol, 15, 16, 1);
+    addBond(mol, 15, 17, 1);
+
+    // Tetrazole bonds
+    addBond(mol, 10, 18, 1);
+    addBond(mol, 18, 19, 1);
+    addBond(mol, 19, 20, 2);
+    addBond(mol, 20, 21, 1);
+    addBond(mol, 21, 18, 1);
+    addBond(mol, 18, 22, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Telmisartan (C33H30N4O2) - ARB
+void buildTelmisartan(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Telmisartan (C33H30N4O2)");
+
+    // Biphenyl with imidazole and benzimidazole
+    float r = 1.4f;
+
+    // First phenyl ring
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle) - 2.0f, r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Second phenyl ring
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle) + 2.0f, r * sinf(angle), 0.0f, ATOM_C);  // 6-11
+    }
+
+    // Imidazole core
+    addAtom(mol, 0.0f, 1.4f, 0.0f, ATOM_C);        // 12
+    addAtom(mol, 1.2f, 0.7f, 0.0f, ATOM_N);        // 13: N
+    addAtom(mol, 1.2f, -0.6f, 0.0f, ATOM_C);       // 14
+    addAtom(mol, 0.0f, -1.3f, 0.0f, ATOM_N);       // 15: N
+
+    // Carboxylic acid
+    addAtom(mol, 2.5f, -1.3f, 0.0f, ATOM_C);       // 16: C=O
+    addAtom(mol, 2.5f, -1.3f, 1.3f, ATOM_O);       // 17: O
+    addAtom(mol, 3.7f, -2.1f, 0.0f, ATOM_O);       // 18: OH
+    addAtom(mol, 4.5f, -2.1f, 0.0f, ATOM_H);       // 19: H
+
+    // Propyl side chain
+    addAtom(mol, -1.2f, 2.3f, 0.0f, ATOM_C);       // 20: CH2
+    addAtom(mol, -2.5f, 3.0f, 0.0f, ATOM_C);       // 21: CH2
+    addAtom(mol, -3.7f, 2.3f, 0.0f, ATOM_C);       // 22: CH3
+
+    // Ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+        addBond(mol, 6 + i, 6 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Ring connection
+    addBond(mol, 0, 6, 1);
+
+    // Imidazole bonds
+    addBond(mol, 0, 12, 1);
+    addBond(mol, 12, 13, 1);
+    addBond(mol, 13, 14, 1);
+    addBond(mol, 14, 15, 1);
+    addBond(mol, 15, 12, 1);
+
+    // Carboxylic acid bonds
+    addBond(mol, 14, 16, 1);
+    addBond(mol, 16, 17, 2);
+    addBond(mol, 16, 18, 1);
+    addBond(mol, 18, 19, 1);
+
+    // Side chain
+    addBond(mol, 12, 20, 1);
+    addBond(mol, 20, 21, 1);
+    addBond(mol, 21, 22, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Metoprolol (C15H25NO3) - Beta Blocker
+void buildMetoprolol(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Metoprolol (C15H25NO3)");
+
+    // Catechol-like core (two hydroxy groups on benzene)
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Hydroxyl groups (beta-blocker characteristic)
+    addAtom(mol, r * cosf(PI/3) + 0.8f, r * sinf(PI/3) + 0.8f, 0.0f, ATOM_O);     // 6: OH
+    addAtom(mol, r * cosf(PI/3) + 1.6f, r * sinf(PI/3) + 1.6f, 0.0f, ATOM_H);     // 7: H
+    addAtom(mol, r * cosf(2*PI/3) - 0.8f, r * sinf(2*PI/3) + 0.8f, 0.0f, ATOM_O); // 8: OH
+    addAtom(mol, r * cosf(2*PI/3) - 1.6f, r * sinf(2*PI/3) + 1.6f, 0.0f, ATOM_H); // 9: H
+
+    // Ethyl ether side chain
+    addAtom(mol, -r - 1.3f, 0.0f, 0.0f, ATOM_O);   // 10: O (ether)
+    addAtom(mol, -r - 2.6f, 0.0f, 0.0f, ATOM_C);   // 11: CH2
+    addAtom(mol, -r - 3.9f, 0.0f, 0.0f, ATOM_C);   // 12: CH3
+
+    // Isopropyl amine side chain
+    addAtom(mol, r + 1.3f, 0.0f, 0.0f, ATOM_C);    // 13: CH
+    addAtom(mol, r + 1.5f, 1.4f, 0.0f, ATOM_C);    // 14: CH3
+    addAtom(mol, r + 2.6f, -0.7f, 0.0f, ATOM_C);   // 15: CH3
+    addAtom(mol, r + 2.6f, 0.7f, 0.0f, ATOM_N);    // 16: N
+    addAtom(mol, r + 3.9f, 1.4f, 0.0f, ATOM_C);    // 17: CH3
+    addAtom(mol, r + 2.6f, 1.8f, 0.0f, ATOM_H);    // 18: H on N
+
+    // Ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Hydroxyl bonds
+    addBond(mol, 1, 6, 1);
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 2, 8, 1);
+    addBond(mol, 8, 9, 1);
+
+    // Ether side chain
+    addBond(mol, 5, 10, 1);
+    addBond(mol, 10, 11, 1);
+    addBond(mol, 11, 12, 1);
+
+    // Amine side chain
+    addBond(mol, 0, 13, 1);
+    addBond(mol, 13, 14, 1);
+    addBond(mol, 13, 15, 1);
+    addBond(mol, 13, 16, 1);
+    addBond(mol, 16, 17, 1);
+    addBond(mol, 16, 18, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Atenolol (C14H22N2O3) - Beta Blocker
+void buildAtenolol(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Atenolol (C14H22N2O3)");
+
+    // Para-substituted benzene with hydroxyl and amine side chains
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Hydroxyl group at para position
+    addAtom(mol, r + 0.8f, 0.0f, 0.0f, ATOM_O);    // 6: OH
+    addAtom(mol, r + 1.6f, 0.0f, 0.0f, ATOM_H);    // 7: H
+
+    // Propyl amine side chain
+    addAtom(mol, -r - 1.3f, 0.0f, 0.0f, ATOM_C);   // 8: CH2
+    addAtom(mol, -r - 2.6f, 0.0f, 0.0f, ATOM_C);   // 9: CH2
+    addAtom(mol, -r - 3.9f, 0.0f, 0.0f, ATOM_C);   // 10: CH2
+    addAtom(mol, -r - 5.2f, 0.0f, 0.0f, ATOM_N);   // 11: NH2
+    addAtom(mol, -r - 6.1f, 0.7f, 0.0f, ATOM_H);   // 12: H on N
+    addAtom(mol, -r - 6.1f, -0.7f, 0.0f, ATOM_H);  // 13: H on N
+
+    // Carbamate group
+    addAtom(mol, 0.0f, -r - 1.3f, 0.0f, ATOM_C);   // 14: C=O
+    addAtom(mol, 0.0f, -r - 1.3f, 1.3f, ATOM_O);   // 15: O
+    addAtom(mol, 1.2f, -r - 2.0f, 0.0f, ATOM_N);   // 16: N
+    addAtom(mol, 2.0f, -r - 2.0f, 0.0f, ATOM_H);   // 17: H
+
+    // Ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Hydroxyl bond
+    addBond(mol, 0, 6, 1);
+    addBond(mol, 6, 7, 1);
+
+    // Propyl amine chain
+    addBond(mol, 5, 8, 1);
+    addBond(mol, 8, 9, 1);
+    addBond(mol, 9, 10, 1);
+    addBond(mol, 10, 11, 1);
+    addBond(mol, 11, 12, 1);
+    addBond(mol, 11, 13, 1);
+
+    // Carbamate
+    addBond(mol, 3, 14, 1);
+    addBond(mol, 14, 15, 2);
+    addBond(mol, 14, 16, 1);
+    addBond(mol, 16, 17, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Carvedilol (C24H26N2O4) - Beta Blocker
+void buildCarvedilol(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Carvedilol (C24H26N2O4)");
+
+    // Carbazole-like core (tricyclic aromatic)
+    float r = 1.4f;
+
+    // First aromatic ring
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle) - 1.0f, r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Second aromatic ring (fused)
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle) + 1.0f, r * sinf(angle), 0.0f, ATOM_C);  // 6-11
+    }
+
+    // Propyl ether side chain
+    addAtom(mol, 0.0f, -r - 1.3f, 0.0f, ATOM_O);   // 12: O (ether)
+    addAtom(mol, -1.3f, -r - 2.0f, 0.0f, ATOM_C);  // 13: CH2
+    addAtom(mol, -2.6f, -r - 1.3f, 0.0f, ATOM_C);  // 14: CH2
+    addAtom(mol, -3.9f, -r - 2.0f, 0.0f, ATOM_C);  // 15: CH2
+
+    // Secondary amine group
+    addAtom(mol, -5.2f, -r - 1.3f, 0.0f, ATOM_N);  // 16: NH
+    addAtom(mol, -6.5f, -r - 2.0f, 0.0f, ATOM_C);  // 17: CH (isopropyl)
+    addAtom(mol, -7.2f, -r - 0.6f, 0.0f, ATOM_C);  // 18: CH3
+    addAtom(mol, -7.2f, -r - 3.4f, 0.0f, ATOM_C);  // 19: CH3
+    addAtom(mol, -6.5f, -r - 2.0f, -1.0f, ATOM_H); // 20: H on N
+
+    // Hydroxyalkoxy side chain
+    addAtom(mol, 0.0f, r + 1.3f, 0.0f, ATOM_O);    // 21: O
+    addAtom(mol, 1.3f, r + 2.0f, 0.0f, ATOM_C);    // 22: CH
+    addAtom(mol, 2.6f, r + 1.3f, 0.0f, ATOM_C);    // 23: CH2
+    addAtom(mol, 2.6f, r + 1.3f, 1.3f, ATOM_O);    // 24: OH
+    addAtom(mol, 3.4f, r + 1.3f, 1.8f, ATOM_H);    // 25: H on OH
+    addAtom(mol, 1.3f, r + 3.4f, 0.0f, ATOM_C);    // 26: CH3
+
+    // Ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+        addBond(mol, 6 + i, 6 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Ring connection
+    addBond(mol, 0, 6, 1);
+
+    // Ether side chain
+    addBond(mol, 3, 12, 1);
+    addBond(mol, 12, 13, 1);
+    addBond(mol, 13, 14, 1);
+    addBond(mol, 14, 15, 1);
+    addBond(mol, 15, 16, 1);
+    addBond(mol, 16, 17, 1);
+    addBond(mol, 17, 18, 1);
+    addBond(mol, 17, 19, 1);
+    addBond(mol, 16, 20, 1);
+
+    // Hydroxyalkoxy side chain
+    addBond(mol, 2, 21, 1);
+    addBond(mol, 21, 22, 1);
+    addBond(mol, 22, 23, 1);
+    addBond(mol, 23, 24, 1);
+    addBond(mol, 24, 25, 1);
+    addBond(mol, 22, 26, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Amlodipine (C26H33ClN2O8) - Calcium Channel Blocker
+void buildAmlodipine(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Amlodipine (C26H33ClN2O8)");
+
+    // Dihydropyridine ring with two phenyl groups
+    // Central dihydropyridine ring
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);        // 0
+    addAtom(mol, 1.3f, 0.7f, 0.0f, ATOM_C);        // 1
+    addAtom(mol, 1.3f, 2.1f, 0.0f, ATOM_C);        // 2
+    addAtom(mol, 0.0f, 2.8f, 0.0f, ATOM_N);        // 3: N
+    addAtom(mol, -1.3f, 2.1f, 0.0f, ATOM_C);       // 4
+    addAtom(mol, -1.3f, 0.7f, 0.0f, ATOM_C);       // 5
+
+    // Phenyl ring 1 (2-chlorophenyl)
+    float r = 1.4f;
+    float baseX1 = 2.8f, baseY1 = 3.5f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, baseX1 + r * cosf(angle), baseY1 + r * sinf(angle), 0.0f, ATOM_C);  // 6-11
+    }
+
+    // Chlorine on first phenyl
+    addAtom(mol, baseX1 + r * cosf(PI/3) + 0.8f, baseY1 + r * sinf(PI/3) + 0.8f, 0.0f, ATOM_CL);  // 12
+
+    // Phenyl ring 2
+    float baseX2 = -2.8f, baseY2 = 3.5f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, baseX2 + r * cosf(angle), baseY2 + r * sinf(angle), 0.0f, ATOM_C);  // 13-18
+    }
+
+    // Ester groups
+    addAtom(mol, 2.6f, -1.2f, 0.0f, ATOM_C);       // 19: C=O (ester)
+    addAtom(mol, 2.6f, -1.2f, 1.3f, ATOM_O);       // 20: O
+    addAtom(mol, 3.8f, -1.9f, 0.0f, ATOM_O);       // 21: O (ester)
+    addAtom(mol, 5.1f, -1.3f, 0.0f, ATOM_C);       // 22: CH3
+
+    addAtom(mol, -2.6f, -1.2f, 0.0f, ATOM_C);      // 23: C=O (ester)
+    addAtom(mol, -2.6f, -1.2f, 1.3f, ATOM_O);      // 24: O
+    addAtom(mol, -3.8f, -1.9f, 0.0f, ATOM_O);      // 25: O (ester)
+    addAtom(mol, -5.1f, -1.3f, 0.0f, ATOM_C);      // 26: CH3
+
+    // Central ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);
+
+    // Phenyl ring 1 bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, 6 + i, 6 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Phenyl ring 2 bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, 13 + i, 13 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Phenyl attachments
+    addBond(mol, 2, 6, 1);
+    addBond(mol, 4, 13, 1);
+
+    // Chlorine
+    addBond(mol, 8, 12, 1);
+
+    // Ester bonds 1
+    addBond(mol, 0, 19, 1);
+    addBond(mol, 19, 20, 2);
+    addBond(mol, 19, 21, 1);
+    addBond(mol, 21, 22, 1);
+
+    // Ester bonds 2
+    addBond(mol, 5, 23, 1);
+    addBond(mol, 23, 24, 2);
+    addBond(mol, 23, 25, 1);
+    addBond(mol, 25, 26, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Diltiazem (C26H36N2O4S) - Calcium Channel Blocker
+void buildDiltiazem(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Diltiazem (C26H36N2O4S)");
+
+    // Benzothiazepine-like tricyclic core
+    float r = 1.4f;
+
+    // Main ring system
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle), r * sinf(angle) + 1.0f, 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Seven-membered middle ring with S and N
+    addAtom(mol, 0.0f, 1.0f, 0.0f, ATOM_S);        // 6: S
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);        // 7
+    addAtom(mol, -1.3f, -0.7f, 0.0f, ATOM_N);      // 8: N
+    addAtom(mol, -1.3f, -2.0f, 0.0f, ATOM_C);      // 9
+    addAtom(mol, 0.0f, -2.7f, 0.0f, ATOM_C);       // 10
+    addAtom(mol, 1.3f, -2.0f, 0.0f, ATOM_C);       // 11
+    addAtom(mol, 1.3f, -0.7f, 0.0f, ATOM_C);       // 12
+
+    // Second aromatic ring
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle), r * sinf(angle) - 1.5f, 0.0f, ATOM_C);  // 13-18
+    }
+
+    // Acetyl amine side chain
+    addAtom(mol, -2.6f, -2.8f, 0.0f, ATOM_C);      // 19: C=O (acetyl)
+    addAtom(mol, -2.6f, -2.8f, 1.3f, ATOM_O);      // 20: O
+    addAtom(mol, -3.8f, -3.5f, 0.0f, ATOM_C);      // 21: CH3
+
+    // N-methyl group
+    addAtom(mol, -2.0f, -0.2f, 0.0f, ATOM_C);      // 22: CH3
+
+    // Methoxy groups
+    addAtom(mol, 2.8f, 1.9f, 0.0f, ATOM_O);        // 23: OCH3
+    addAtom(mol, 4.1f, 2.6f, 0.0f, ATOM_C);        // 24: CH3
+    addAtom(mol, -2.8f, 1.9f, 0.0f, ATOM_O);       // 25: OCH3
+    addAtom(mol, -4.1f, 2.6f, 0.0f, ATOM_C);       // 26: CH3
+
+    // Ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+        addBond(mol, 13 + i, 13 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Middle ring bonds
+    addBond(mol, 0, 6, 1);
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 8, 9, 1);
+    addBond(mol, 9, 10, 1);
+    addBond(mol, 10, 11, 1);
+    addBond(mol, 11, 12, 1);
+    addBond(mol, 12, 6, 1);
+
+    // Ring connections
+    addBond(mol, 0, 13, 1);
+    addBond(mol, 12, 13, 1);
+
+    // Acetyl amine bonds
+    addBond(mol, 9, 19, 1);
+    addBond(mol, 19, 20, 2);
+    addBond(mol, 19, 21, 1);
+
+    // N-methyl bond
+    addBond(mol, 8, 22, 1);
+
+    // Methoxy bonds
+    addBond(mol, 1, 23, 1);
+    addBond(mol, 23, 24, 1);
+    addBond(mol, 5, 25, 1);
+    addBond(mol, 25, 26, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Nifedipine (C17H18N2O6) - Calcium Channel Blocker
+void buildNifedipine(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Nifedipine (C17H18N2O6)");
+
+    // Dihydropyridine ring with nitro and ester groups
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);        // 0
+    addAtom(mol, 1.3f, 0.7f, 0.0f, ATOM_C);        // 1
+    addAtom(mol, 1.3f, 2.1f, 0.0f, ATOM_C);        // 2
+    addAtom(mol, 0.0f, 2.8f, 0.0f, ATOM_N);        // 3: N
+    addAtom(mol, -1.3f, 2.1f, 0.0f, ATOM_C);       // 4
+    addAtom(mol, -1.3f, 0.7f, 0.0f, ATOM_C);       // 5
+
+    // Phenyl ring with nitro group
+    float r = 1.4f;
+    float baseX = 2.8f, baseY = 3.5f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, baseX + r * cosf(angle), baseY + r * sinf(angle), 0.0f, ATOM_C);  // 6-11
+    }
+
+    // Nitro group (NO2) on phenyl
+    addAtom(mol, baseX + r * cosf(2*PI/3) - 0.8f, baseY + r * sinf(2*PI/3) - 0.8f, 0.0f, ATOM_N);  // 12: N
+    addAtom(mol, baseX + r * cosf(2*PI/3) - 0.8f, baseY + r * sinf(2*PI/3) - 2.1f, 0.0f, ATOM_O);  // 13: O
+    addAtom(mol, baseX + r * cosf(2*PI/3) + 0.5f, baseY + r * sinf(2*PI/3) - 0.2f, 0.0f, ATOM_O);  // 14: O
+
+    // Methyl ester at position 1
+    addAtom(mol, 2.6f, -1.2f, 0.0f, ATOM_C);       // 15: C=O
+    addAtom(mol, 2.6f, -1.2f, 1.3f, ATOM_O);       // 16: O
+    addAtom(mol, 3.8f, -1.9f, 0.0f, ATOM_O);       // 17: O (ester)
+    addAtom(mol, 5.1f, -1.3f, 0.0f, ATOM_C);       // 18: CH3
+
+    // Methyl ester at position 3
+    addAtom(mol, -2.6f, -1.2f, 0.0f, ATOM_C);      // 19: C=O
+    addAtom(mol, -2.6f, -1.2f, 1.3f, ATOM_O);      // 20: O
+    addAtom(mol, -3.8f, -1.9f, 0.0f, ATOM_O);      // 21: O (ester)
+    addAtom(mol, -5.1f, -1.3f, 0.0f, ATOM_C);      // 22: CH3
+
+    // Central ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);
+
+    // Phenyl ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, 6 + i, 6 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Phenyl attachment
+    addBond(mol, 2, 6, 1);
+
+    // Nitro bonds
+    addBond(mol, 8, 12, 1);
+    addBond(mol, 12, 13, 2);
+    addBond(mol, 12, 14, 2);
+
+    // Ester 1 bonds
+    addBond(mol, 0, 15, 1);
+    addBond(mol, 15, 16, 2);
+    addBond(mol, 15, 17, 1);
+    addBond(mol, 17, 18, 1);
+
+    // Ester 2 bonds
+    addBond(mol, 5, 19, 1);
+    addBond(mol, 19, 20, 2);
+    addBond(mol, 19, 21, 1);
+    addBond(mol, 21, 22, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Hydrochlorothiazide/HCTZ (C7H8ClN3O4S2) - Diuretic
+void buildHydrochlorothiazide(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Hydrochlorothiazide/HCTZ (C7H8ClN3O4S2)");
+
+    // Benzothiazide core with sulfonamide
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Thiazide ring
+    addAtom(mol, 0.0f, -1.4f, 0.0f, ATOM_S);       // 6: S
+    addAtom(mol, 1.3f, -2.1f, 0.0f, ATOM_C);       // 7: C=O
+    addAtom(mol, 1.3f, -2.1f, 1.3f, ATOM_O);       // 8: O
+    addAtom(mol, 2.6f, -2.8f, 0.0f, ATOM_N);       // 9: N
+    addAtom(mol, 3.9f, -2.1f, 0.0f, ATOM_C);       // 10: Cl attachment point
+
+    // Chlorine substituent
+    addAtom(mol, 5.2f, -2.8f, 0.0f, ATOM_CL);      // 11: Cl
+
+    // Sulfonamide group SO2NH2
+    addAtom(mol, 0.0f, -2.8f, 0.0f, ATOM_S);       // 12: S (sulfonamide)
+    addAtom(mol, 0.0f, -4.1f, 0.0f, ATOM_O);       // 13: O (sulfonyl)
+    addAtom(mol, 1.3f, -3.4f, 0.0f, ATOM_O);       // 14: O (sulfonyl)
+    addAtom(mol, -1.3f, -3.4f, 0.0f, ATOM_N);      // 15: NH2
+    addAtom(mol, -1.8f, -4.3f, 0.0f, ATOM_H);      // 16: H
+    addAtom(mol, -2.1f, -2.8f, 0.0f, ATOM_H);      // 17: H
+
+    // Benzene ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Thiazide ring bonds
+    addBond(mol, 2, 6, 1);
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 2);
+    addBond(mol, 7, 9, 1);
+    addBond(mol, 9, 10, 1);
+    addBond(mol, 10, 5, 1);
+
+    // Chlorine
+    addBond(mol, 10, 11, 1);
+
+    // Sulfonamide
+    addBond(mol, 3, 12, 1);
+    addBond(mol, 12, 13, 2);
+    addBond(mol, 12, 14, 2);
+    addBond(mol, 12, 15, 1);
+    addBond(mol, 15, 16, 1);
+    addBond(mol, 15, 17, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Furosemide/Lasix (C12H11ClN2O5S) - Diuretic
+void buildFurosemide(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Furosemide/Lasix (C12H11ClN2O5S)");
+
+    // Arylsulfonylurea core
+    float r = 1.4f;
+
+    // First phenyl ring (with Cl)
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle) - 2.0f, r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // Chlorine on first ring
+    addAtom(mol, -2.0f + r * cosf(2*PI/3) - 0.8f, r * sinf(2*PI/3) - 0.8f, 0.0f, ATOM_CL);  // 6
+
+    // Sulfone bridge
+    addAtom(mol, 0.0f, 1.4f, 0.0f, ATOM_S);        // 7: S
+    addAtom(mol, 0.0f, 1.4f, 1.3f, ATOM_O);        // 8: O (sulfonyl)
+    addAtom(mol, 1.3f, 2.1f, 0.0f, ATOM_O);        // 9: O (sulfonyl)
+
+    // Second phenyl ring (with amino group)
+    float baseX2 = 2.5f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, baseX2 + r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 10-15
+    }
+
+    // Amino group NH2 on second ring
+    addAtom(mol, baseX2 + r * cosf(2*PI/3) - 0.8f, r * sinf(2*PI/3) - 0.8f, 0.0f, ATOM_N);  // 16: N
+    addAtom(mol, baseX2 + r * cosf(2*PI/3) - 1.3f, r * sinf(2*PI/3) - 1.8f, 0.0f, ATOM_H);  // 17: H
+    addAtom(mol, baseX2 + r * cosf(2*PI/3) + 0.5f, r * sinf(2*PI/3) - 0.2f, 0.0f, ATOM_H);  // 18: H
+
+    // Carboxylic acid group
+    addAtom(mol, baseX2 + r + 1.3f, 0.0f, 0.0f, ATOM_C);      // 19: C=O
+    addAtom(mol, baseX2 + r + 1.3f, 0.0f, 1.3f, ATOM_O);      // 20: O
+    addAtom(mol, baseX2 + r + 2.6f, 0.0f, 0.0f, ATOM_O);      // 21: OH
+    addAtom(mol, baseX2 + r + 3.4f, 0.0f, 0.0f, ATOM_H);      // 22: H
+
+    // Ring 1 bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Ring 2 bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, 10 + i, 10 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Chlorine
+    addBond(mol, 2, 6, 1);
+
+    // Sulfone bridge
+    addBond(mol, 5, 7, 1);
+    addBond(mol, 7, 8, 2);
+    addBond(mol, 7, 9, 2);
+    addBond(mol, 7, 10, 1);
+
+    // Amino group
+    addBond(mol, 12, 16, 1);
+    addBond(mol, 16, 17, 1);
+    addBond(mol, 16, 18, 1);
+
+    // Carboxylic acid
+    addBond(mol, 15, 19, 1);
+    addBond(mol, 19, 20, 2);
+    addBond(mol, 19, 21, 1);
+    addBond(mol, 21, 22, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Spironolactone (C24H32O4S) - Diuretic
+void buildSpironolactone(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Spironolactone (C24H32O4S)");
+
+    // Steroid-like core with lactone ring
+    // Simplified testosterone-like backbone
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);        // 0: A ring
+    addAtom(mol, 1.3f, 0.7f, 0.0f, ATOM_C);        // 1
+    addAtom(mol, 2.6f, 0.0f, 0.0f, ATOM_C);        // 2
+    addAtom(mol, 1.3f, -1.3f, 0.0f, ATOM_C);       // 3
+    addAtom(mol, 0.0f, -0.6f, 0.0f, ATOM_C);       // 4
+
+    // B ring
+    addAtom(mol, 1.3f, 2.1f, 0.0f, ATOM_C);        // 5
+    addAtom(mol, 2.6f, 2.8f, 0.0f, ATOM_C);        // 6
+    addAtom(mol, 3.9f, 2.1f, 0.0f, ATOM_C);        // 7
+    addAtom(mol, 2.6f, 0.7f, 0.0f, ATOM_C);        // 8: shared
+
+    // C ring
+    addAtom(mol, 3.9f, 2.1f, 0.0f, ATOM_C);        // 9
+    addAtom(mol, 5.2f, 2.8f, 0.0f, ATOM_C);        // 10
+    addAtom(mol, 5.2f, 1.4f, 0.0f, ATOM_C);        // 11
+
+    // D ring with ketone and hydroxyl
+    addAtom(mol, 3.9f, 0.7f, 0.0f, ATOM_C);        // 12: ketone C
+    addAtom(mol, 3.9f, 0.7f, 1.3f, ATOM_O);        // 13: C=O (ketone)
+    addAtom(mol, 5.2f, 0.0f, 0.0f, ATOM_C);        // 14: C-OH
+    addAtom(mol, 6.5f, 0.7f, 0.0f, ATOM_O);        // 15: OH
+    addAtom(mol, 7.3f, 0.7f, 0.0f, ATOM_H);        // 16: H on OH
+
+    // Lactone ring side chain
+    addAtom(mol, 2.6f, -2.6f, 0.0f, ATOM_C);       // 17: CH2
+    addAtom(mol, 3.9f, -3.3f, 0.0f, ATOM_C);       // 18: CH2
+    addAtom(mol, 5.2f, -2.6f, 0.0f, ATOM_C);       // 19: C=O (lactone)
+    addAtom(mol, 5.2f, -2.6f, 1.3f, ATOM_O);       // 20: O (carbonyl)
+    addAtom(mol, 6.5f, -3.3f, 0.0f, ATOM_O);       // 21: O (ether in ring)
+    addAtom(mol, 6.5f, -2.0f, 0.0f, ATOM_C);       // 22: CH2 (lactone ring)
+
+    // Acetyl group
+    addAtom(mol, 7.8f, -2.7f, 0.0f, ATOM_C);       // 23: CH3
+
+    // Ring bonds (simplified)
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 0, 1);
+    addBond(mol, 1, 5, 1);
+    addBond(mol, 5, 6, 1);
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 8, 2, 1);
+
+    // Ketone bond
+    addBond(mol, 12, 13, 2);
+
+    // Hydroxyl bonds
+    addBond(mol, 14, 15, 1);
+    addBond(mol, 15, 16, 1);
+
+    // Lactone side chain
+    addBond(mol, 4, 17, 1);
+    addBond(mol, 17, 18, 1);
+    addBond(mol, 18, 19, 1);
+    addBond(mol, 19, 20, 2);
+    addBond(mol, 19, 21, 1);
+    addBond(mol, 21, 22, 1);
+    addBond(mol, 22, 18, 1);
+    addBond(mol, 22, 23, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Oseltamivir/Tamiflu (C15H31N3O8) - Antiviral
+void buildOseltamivir(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Oseltamivir/Tamiflu (C15H31N3O8)");
+
+    // Cyclohexene core with side chains
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);        // 0
+    addAtom(mol, 1.3f, 0.7f, 0.0f, ATOM_C);        // 1
+    addAtom(mol, 2.6f, 0.0f, 0.0f, ATOM_C);        // 2: C=
+    addAtom(mol, 2.6f, -1.4f, 0.0f, ATOM_C);       // 3: =C
+    addAtom(mol, 1.3f, -2.1f, 0.0f, ATOM_C);       // 4
+    addAtom(mol, 0.0f, -1.4f, 0.0f, ATOM_C);       // 5
+
+    // Amino group on ring
+    addAtom(mol, -1.3f, 0.7f, 0.0f, ATOM_N);       // 6: N
+    addAtom(mol, -2.6f, 0.0f, 0.0f, ATOM_C);       // 7: CH3
+    addAtom(mol, -1.5f, 2.1f, 0.0f, ATOM_H);       // 8: H on N
+
+    // Acetyl ester side chain
+    addAtom(mol, 3.9f, 0.7f, 0.0f, ATOM_O);        // 9: O (ether)
+    addAtom(mol, 5.2f, 0.0f, 0.0f, ATOM_C);        // 10: C=O
+    addAtom(mol, 5.2f, 0.0f, 1.3f, ATOM_O);        // 11: O (carbonyl)
+    addAtom(mol, 6.5f, -0.7f, 0.0f, ATOM_C);       // 12: CH3
+
+    // Carboxylic acid side chain
+    addAtom(mol, 1.3f, 2.1f, 0.0f, ATOM_C);        // 13: CH2
+    addAtom(mol, 0.0f, 2.8f, 0.0f, ATOM_C);        // 14: COOH
+    addAtom(mol, 0.0f, 2.8f, 1.3f, ATOM_O);        // 15: O (carbonyl)
+    addAtom(mol, -1.3f, 3.5f, 0.0f, ATOM_O);       // 16: OH
+    addAtom(mol, -2.1f, 3.5f, 0.0f, ATOM_H);       // 17: H
+
+    // Guanidinium group
+    addAtom(mol, 2.6f, -2.8f, 0.0f, ATOM_N);       // 18: N
+    addAtom(mol, 3.9f, -3.5f, 0.0f, ATOM_C);       // 19: C
+    addAtom(mol, 5.2f, -2.8f, 0.0f, ATOM_N);       // 20: N
+    addAtom(mol, 3.9f, -4.8f, 0.0f, ATOM_N);       // 21: N
+
+    // Ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 2);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);
+
+    // Amino side chain
+    addBond(mol, 0, 6, 1);
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 6, 8, 1);
+
+    // Ester side chain
+    addBond(mol, 2, 9, 1);
+    addBond(mol, 9, 10, 1);
+    addBond(mol, 10, 11, 2);
+    addBond(mol, 10, 12, 1);
+
+    // Carboxylic acid side chain
+    addBond(mol, 1, 13, 1);
+    addBond(mol, 13, 14, 1);
+    addBond(mol, 14, 15, 2);
+    addBond(mol, 14, 16, 1);
+    addBond(mol, 16, 17, 1);
+
+    // Guanidinium
+    addBond(mol, 4, 18, 1);
+    addBond(mol, 18, 19, 1);
+    addBond(mol, 19, 20, 1);
+    addBond(mol, 19, 21, 2);
+
+    centerMolecule(mol);
+}
+
+// Build Nirmatrelvir (C23H32F2N2O2) - Paxlovid component
+void buildNirmatrelvir(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Nirmatrelvir/Paxlovid (C23H32F2N2O2)");
+
+    // Protease inhibitor with peptide-like core
+    // Cyclohexyl ring
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);        // 0
+    addAtom(mol, 1.4f, 0.5f, 0.0f, ATOM_C);        // 1
+    addAtom(mol, 2.0f, 1.8f, 0.5f, ATOM_C);        // 2
+    addAtom(mol, 1.2f, 2.8f, 0.8f, ATOM_C);        // 3
+    addAtom(mol, -0.2f, 2.3f, 0.8f, ATOM_C);       // 4
+    addAtom(mol, -0.8f, 1.0f, 0.3f, ATOM_C);       // 5
+
+    // Phenyl ring with fluorine
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle) - 2.5f, r * sinf(angle), 0.0f, ATOM_C);  // 6-11
+    }
+
+    // Fluorine atoms on phenyl
+    addAtom(mol, -2.5f + r * cosf(PI/3) + 0.8f, r * sinf(PI/3) + 0.8f, 0.0f, ATOM_F);  // 12
+    addAtom(mol, -2.5f + r * cosf(2*PI/3) - 0.8f, r * sinf(2*PI/3) + 0.8f, 0.0f, ATOM_F);  // 13
+
+    // Carboxylic acid ester
+    addAtom(mol, 2.6f, -1.2f, 0.0f, ATOM_C);       // 14: C=O
+    addAtom(mol, 2.6f, -1.2f, 1.3f, ATOM_O);       // 15: O
+    addAtom(mol, 3.8f, -1.9f, 0.0f, ATOM_O);       // 16: O (ester)
+    addAtom(mol, 5.1f, -1.3f, 0.0f, ATOM_C);       // 17: CH3
+
+    // Amide group
+    addAtom(mol, -0.8f, -1.3f, 0.0f, ATOM_C);      // 18: C=O
+    addAtom(mol, -0.8f, -1.3f, 1.3f, ATOM_O);      // 19: O
+    addAtom(mol, -2.1f, -2.0f, 0.0f, ATOM_N);      // 20: N
+    addAtom(mol, -3.4f, -1.3f, 0.0f, ATOM_C);      // 21: CH3
+    addAtom(mol, -2.1f, -3.4f, 0.0f, ATOM_H);      // 22: H
+
+    // Ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);
+
+    // Phenyl ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, 6 + i, 6 + ((i + 1) % 6), (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Phenyl attachment
+    addBond(mol, 5, 6, 1);
+
+    // Fluorine bonds
+    addBond(mol, 8, 12, 1);
+    addBond(mol, 9, 13, 1);
+
+    // Ester bonds
+    addBond(mol, 0, 14, 1);
+    addBond(mol, 14, 15, 2);
+    addBond(mol, 14, 16, 1);
+    addBond(mol, 16, 17, 1);
+
+    // Amide bonds
+    addBond(mol, 3, 18, 1);
+    addBond(mol, 18, 19, 2);
+    addBond(mol, 18, 20, 1);
+    addBond(mol, 20, 21, 1);
+    addBond(mol, 20, 22, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Ritonavir (C37H48N6O5S2) - Paxlovid component/Protease inhibitor
+void buildRitonavir(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Ritonavir (C37H48N6O5S2)");
+
+    // Complex peptide-based protease inhibitor - simplified
+    // Cyclohexyl ring
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);        // 0
+    addAtom(mol, 1.4f, 0.5f, 0.0f, ATOM_C);        // 1
+    addAtom(mol, 2.0f, 1.8f, 0.5f, ATOM_C);        // 2
+    addAtom(mol, 1.2f, 2.8f, 0.8f, ATOM_C);        // 3
+    addAtom(mol, -0.2f, 2.3f, 0.8f, ATOM_C);       // 4
+    addAtom(mol, -0.8f, 1.0f, 0.3f, ATOM_C);       // 5
+
+    // Two thiazole rings (simplified)
+    addAtom(mol, 2.6f, -1.2f, 0.0f, ATOM_C);       // 6: thiazole1
+    addAtom(mol, 3.9f, -1.9f, 0.0f, ATOM_S);       // 7: S
+    addAtom(mol, 5.2f, -1.2f, 0.0f, ATOM_C);       // 8
+    addAtom(mol, 5.2f, 0.1f, 0.0f, ATOM_N);        // 9: N
+
+    addAtom(mol, -1.3f, -1.3f, 0.0f, ATOM_C);      // 10: thiazole2
+    addAtom(mol, -2.6f, -2.0f, 0.0f, ATOM_S);      // 11: S
+    addAtom(mol, -3.9f, -1.3f, 0.0f, ATOM_C);      // 12
+    addAtom(mol, -3.9f, 0.0f, 0.0f, ATOM_N);       // 13: N
+
+    // Hydroxyl group (HIV protease interaction)
+    addAtom(mol, 3.0f, 3.5f, 0.0f, ATOM_O);        // 14: OH
+    addAtom(mol, 3.8f, 3.5f, 0.0f, ATOM_H);        // 15: H
+
+    // Two isopropyl groups
+    addAtom(mol, 6.5f, -1.9f, 0.0f, ATOM_C);       // 16: CH
+    addAtom(mol, 7.2f, -0.5f, 0.0f, ATOM_C);       // 17: CH3
+    addAtom(mol, 7.2f, -3.3f, 0.0f, ATOM_C);       // 18: CH3
+
+    addAtom(mol, -5.2f, -2.0f, 0.0f, ATOM_C);      // 19: CH
+    addAtom(mol, -5.9f, -0.6f, 0.0f, ATOM_C);      // 20: CH3
+    addAtom(mol, -5.9f, -3.4f, 0.0f, ATOM_C);      // 21: CH3
+
+    // Ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);
+
+    // Thiazole 1 bonds
+    addBond(mol, 0, 6, 1);
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 8, 9, 1);
+    addBond(mol, 9, 6, 1);
+
+    // Thiazole 2 bonds
+    addBond(mol, 5, 10, 1);
+    addBond(mol, 10, 11, 1);
+    addBond(mol, 11, 12, 1);
+    addBond(mol, 12, 13, 1);
+    addBond(mol, 13, 10, 1);
+
+    // Hydroxyl
+    addBond(mol, 3, 14, 1);
+    addBond(mol, 14, 15, 1);
+
+    // Isopropyl groups
+    addBond(mol, 9, 16, 1);
+    addBond(mol, 16, 17, 1);
+    addBond(mol, 16, 18, 1);
+
+    addBond(mol, 13, 19, 1);
+    addBond(mol, 19, 20, 1);
+    addBond(mol, 19, 21, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Molnupiravir/Lagevrio (C13H19N3O8) - Antiviral
+void buildMolnupiravir(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Molnupiravir/Lagevrio (C13H19N3O8)");
+
+    // Ribose-like sugar with modified cytosine
+    // Pentose ring (furanose)
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);        // 0: C1
+    addAtom(mol, 1.3f, 0.7f, 0.0f, ATOM_O);        // 1: O (in ring)
+    addAtom(mol, 0.6f, 2.0f, 0.0f, ATOM_C);        // 2: C2
+    addAtom(mol, -0.8f, 1.8f, 0.0f, ATOM_C);       // 3: C3
+    addAtom(mol, -0.8f, 0.4f, 0.0f, ATOM_C);       // 4: C4
+
+    // Hydroxyl groups on sugar
+    addAtom(mol, 2.0f, -0.5f, 0.0f, ATOM_O);       // 5: OH (C1)
+    addAtom(mol, 2.8f, -0.5f, 0.0f, ATOM_H);       // 6: H
+    addAtom(mol, 1.8f, 3.2f, 0.0f, ATOM_O);        // 7: OH (C2)
+    addAtom(mol, 2.6f, 3.2f, 0.0f, ATOM_H);        // 8: H
+    addAtom(mol, -1.6f, 2.8f, 0.0f, ATOM_O);       // 9: OH (C3)
+    addAtom(mol, -2.4f, 2.8f, 0.0f, ATOM_H);       // 10: H
+
+    // Phosphate group
+    addAtom(mol, -1.5f, -0.8f, 0.0f, ATOM_P);      // 11: P
+    addAtom(mol, -1.5f, -0.8f, 1.3f, ATOM_O);      // 12: O (double bond)
+    addAtom(mol, -2.8f, -1.5f, 0.0f, ATOM_O);      // 13: O (single)
+    addAtom(mol, -0.2f, -1.5f, 0.0f, ATOM_O);      // 14: O (single)
+
+    // Modified cytosine base
+    addAtom(mol, 0.6f, -1.4f, 0.0f, ATOM_C);       // 15: C (aromatic)
+    addAtom(mol, 1.9f, -2.1f, 0.0f, ATOM_N);       // 16: N
+    addAtom(mol, 3.2f, -1.4f, 0.0f, ATOM_C);       // 17: C (aromatic)
+    addAtom(mol, 3.2f, -0.1f, 0.0f, ATOM_C);       // 18: C=O
+    addAtom(mol, 3.2f, -0.1f, 1.3f, ATOM_O);       // 19: O
+    addAtom(mol, 1.9f, 0.6f, 0.0f, ATOM_N);        // 20: N
+
+    // Isopropylidene group (modification)
+    addAtom(mol, 4.5f, -2.1f, 0.0f, ATOM_C);       // 21: C (quaternary)
+    addAtom(mol, 5.2f, -0.7f, 0.0f, ATOM_C);       // 22: CH3
+    addAtom(mol, 5.2f, -3.5f, 0.0f, ATOM_C);       // 23: CH3
+
+    // Ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 0, 1);
+
+    // Hydroxyl bonds
+    addBond(mol, 0, 5, 1);
+    addBond(mol, 5, 6, 1);
+    addBond(mol, 2, 7, 1);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 3, 9, 1);
+    addBond(mol, 9, 10, 1);
+
+    // Phosphate bonds
+    addBond(mol, 4, 11, 1);
+    addBond(mol, 11, 12, 2);
+    addBond(mol, 11, 13, 1);
+    addBond(mol, 11, 14, 1);
+
+    // Cytosine base bonds
+    addBond(mol, 0, 15, 1);
+    addBond(mol, 15, 16, 1);
+    addBond(mol, 16, 17, 1);
+    addBond(mol, 17, 18, 1);
+    addBond(mol, 18, 19, 2);
+    addBond(mol, 18, 20, 1);
+    addBond(mol, 20, 15, 1);
+
+    // Isopropylidene bonds
+    addBond(mol, 17, 21, 1);
+    addBond(mol, 21, 22, 1);
+    addBond(mol, 21, 23, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Remdesivir/Veklury (C27H35N6O8P) - Antiviral
+void buildRemdesivir(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Remdesivir/Veklury (C27H35N6O8P)");
+
+    // Adenosine analog with phosphoramide prodrug
+    // Pentose ring
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);        // 0: C1
+    addAtom(mol, 1.3f, 0.7f, 0.0f, ATOM_O);        // 1: O (in ring)
+    addAtom(mol, 0.6f, 2.0f, 0.0f, ATOM_C);        // 2: C2
+    addAtom(mol, -0.8f, 1.8f, 0.0f, ATOM_C);       // 3: C3
+    addAtom(mol, -0.8f, 0.4f, 0.0f, ATOM_C);       // 4: C4
+
+    // Hydroxyl groups
+    addAtom(mol, 2.0f, -0.5f, 0.0f, ATOM_O);       // 5: OH
+    addAtom(mol, 2.8f, -0.5f, 0.0f, ATOM_H);       // 6: H
+    addAtom(mol, 1.8f, 3.2f, 0.0f, ATOM_O);        // 7: OH
+    addAtom(mol, 2.6f, 3.2f, 0.0f, ATOM_H);        // 8: H
+    addAtom(mol, -1.6f, 2.8f, 0.0f, ATOM_O);       // 9: OH
+    addAtom(mol, -2.4f, 2.8f, 0.0f, ATOM_H);       // 10: H
+
+    // Purine base (adenine-like)
+    addAtom(mol, 0.6f, -1.4f, 0.0f, ATOM_C);       // 11: C (aromatic)
+    addAtom(mol, 1.9f, -2.1f, 0.0f, ATOM_N);       // 12: N
+    addAtom(mol, 3.2f, -1.4f, 0.0f, ATOM_C);       // 13: C (aromatic)
+    addAtom(mol, 3.2f, -0.1f, 0.0f, ATOM_N);       // 14: N
+    addAtom(mol, 1.9f, 0.6f, 0.0f, ATOM_N);        // 15: N
+
+    // Six-membered ring of purine
+    addAtom(mol, 4.5f, -2.1f, 0.0f, ATOM_C);       // 16
+    addAtom(mol, 4.5f, -3.4f, 0.0f, ATOM_N);       // 17: N
+    addAtom(mol, 3.2f, -4.1f, 0.0f, ATOM_C);       // 18: C
+    addAtom(mol, 1.9f, -3.4f, 0.0f, ATOM_N);       // 19: N
+
+    // Phosphoramide group
+    addAtom(mol, -1.5f, -0.8f, 0.0f, ATOM_P);      // 20: P
+    addAtom(mol, -1.5f, -0.8f, 1.3f, ATOM_O);      // 21: O (double bond)
+    addAtom(mol, -2.8f, -1.5f, 0.0f, ATOM_O);      // 22: O
+    addAtom(mol, -0.2f, -1.5f, 0.0f, ATOM_N);      // 23: N
+
+    // Isopropyl group on phosphoramide
+    addAtom(mol, -3.6f, -1.5f, 0.0f, ATOM_C);      // 24: CH
+    addAtom(mol, -4.3f, -0.1f, 0.0f, ATOM_C);      // 25: CH3
+    addAtom(mol, -4.3f, -2.9f, 0.0f, ATOM_C);      // 26: CH3
+
+    // Aliphatic side chain
+    addAtom(mol, -0.9f, -2.8f, 0.0f, ATOM_C);      // 27: CH3
+
+    // Ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 0, 1);
+
+    // Hydroxyl bonds
+    addBond(mol, 0, 5, 1);
+    addBond(mol, 5, 6, 1);
+    addBond(mol, 2, 7, 1);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 3, 9, 1);
+    addBond(mol, 9, 10, 1);
+
+    // Base bonds
+    addBond(mol, 0, 11, 1);
+    addBond(mol, 11, 12, 1);
+    addBond(mol, 12, 13, 1);
+    addBond(mol, 13, 14, 1);
+    addBond(mol, 14, 15, 1);
+    addBond(mol, 15, 11, 1);
+    addBond(mol, 13, 16, 1);
+    addBond(mol, 16, 17, 1);
+    addBond(mol, 17, 18, 1);
+    addBond(mol, 18, 19, 1);
+    addBond(mol, 19, 12, 1);
+
+    // Phosphoramide bonds
+    addBond(mol, 4, 20, 1);
+    addBond(mol, 20, 21, 2);
+    addBond(mol, 20, 22, 1);
+    addBond(mol, 20, 23, 1);
+    addBond(mol, 22, 24, 1);
+    addBond(mol, 24, 25, 1);
+    addBond(mol, 24, 26, 1);
+    addBond(mol, 23, 27, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Dexamethasone (C22H29FO5) - Corticosteroid
+void buildDexamethasone(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Dexamethasone (C22H29FO5)");
+
+    // Steroid nucleus with four fused rings
+    // Ring A
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);        // 0
+    addAtom(mol, 1.4f, 0.5f, 0.0f, ATOM_C);        // 1
+    addAtom(mol, 2.1f, 1.8f, 0.0f, ATOM_C);        // 2
+    addAtom(mol, 0.7f, 2.3f, 0.0f, ATOM_C);        // 3
+    addAtom(mol, -0.7f, 1.8f, 0.0f, ATOM_C);       // 4
+    addAtom(mol, -0.7f, 0.4f, 0.0f, ATOM_C);       // 5
+
+    // Ring B (fused)
+    addAtom(mol, 1.4f, 2.0f, 0.0f, ATOM_C);        // 6: shared C
+    addAtom(mol, 2.8f, 2.5f, 0.0f, ATOM_C);        // 7
+    addAtom(mol, 2.8f, 3.9f, 0.0f, ATOM_C);        // 8
+    addAtom(mol, 1.4f, 4.4f, 0.0f, ATOM_C);        // 9
+
+    // Ring C (fused)
+    addAtom(mol, 0.0f, 3.7f, 0.0f, ATOM_C);        // 10: shared C
+    addAtom(mol, -1.4f, 4.2f, 0.0f, ATOM_C);       // 11
+    addAtom(mol, -2.1f, 2.9f, 0.0f, ATOM_C);       // 12
+
+    // Ring D (fused)
+    addAtom(mol, -2.1f, 1.5f, 0.0f, ATOM_C);       // 13: shared C
+    addAtom(mol, -3.5f, 1.0f, 0.0f, ATOM_C);       // 14
+    addAtom(mol, -4.2f, 2.3f, 0.0f, ATOM_C);       // 15
+
+    // Ketone at C3
+    addAtom(mol, 0.7f, 3.6f, 0.0f, ATOM_C);        // 16: C=O
+    addAtom(mol, 0.7f, 3.6f, 1.3f, ATOM_O);        // 17: O
+
+    // Hydroxyl at C17
+    addAtom(mol, 0.7f, 5.7f, 0.0f, ATOM_O);        // 18: OH
+    addAtom(mol, 1.5f, 5.7f, 0.0f, ATOM_H);        // 19: H
+
+    // Fluorine at C9
+    addAtom(mol, 0.0f, 5.7f, 0.0f, ATOM_F);        // 20: F
+
+    // Hydroxyl at C11
+    addAtom(mol, -2.1f, 5.6f, 0.0f, ATOM_O);       // 21: OH
+    addAtom(mol, -2.9f, 5.6f, 0.0f, ATOM_H);       // 22: H
+
+    // Methyl groups (angular methyls)
+    addAtom(mol, -0.7f, -1.0f, 0.0f, ATOM_C);      // 23: C18 methyl
+    addAtom(mol, 2.8f, 0.0f, 0.0f, ATOM_C);        // 24: C19 methyl
+
+    // Ethyl side chain at C17
+    addAtom(mol, 2.1f, 5.2f, 0.0f, ATOM_C);        // 25: CH2
+    addAtom(mol, 3.4f, 5.9f, 0.0f, ATOM_C);        // 26: CH3
+
+    // Ring A bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);
+
+    // Ring B bonds
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 8, 9, 1);
+    addBond(mol, 9, 10, 1);
+
+    // Ring C bonds
+    addBond(mol, 10, 11, 1);
+    addBond(mol, 11, 12, 1);
+    addBond(mol, 12, 13, 1);
+
+    // Ring D bonds
+    addBond(mol, 13, 14, 1);
+    addBond(mol, 14, 15, 1);
+    addBond(mol, 15, 12, 1);
+
+    // Ketone
+    addBond(mol, 3, 16, 1);
+    addBond(mol, 16, 17, 2);
+
+    // Hydroxyl at C17
+    addBond(mol, 9, 18, 1);
+    addBond(mol, 18, 19, 1);
+
+    // Fluorine at C9
+    addBond(mol, 9, 20, 1);
+
+    // Hydroxyl at C11
+    addBond(mol, 11, 21, 1);
+    addBond(mol, 21, 22, 1);
+
+    // Angular methyls
+    addBond(mol, 0, 23, 1);
+    addBond(mol, 5, 24, 1);
+
+    // Ethyl side chain
+    addBond(mol, 9, 25, 1);
+    addBond(mol, 25, 26, 1);
+
+    centerMolecule(mol);
+}
+
 // Random molecule generator
 float randf() { return (float)rand() / RAND_MAX; }
 
@@ -12073,7 +14545,51 @@ static MoleculeInfo molecules[] = {
     { buildLSD, "LSD", CAT_PHARMA, "Psychedelic" },
     { buildPsilocybin, "Psilocybin/Shrooms", CAT_PHARMA, "Magic mushroom" },
     { buildMescaline, "Mescaline/Peyote", CAT_PHARMA, "Peyote cactus" },
-    // === RANDOM (232) ===
+    // === SYNTHETIC DRUGS (232-234) ===
+    { buildPCP, "PCP/Phencyclidine", CAT_PHARMA, "Dissociative hallucinogen" },
+    { buildMDMA, "MDMA/Ecstasy", CAT_PHARMA, "Party drug" },
+    { buildMethylone, "Methylone/Bath Salts", CAT_PHARMA, "Synthetic cathinone" },
+    // === PRESCRIPTION DRUGS (235-238) ===
+    { buildValium, "Valium/Diazepam", CAT_PHARMA, "Benzodiazepine tranquilizer" },
+    { buildMethamphetamine, "Methamphetamine/Crystal Meth", CAT_PHARMA, "Powerful stimulant" },
+    { buildCodeine, "Codeine", CAT_PHARMA, "Opioid pain reliever" },
+    { buildMethadone, "Methadone", CAT_PHARMA, "Synthetic opioid agonist" },
+    // === ANTIHISTAMINES & DECONGESTANTS (239-244) ===
+    { buildDiphenhydramine, "Diphenhydramine/Benadryl", CAT_PHARMA, "1st gen antihistamine" },
+    { buildChlorpheniramine, "Chlorpheniramine/Chlor-Trimeton", CAT_PHARMA, "1st gen antihistamine" },
+    { buildLoratadine, "Loratadine/Claritin", CAT_PHARMA, "2nd gen antihistamine" },
+    { buildCetirizine, "Cetirizine/Zyrtec", CAT_PHARMA, "2nd gen antihistamine" },
+    { buildFexofenadine, "Fexofenadine/Allegra", CAT_PHARMA, "2nd gen antihistamine" },
+    { buildPseudoephedrine, "Pseudoephedrine", CAT_PHARMA, "Decongestant" },
+    // === BLOOD PRESSURE MEDICATIONS (245-263) ===
+    // ACE Inhibitors
+    { buildLisinopril, "Lisinopril", CAT_PHARMA, "ACE inhibitor" },
+    { buildEnalapril, "Enalapril", CAT_PHARMA, "ACE inhibitor" },
+    { buildRamipril, "Ramipril", CAT_PHARMA, "ACE inhibitor" },
+    // ARBs
+    { buildLosartan, "Losartan", CAT_PHARMA, "ARB" },
+    { buildValsartan, "Valsartan", CAT_PHARMA, "ARB" },
+    { buildTelmisartan, "Telmisartan", CAT_PHARMA, "ARB" },
+    // Beta Blockers
+    { buildMetoprolol, "Metoprolol", CAT_PHARMA, "Beta blocker" },
+    { buildAtenolol, "Atenolol", CAT_PHARMA, "Beta blocker" },
+    { buildCarvedilol, "Carvedilol", CAT_PHARMA, "Beta blocker" },
+    // Calcium Channel Blockers
+    { buildAmlodipine, "Amlodipine", CAT_PHARMA, "Calcium channel blocker" },
+    { buildDiltiazem, "Diltiazem", CAT_PHARMA, "Calcium channel blocker" },
+    { buildNifedipine, "Nifedipine", CAT_PHARMA, "Calcium channel blocker" },
+    // Diuretics
+    { buildHydrochlorothiazide, "Hydrochlorothiazide/HCTZ", CAT_PHARMA, "Diuretic" },
+    { buildFurosemide, "Furosemide/Lasix", CAT_PHARMA, "Diuretic" },
+    { buildSpironolactone, "Spironolactone", CAT_PHARMA, "Potassium-sparing diuretic" },
+    // === ANTIVIRALS (264-269) ===
+    { buildOseltamivir, "Oseltamivir/Tamiflu", CAT_PHARMA, "Influenza antiviral" },
+    { buildNirmatrelvir, "Nirmatrelvir (Paxlovid)", CAT_PHARMA, "COVID protease inhibitor" },
+    { buildRitonavir, "Ritonavir (Paxlovid component)", CAT_PHARMA, "Protease inhibitor" },
+    { buildMolnupiravir, "Molnupiravir/Lagevrio", CAT_PHARMA, "COVID antiviral" },
+    { buildRemdesivir, "Remdesivir/Veklury", CAT_PHARMA, "COVID/Ebola antiviral" },
+    { buildDexamethasone, "Dexamethasone", CAT_PHARMA, "Corticosteroid" },
+    // === RANDOM (270) ===
     { buildRandomMolecule, "Random", CAT_OTHER, "Random structure" },
     // === EXOTIC STRUCTURES (233-249) ===
     { buildCubane, "Cubane", CAT_ORGANIC, "C8H8 - Cube-shaped" },

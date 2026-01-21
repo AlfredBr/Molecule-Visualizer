@@ -52,6 +52,7 @@ void SaveWindowConfig() {
             fprintf(f, "[MainWindow]\n");
             fprintf(f, "Pos=%d,%d\n", rect.left, rect.top);
             fprintf(f, "Size=%d,%d\n", rect.right - rect.left, rect.bottom - rect.top);
+            fprintf(f, "[UserSettings]\n");
 			fprintf(f, "LastMolecule=%d\n", g_currentMolecule);
             fflush(f);
             fclose(f);
