@@ -29,6 +29,7 @@ static const char* categoryNames[] = {
     "Neurotransmitters",     // CAT_NEUROTRANS
     "Hormones",              // CAT_HORMONES
     "Pharmaceuticals",       // CAT_PHARMA
+    "Controlled Substances", // CAT_CONTROLLED
     "Household Chemicals",   // CAT_HOUSEHOLD
     "Acids",                 // CAT_ACIDS
     "Plastic Monomers",      // CAT_PLASTICS
@@ -14999,16 +15000,16 @@ static MoleculeInfo molecules[] = {
       "Nicotinamide is a form of vitamin B3 that doesn't cause the flushing associated with niacin. It's being studied for preventing skin cancer and improving skin appearance. It's part of NAD+, a molecule important for cellular energy and longevity research." },
     { buildNiacinamide, "Niacinamide (Alt. B3)", CAT_VITAMINS, "Vitamin B3 variant",
       "Niacinamide is another name for nicotinamide, vitamin B3's amide form. Skincare products tout it for reducing pore size, redness, and supporting the skin barrier. Unlike niacin, it doesn't cause flushing, making it ideal for sensitive skin formulations." },
-    // === CONTROLLED SUBSTANCES (117-123) ===
-    { buildCocaine, "Cocaine", CAT_PHARMA, "Stimulant alkaloid",
+    // === CONTROLLED SUBSTANCES & RESEARCH COMPOUNDS (117-123) ===
+    { buildCocaine, "Cocaine", CAT_CONTROLLED, "Stimulant alkaloid",
       "Cocaine comes from coca leaves, chewed in South America for thousands of years. It blocks dopamine reuptake, causing intense euphoria and addiction. Once used in Coca-Cola and as a local anesthetic, it remains medically useful for certain eye and nose surgeries." },
-    { buildHeroin, "Heroin", CAT_PHARMA, "Opioid",
+    { buildHeroin, "Heroin", CAT_CONTROLLED, "Opioid",
       "Heroin was originally marketed by Bayer in 1898 as a 'non-addictive' cough suppressant. It's diacetylmorphine, crossing the blood-brain barrier faster than morphine. The opioid crisis has made heroin one of the deadliest drugs, often contaminated with fentanyl." },
-    { buildFentanyl, "Fentanyl/Sublimaze", CAT_PHARMA, "Synthetic opioid",
+    { buildFentanyl, "Fentanyl/Sublimaze", CAT_CONTROLLED, "Synthetic opioid",
       "Fentanyl is 100 times more potent than morphine, used medically in patches and lollipops for severe pain. Illegally manufactured fentanyl has caused a dramatic rise in overdose deaths. Just 2 milligrams, smaller than a few grains of salt, can be lethal." },
-    { buildPropofol, "Propofol/Diprivan", CAT_PHARMA, "IV anesthetic",
+    { buildPropofol, "Propofol/Diprivan", CAT_CONTROLLED, "IV anesthetic",
       "Propofol is the white 'milk of amnesia' used for anesthesia induction worldwide. It works within seconds and wears off quickly, ideal for short procedures. Michael Jackson's death from propofol misuse highlighted the dangers of using it outside medical settings." },
-    { buildTHC, "THC", CAT_PHARMA, "Cannabis active",
+    { buildTHC, "THC", CAT_CONTROLLED, "Cannabis active",
       "THC is the main psychoactive compound in cannabis, binding to cannabinoid receptors in the brain. Your body makes similar molecules called endocannabinoids. Medical uses include treating nausea from chemotherapy and stimulating appetite in AIDS patients." },
     { buildCreatine, "Creatine", CAT_ENERGY, "Muscle energy",
       "Creatine stores high-energy phosphate in muscles, providing quick energy for short bursts of activity. It's one of the most studied and safest sports supplements, improving strength and power. Your body makes about 1 gram daily, with more from meat." },
@@ -15251,28 +15252,28 @@ static MoleculeInfo molecules[] = {
     // === ANESTHETICS (226-228) ===
     { buildLidocaine, "Lidocaine/Xylocaine", CAT_PHARMA, "Local anesthetic",
       "Lidocaine is a local anesthetic used in dentistry, minor surgery, and topical creams. It blocks nerve signals near the injection site without affecting your consciousness. Lidocaine patches provide pain relief for arthritis and shingles." },
-    { buildKetamine, "Ketamine", CAT_PHARMA, "Dissociative",
+    { buildKetamine, "Ketamine", CAT_CONTROLLED, "Dissociative",
       "Ketamine is a dissociative anesthetic used in surgery and emergency rooms. It produces dreamlike detachment where patients feel pain-free and unaware. Recently approved for depression treatment despite abuse potential." },
     { buildSevoflurane, "Sevoflurane", CAT_PHARMA, "Inhalation anesthetic",
       "Sevoflurane is a modern inhalation anesthetic with rapid onset and recovery. It's gentler than older anesthetics and rarely causes liver problems. Children wake up faster from sevoflurane, reducing post-operative confusion." },
-    // === PSYCHEDELICS (229-231) ===
-    { buildLSD, "LSD", CAT_PHARMA, "Psychedelic",
+    // === PSYCHEDELICS & HALLUCINOGENS (229-231) ===
+    { buildLSD, "LSD", CAT_CONTROLLED, "Psychedelic",
       "LSD (lysergic acid diethylamide) is a powerful psychedelic altering perception and consciousness. It's not addictive but causes psychological dependence and flashbacks. Some researchers study LSD for treating depression and PTSD." },
-    { buildPsilocybin, "Psilocybin/Shrooms", CAT_PHARMA, "Magic mushroom",
+    { buildPsilocybin, "Psilocybin/Shrooms", CAT_CONTROLLED, "Magic mushroom",
       "Psilocybin is the active compound in magic mushrooms, producing hallucinations and altered thinking. Research suggests psilocybin-assisted therapy helps depression and cluster headaches. It's slowly becoming legal for therapeutic research." },
-    { buildMescaline, "Mescaline/Peyote", CAT_PHARMA, "Peyote cactus",
+    { buildMescaline, "Mescaline/Peyote", CAT_CONTROLLED, "Peyote cactus",
       "Mescaline is a psychedelic in peyote cactus and San Pedro cactus, used in indigenous ceremonies. It causes profound hallucinations lasting 12 hours. Indigenous peoples use mescaline for spiritual experiences and healing." },
-    // === SYNTHETIC DRUGS (232-234) ===
-    { buildPCP, "PCP/Phencyclidine", CAT_PHARMA, "Dissociative hallucinogen",
+    // === SYNTHETIC DRUGS & NOVEL PSYCHOACTIVE SUBSTANCES (232-234) ===
+    { buildPCP, "PCP/Phencyclidine", CAT_CONTROLLED, "Dissociative hallucinogen",
       "PCP (phencyclidine) is a powerful dissociative drug causing detachment from reality and pain. It's particularly dangerous because it triggers bizarre, aggressive behavior. PCP users sometimes harm themselves without realizing it." },
-    { buildMDMA, "MDMA/Ecstasy", CAT_PHARMA, "Party drug",
+    { buildMDMA, "MDMA/Ecstasy", CAT_CONTROLLED, "Party drug",
       "MDMA (Ecstasy) increases serotonin and dopamine, creating euphoria and empathy. Users experience increased heart rate and body temperature. Repeated use damages serotonin neurons, causing lasting mood problems." },
-    { buildMethylone, "Methylone/Bath Salts", CAT_PHARMA, "Synthetic cathinone",
+    { buildMethylone, "Methylone/Bath Salts", CAT_CONTROLLED, "Synthetic cathinone",
       "Methylone (Bath Salts) is a synthetic cathinone similar to MDMA but more dangerous. It causes extreme paranoia, violent behavior, and hallucinations. Emergency rooms report severe complications including rapid heart rate and seizures." },
     // === PRESCRIPTION DRUGS (235-238) ===
-    { buildValium, "Valium/Diazepam", CAT_PHARMA, "Benzodiazepine tranquilizer",
+    { buildValium, "Valium/Diazepam", CAT_CONTROLLED, "Benzodiazepine tranquilizer",
       "Valium (diazepam) is a benzodiazepine tranquilizer used for anxiety and muscle spasms. It was wildly overprescribed in the 1960s-70s, creating addiction epidemics. Long-term use causes tolerance, making higher doses necessary." },
-    { buildMethamphetamine, "Methamphetamine/Crystal Meth", CAT_PHARMA, "Powerful stimulant",
+    { buildMethamphetamine, "Methamphetamine/Crystal Meth", CAT_CONTROLLED, "Powerful stimulant",
       "Methamphetamine (crystal meth) is a powerful stimulant causing euphoria and extreme wakefulness. It's highly addictive and devastates teeth, skin, and brain dopamine neurons. Chronic use causes paranoia, violence, and psychosis." },
     { buildCodeine, "Codeine", CAT_PHARMA, "Opioid pain reliever",
       "Codeine is a mild opioid pain reliever and cough suppressant in many medicines. Your body converts codeine to morphine, the active form. Some people lack the enzyme for conversion, making it ineffective." },

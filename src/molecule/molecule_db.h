@@ -19,7 +19,8 @@ enum MoleculeCategory {
     CAT_VITAMINS,       // Vitamins
     CAT_NEUROTRANS,     // Neurotransmitters
     CAT_HORMONES,       // Steroid hormones
-    CAT_PHARMA,         // Pharmaceuticals & drugs
+    CAT_PHARMA,         // Commercial pharmaceuticals & approved drugs
+    CAT_CONTROLLED,     // Controlled substances & research compounds
     CAT_HOUSEHOLD,      // Household chemicals
     CAT_ACIDS,          // Acids
     CAT_PLASTICS,       // Plastic monomers/polymers

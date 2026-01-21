@@ -14,7 +14,7 @@ MolVis is a real-time 3D molecular visualization application powered by GPU comp
 - **Real-time GPU Rendering** — CUDA-powered parallel ray-sphere intersection for smooth performance
 - **Dear ImGui Interface** — Modern, responsive GUI with dockable panels
 - **301 Molecule Library** — From simple gases to exotic structures like Buckminsterfullerene (C₆₀), including skincare ingredients
-- **16+ Categories** — Organized by type: Organic, Pharma, Amino Acids, Sugars, Fats, Metals, Skincare Acids, and more
+- **17 Categories** — Commercial pharmaceuticals, controlled substances, amino acids, sugars, skincare acids, exotic structures, and more
 - **CPK Color Convention** — Industry-standard atomic coloring (Carbon=gray, Oxygen=red, Nitrogen=blue, etc.)
 - **Ball-and-Stick Models** — Clear visualization of molecular structure with single, double, and triple bonds
 - **Interactive Controls** — Rotation speed, direction, position offset, zoom—all from the GUI
@@ -33,22 +33,26 @@ MolVis is a real-time 3D molecular visualization application powered by GPU comp
 
 ### Categories
 
-- Simple Molecules (H₂O, CO₂, NH₃...)
-- Organic Compounds (Benzene, Ethanol, Caffeine...)
-- Amino Acids (all 20 standard + Hydroxyproline)
-- Nucleobases (DNA/RNA bases)
-- Sugars & Carbohydrates (Glucose, Fructose, Ribose...)
-- Lipids & Fatty Acids (Oleic, Palmitic, Linoleic...)
-- Pharmaceuticals (Aspirin, Ibuprofen, Morphine...)
-- Neurotransmitters (Dopamine, Serotonin, GABA, Acetylcholine...)
-- Metal Compounds (Ferrocene, Cisplatin...)
-- Plastics & Polymers
-- Energy Molecules (ATP, ADP, NADH...)
-- **Skincare Acids** ⭐
-  - AHA Acids (Glycolic, Lactic, Citric, Malic, Tartaric)
-  - BHA Acids (Salicylic)
-  - Skincare Ingredients (Niacinamide/Vitamin B3, Glycerin)
-- Exotic Structures (C₆₀, Cubane, Catenanes, Molecular Knots...)
+- **Simple Molecules** (H₂O, CO₂, NH₃...)
+- **Organic Compounds** (Benzene, Ethanol, Caffeine...)
+- **Amino Acids** (all 20 standard + Hydroxyproline)
+- **Nucleobases** (DNA/RNA bases)
+- **Sugars & Carbohydrates** (Glucose, Fructose, Ribose...)
+- **Lipids & Fatty Acids** (Oleic, Palmitic, Linoleic...)
+- **Vitamins** (A, B complex, C, D, E, K)
+- **Neurotransmitters** (Dopamine, Serotonin, GABA, Acetylcholine...)
+- **Hormones** (Testosterone, Estradiol, Cortisol...)
+- **Pharmaceuticals** (Aspirin, Ibuprofen, Warfarin, Lisinopril...)
+- **Controlled Substances** (Heroin, Cocaine, LSD, MDMA, Ketamine...)
+- **Household Chemicals** (NaOH, NaCl, Bleach, MSG...)
+- **Acids** (Acetic, Sulfuric, Glycolic, Salicylic, Citric...)
+  - **Skincare Acids** ⭐
+    - AHA Acids (Glycolic, Lactic, Citric, Malic, Tartaric)
+    - BHA Acids (Salicylic)
+- **Metal Compounds** (Ferrocene, Cisplatin, Rust...)
+- **Plastics & Polymers** (PET, Polystyrene, Nylon-6...)
+- **Energy Molecules** (ATP, ADP, NADH...)
+- **Exotic Structures** (C₆₀, Cubane, Catenanes, Molecular Knots...)
 
 ## 🛠️ Requirements
 
