@@ -13,8 +13,8 @@ MolVis is a real-time 3D molecular visualization application powered by GPU comp
 
 - **Real-time GPU Rendering** — CUDA-powered parallel ray-sphere intersection for smooth performance
 - **Dear ImGui Interface** — Modern, responsive GUI with dockable panels
-- **249 Molecule Library** — From simple gases to exotic structures like Buckminsterfullerene (C₆₀)
-- **16 Categories** — Organized by type: Organic, Pharma, Amino Acids, Sugars, Fats, Metals, and more
+- **301 Molecule Library** — From simple gases to exotic structures like Buckminsterfullerene (C₆₀), including skincare ingredients
+- **16+ Categories** — Organized by type: Organic, Pharma, Amino Acids, Sugars, Fats, Metals, Skincare Acids, and more
 - **CPK Color Convention** — Industry-standard atomic coloring (Carbon=gray, Oxygen=red, Nitrogen=blue, etc.)
 - **Ball-and-Stick Models** — Clear visualization of molecular structure with single, double, and triple bonds
 - **Interactive Controls** — Rotation speed, direction, position offset, zoom—all from the GUI
