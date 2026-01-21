@@ -320,7 +320,7 @@ int main(int argc, char* argv[]) {
                     }
 
                     // Handle mouse interaction in viewport
-                    if (ImGui::IsWindowHovered()) {
+                    if (ImGui::IsItemHovered()) {
                         if (ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
                             ImVec2 delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
                             ImGui::ResetMouseDragDelta(ImGuiMouseButton_Left);

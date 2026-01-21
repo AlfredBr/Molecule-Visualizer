@@ -15,7 +15,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_DIR="$SCRIPT_DIR/build_mac"
 DIST_DIR="$SCRIPT_DIR/dist"
 APP_NAME="MolVis"
-VERSION="0.3.0"
+VERSION="0.3.6"
 DMG_NAME="${APP_NAME}-${VERSION}-macOS"
 
 # Colors for output
