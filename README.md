@@ -26,7 +26,7 @@ MolVis is a real-time 3D molecular visualization application powered by GPU comp
 
 | Panel | Description |
 |-------|-------------|
-| **Molecule Selector** | Browse 249 molecules by category or search by name (coming soon) |
+| **Molecule Selector** | Browse 301 molecules by category or search by name (coming soon) |
 | **Molecule Viewport** | Interactive 3D model of the selected molecule |
 | **View Controls** | Adjust rotation speed, direction, and position offset |
 | **Performance** | Real-time FPS and GPU statistics |
@@ -35,15 +35,19 @@ MolVis is a real-time 3D molecular visualization application powered by GPU comp
 
 - Simple Molecules (H₂O, CO₂, NH₃...)
 - Organic Compounds (Benzene, Ethanol, Caffeine...)
-- Amino Acids (all 20 standard)
+- Amino Acids (all 20 standard + Hydroxyproline)
 - Nucleobases (DNA/RNA bases)
-- Sugars & Carbohydrates
-- Lipids & Fatty Acids
+- Sugars & Carbohydrates (Glucose, Fructose, Ribose...)
+- Lipids & Fatty Acids (Oleic, Palmitic, Linoleic...)
 - Pharmaceuticals (Aspirin, Ibuprofen, Morphine...)
-- Neurotransmitters (Dopamine, Serotonin, GABA...)
+- Neurotransmitters (Dopamine, Serotonin, GABA, Acetylcholine...)
 - Metal Compounds (Ferrocene, Cisplatin...)
 - Plastics & Polymers
-- Energy Molecules (ATP, NADH...)
+- Energy Molecules (ATP, ADP, NADH...)
+- **Skincare Acids** ⭐
+  - AHA Acids (Glycolic, Lactic, Citric, Malic, Tartaric)
+  - BHA Acids (Salicylic)
+  - Skincare Ingredients (Niacinamide/Vitamin B3, Glycerin)
 - Exotic Structures (C₆₀, Cubane, Catenanes, Molecular Knots...)
 
 ## 🛠️ Requirements
