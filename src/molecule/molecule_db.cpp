@@ -10755,6 +10755,37 @@ void buildPCP(Molecule* mol) {
     addAtom(mol, 0.6f, -2.8f, -0.4f, ATOM_C);       // 16: CH2
     addAtom(mol, 1.4f, -1.9f, 0.4f, ATOM_C);        // 17: CH2
 
+    // Hydrogens on cyclohexyl ring (C1-C5)
+    addAtom(mol, 2.0f, -0.2f, -0.5f, ATOM_H);       // 18: H on C1
+    addAtom(mol, 1.6f, 0.8f, 0.7f, ATOM_H);         // 19: H on C1
+    addAtom(mol, 2.9f, 2.1f, 0.0f, ATOM_H);         // 20: H on C2
+    addAtom(mol, 2.3f, 2.2f, 1.4f, ATOM_H);         // 21: H on C2
+    addAtom(mol, 2.0f, 3.3f, -0.1f, ATOM_H);        // 22: H on C3
+    addAtom(mol, 2.7f, 3.5f, 1.0f, ATOM_H);         // 23: H on C3
+    addAtom(mol, 1.5f, 3.8f, 1.2f, ATOM_H);         // 24: H on C4
+    addAtom(mol, 1.3f, 2.5f, 1.6f, ATOM_H);         // 25: H on C4
+    addAtom(mol, -0.9f, 3.0f, 1.4f, ATOM_H);        // 26: H on C5
+    addAtom(mol, -0.4f, 2.8f, 0.0f, ATOM_H);        // 27: H on C5
+
+    // Hydrogens on phenyl ring
+    addAtom(mol, -2.0f, -1.3f, 0.0f, ATOM_H);       // 28: H on C7
+    addAtom(mol, -2.2f, -0.2f, -0.6f, ATOM_H);      // 29: H on C8
+    addAtom(mol, -1.8f, 0.8f, -0.8f, ATOM_H);       // 30: H on C9
+    addAtom(mol, -0.8f, 1.3f, -0.5f, ATOM_H);       // 31: H on C10
+    addAtom(mol, 0.2f, 0.7f, 0.2f, ATOM_H);         // 32: H on C11
+
+    // Hydrogens on piperidine ring (C13-C17)
+    addAtom(mol, -1.3f, -0.8f, 2.3f, ATOM_H);       // 33: H on C13
+    addAtom(mol, -0.5f, -1.8f, 2.0f, ATOM_H);       // 34: H on C13
+    addAtom(mol, -2.5f, -1.8f, 0.5f, ATOM_H);       // 35: H on C14
+    addAtom(mol, -1.9f, -2.9f, 1.3f, ATOM_H);       // 36: H on C14
+    addAtom(mol, -1.2f, -3.9f, -0.1f, ATOM_H);      // 37: H on C15
+    addAtom(mol, -0.8f, -2.8f, -1.1f, ATOM_H);      // 38: H on C15
+    addAtom(mol, 1.0f, -3.6f, -0.8f, ATOM_H);       // 39: H on C16
+    addAtom(mol, 0.8f, -2.3f, -1.2f, ATOM_H);       // 40: H on C16
+    addAtom(mol, 2.3f, -1.8f, 0.2f, ATOM_H);        // 41: H on C17
+    addAtom(mol, 1.6f, -1.0f, 1.1f, ATOM_H);        // 42: H on C17
+
     // Cyclohexyl ring bonds
     addBond(mol, 0, 1, 1);
     addBond(mol, 1, 2, 1);
@@ -10779,6 +10810,37 @@ void buildPCP(Molecule* mol) {
     addBond(mol, 15, 16, 1); // CH2-CH2
     addBond(mol, 16, 17, 1); // CH2-CH2
     addBond(mol, 17, 12, 1); // CH2-N (closing ring)
+
+    // Hydrogen bonds on cyclohexyl (C1-C5)
+    addBond(mol, 1, 18, 1);  // C1-H
+    addBond(mol, 1, 19, 1);  // C1-H
+    addBond(mol, 2, 20, 1);  // C2-H
+    addBond(mol, 2, 21, 1);  // C2-H
+    addBond(mol, 3, 22, 1);  // C3-H
+    addBond(mol, 3, 23, 1);  // C3-H
+    addBond(mol, 4, 24, 1);  // C4-H
+    addBond(mol, 4, 25, 1);  // C4-H
+    addBond(mol, 5, 26, 1);  // C5-H
+    addBond(mol, 5, 27, 1);  // C5-H
+
+    // Hydrogen bonds on phenyl ring
+    addBond(mol, 7, 28, 1);  // C7-H
+    addBond(mol, 8, 29, 1);  // C8-H
+    addBond(mol, 9, 30, 1);  // C9-H
+    addBond(mol, 10, 31, 1); // C10-H
+    addBond(mol, 11, 32, 1); // C11-H
+
+    // Hydrogen bonds on piperidine (C13-C17)
+    addBond(mol, 13, 33, 1); // C13-H
+    addBond(mol, 13, 34, 1); // C13-H
+    addBond(mol, 14, 35, 1); // C14-H
+    addBond(mol, 14, 36, 1); // C14-H
+    addBond(mol, 15, 37, 1); // C15-H
+    addBond(mol, 15, 38, 1); // C15-H
+    addBond(mol, 16, 39, 1); // C16-H
+    addBond(mol, 16, 40, 1); // C16-H
+    addBond(mol, 17, 41, 1); // C17-H
+    addBond(mol, 17, 42, 1); // C17-H
 
     centerMolecule(mol);
 }
