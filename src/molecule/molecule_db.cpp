@@ -13195,6 +13195,226 @@ void buildDexamethasone(Molecule* mol) {
     centerMolecule(mol);
 }
 
+// Fluconazole (C13H12FN3O) - Triazole antifungal
+void buildFluconazole(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Fluconazole (C13H12FN3O)");
+
+    // Imidazole ring (N-containing)
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_N);        // 0: N1
+    addAtom(mol, 1.2f, 0.5f, 0.0f, ATOM_C);        // 1: C
+    addAtom(mol, 0.8f, 1.7f, 0.0f, ATOM_N);        // 2: N
+    addAtom(mol, -0.5f, 1.5f, 0.0f, ATOM_N);       // 3: N
+
+    // Triazole linker to phenyl
+    addAtom(mol, -1.0f, 2.8f, 0.0f, ATOM_C);       // 4: Linker C
+
+    // Phenyl ring
+    float r = 1.4f;
+    addAtom(mol, -2.5f, 3.1f, 0.0f, ATOM_C);       // 5: C1
+    addAtom(mol, -3.2f, 4.3f, 0.0f, ATOM_C);       // 6: C2
+    addAtom(mol, -2.5f, 5.5f, 0.0f, ATOM_C);       // 7: C3 (para to linker)
+    addAtom(mol, -1.1f, 5.5f, 0.0f, ATOM_C);       // 8: C4
+    addAtom(mol, -0.4f, 4.3f, 0.0f, ATOM_C);       // 9: C5
+    addAtom(mol, -1.1f, 3.1f, 0.0f, ATOM_C);       // 10: C6 (connected to linker)
+
+    // Fluorine on phenyl
+    addAtom(mol, -3.2f, 6.7f, 0.0f, ATOM_F);       // 11: F
+
+    // Alcohol side chain
+    addAtom(mol, 2.5f, 0.3f, 0.0f, ATOM_C);        // 12: OCH2CH2OH linker
+    addAtom(mol, 3.5f, 1.2f, 0.0f, ATOM_C);        // 13: CH2
+    addAtom(mol, 4.8f, 0.8f, 0.0f, ATOM_C);        // 14: CH2
+    addAtom(mol, 6.0f, 1.7f, 0.0f, ATOM_O);        // 15: OH
+    addAtom(mol, 6.8f, 1.0f, 0.0f, ATOM_H);        // 16: H
+
+    // Hydrogens on imidazole and rings
+    addAtom(mol, 1.9f, -0.3f, 0.0f, ATOM_H);       // 17
+
+    // Imidazole ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 2);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 0, 1);
+
+    // Linker from triazole to phenyl
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+
+    // Phenyl ring bonds
+    addBond(mol, 5, 6, 1);
+    addBond(mol, 6, 7, 2);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 8, 9, 2);
+    addBond(mol, 9, 10, 1);
+    addBond(mol, 10, 4, 2);
+
+    // Fluorine bond
+    addBond(mol, 7, 11, 1);
+
+    // Alcohol side chain
+    addBond(mol, 1, 12, 1);
+    addBond(mol, 12, 13, 1);
+    addBond(mol, 13, 14, 1);
+    addBond(mol, 14, 15, 1);
+    addBond(mol, 15, 16, 1);
+
+    // H on imidazole
+    addBond(mol, 1, 17, 1);
+
+    centerMolecule(mol);
+}
+
+// Methotrexate (C20H22N8O5) - Simplified representation
+void buildMethotrexate(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Methotrexate (C20H22N8O5)");
+
+    // Pteridine ring (fused pyrimidine-pyrazine)
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_N);        // 0
+    addAtom(mol, 1.2f, 0.5f, 0.0f, ATOM_C);        // 1
+    addAtom(mol, 1.2f, 1.8f, 0.0f, ATOM_N);        // 2
+    addAtom(mol, 0.0f, 2.3f, 0.0f, ATOM_C);        // 3
+    addAtom(mol, -1.2f, 1.8f, 0.0f, ATOM_N);       // 4
+    addAtom(mol, -1.2f, 0.5f, 0.0f, ATOM_C);       // 5
+    addAtom(mol, 2.4f, 0.0f, 0.0f, ATOM_C);        // 6
+    addAtom(mol, 2.4f, -1.3f, 0.0f, ATOM_N);       // 7
+    addAtom(mol, 0.0f, -1.3f, 0.0f, ATOM_N);       // 8
+
+    // p-Aminobenzoyl glutamate
+    addAtom(mol, 0.0f, 3.5f, 0.0f, ATOM_C);        // 9: Linker C
+    addAtom(mol, 1.5f, 4.2f, 0.0f, ATOM_C);        // 10: Benzene
+    addAtom(mol, 2.9f, 3.8f, 0.0f, ATOM_C);        // 11
+    addAtom(mol, 3.9f, 4.8f, 0.0f, ATOM_C);        // 12
+    addAtom(mol, 3.4f, 6.1f, 0.0f, ATOM_C);        // 13
+    addAtom(mol, 2.0f, 6.5f, 0.0f, ATOM_C);        // 14
+    addAtom(mol, 1.0f, 5.5f, 0.0f, ATOM_C);        // 15
+
+    // Amino group on benzene
+    addAtom(mol, 4.8f, 4.4f, 0.0f, ATOM_N);        // 16: NH2
+    addAtom(mol, 5.6f, 5.1f, 0.0f, ATOM_H);        // 17
+    addAtom(mol, 5.6f, 3.6f, 0.0f, ATOM_H);        // 18
+
+    // Glutamate tail
+    addAtom(mol, 4.5f, 7.2f, 0.0f, ATOM_C);        // 19: C=O
+    addAtom(mol, 5.8f, 6.8f, 0.0f, ATOM_O);        // 20: O
+    addAtom(mol, -1.2f, 4.1f, 0.0f, ATOM_C);       // 21: Glu chain
+    addAtom(mol, -2.4f, 3.5f, 0.0f, ATOM_C);       // 22
+    addAtom(mol, -3.6f, 4.3f, 0.0f, ATOM_C);       // 23
+    addAtom(mol, -4.8f, 3.6f, 0.0f, ATOM_C);       // 24
+    addAtom(mol, -6.0f, 4.4f, 0.0f, ATOM_O);       // 25: COOH
+    addAtom(mol, -6.8f, 3.7f, 0.0f, ATOM_O);       // 26: OH
+
+    // Pteridine ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 2);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 2);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);
+    addBond(mol, 1, 6, 1);
+    addBond(mol, 6, 7, 2);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 8, 0, 1);
+
+    // Para-aminobenzoyl linker
+    addBond(mol, 3, 9, 1);
+    addBond(mol, 9, 10, 1);
+    addBond(mol, 10, 15, 1);
+    addBond(mol, 15, 1, 1);
+    addBond(mol, 12, 13, 1);
+    addBond(mol, 13, 14, 1);
+    addBond(mol, 14, 15, 1);
+    addBond(mol, 10, 11, 1);
+    addBond(mol, 11, 12, 1);
+
+    // Amino group
+    addBond(mol, 12, 16, 1);
+    addBond(mol, 16, 17, 1);
+    addBond(mol, 16, 18, 1);
+
+    // Glutamate tail
+    addBond(mol, 13, 19, 1);
+    addBond(mol, 19, 20, 2);
+    addBond(mol, 9, 21, 1);
+    addBond(mol, 21, 22, 1);
+    addBond(mol, 22, 23, 1);
+    addBond(mol, 23, 24, 1);
+    addBond(mol, 24, 25, 1);
+    addBond(mol, 25, 26, 1);
+
+    centerMolecule(mol);
+}
+
+// Hydroxychloroquine (C18H26ClN3O) - Simplified representation
+void buildHydroxychloroquine(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Hydroxychloroquine (C18H26ClN3O)");
+
+    // Quinoline ring (main therapeutic moiety)
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_N);        // 0
+    addAtom(mol, 1.2f, 0.5f, 0.0f, ATOM_C);        // 1
+    addAtom(mol, 2.2f, 0.0f, 0.0f, ATOM_C);        // 2
+    addAtom(mol, 2.2f, -1.3f, 0.0f, ATOM_C);       // 3
+    addAtom(mol, 1.2f, -1.8f, 0.0f, ATOM_C);       // 4
+    addAtom(mol, 0.2f, -1.3f, 0.0f, ATOM_C);       // 5
+    addAtom(mol, 0.2f, 0.0f, 0.0f, ATOM_C);        // 6
+
+    // Chlorine substituent on quinoline
+    addAtom(mol, 3.4f, 0.7f, 0.0f, ATOM_CL);       // 7: Cl
+
+    // Side chain ether
+    addAtom(mol, 1.2f, 1.9f, 0.0f, ATOM_C);        // 8: -OCH2-
+    addAtom(mol, 1.2f, 1.2f, 0.0f, ATOM_O);        // 9: O
+    addAtom(mol, 2.4f, 2.4f, 0.0f, ATOM_C);        // 10: CH2
+
+    // Aliphatic chain with diethylamino
+    addAtom(mol, 3.6f, 1.9f, 0.0f, ATOM_C);        // 11: CH2
+    addAtom(mol, 4.8f, 2.4f, 0.0f, ATOM_C);        // 12: CH2
+    addAtom(mol, 6.0f, 1.9f, 0.0f, ATOM_N);        // 13: N
+    addAtom(mol, 7.2f, 2.4f, 0.0f, ATOM_C);        // 14: CH2 (ethyl 1)
+    addAtom(mol, 8.4f, 1.9f, 0.0f, ATOM_C);        // 15: CH3 (ethyl 1)
+    addAtom(mol, 6.0f, 3.2f, 0.0f, ATOM_C);        // 16: CH2 (ethyl 2)
+    addAtom(mol, 7.2f, 3.7f, 0.0f, ATOM_C);        // 17: CH3 (ethyl 2)
+
+    // Hydroxyl group
+    addAtom(mol, 1.2f, 3.2f, 0.0f, ATOM_O);        // 18: OH
+    addAtom(mol, 0.5f, 3.8f, 0.0f, ATOM_H);        // 19: H
+
+    // Quinoline ring bonds
+    addBond(mol, 0, 1, 2);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 2);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 2);
+    addBond(mol, 5, 6, 1);
+    addBond(mol, 6, 0, 2);
+
+    // Chlorine
+    addBond(mol, 2, 7, 1);
+
+    // Side chain ether to diethylamino
+    addBond(mol, 1, 8, 1);
+    addBond(mol, 8, 9, 1);
+    addBond(mol, 9, 10, 1);
+    addBond(mol, 10, 11, 1);
+    addBond(mol, 11, 12, 1);
+    addBond(mol, 12, 13, 1);
+    addBond(mol, 13, 14, 1);
+    addBond(mol, 14, 15, 1);
+    addBond(mol, 13, 16, 1);
+    addBond(mol, 16, 17, 1);
+
+    // Hydroxyl
+    addBond(mol, 8, 18, 1);
+    addBond(mol, 18, 19, 1);
+
+    centerMolecule(mol);
+}
+
 // Random molecule generator
 float randf() { return (float)rand() / RAND_MAX; }
 
@@ -14543,195 +14763,361 @@ static MoleculeInfo molecules[] = {
     { buildOctane, "Octane", CAT_ORGANIC, "Gasoline component",
       "Octane is the reference standard for fuel ratings. Higher octane fuels resist premature ignition, preventing engine 'knock.' Iso-octane has a rating of 100, while n-heptane is rated 0. Most cars run fine on 87 octane; premium is often unnecessary." },
     // === NSAIDS & STATINS (123-130) ===
-    { buildSimvastatin, "Simvastatin/Zocor", CAT_PHARMA, "Cholesterol drug" },
-    { buildIbuprofen, "Ibuprofen/Advil", CAT_PHARMA, "NSAID" },
-    { buildNaproxen, "Naproxen/Aleve", CAT_PHARMA, "NSAID" },
-    { buildDiclofenac, "Diclofenac/Voltaren", CAT_PHARMA, "NSAID" },
-    { buildIndomethacin, "Indomethacin/Indocin", CAT_PHARMA, "NSAID" },
-    { buildCelecoxib, "Celecoxib/Celebrex", CAT_PHARMA, "COX-2 inhibitor" },
-    { buildMeloxicam, "Meloxicam/Mobic", CAT_PHARMA, "NSAID" },
-    { buildAcetaminophen, "Tylenol", CAT_PHARMA, "Paracetamol" },
+    { buildSimvastatin, "Simvastatin/Zocor", CAT_PHARMA, "Cholesterol drug",
+      "Simvastatin lowers cholesterol by blocking an enzyme in your liver. Doctors prescribe it to reduce heart attack and stroke risk. It's one of the most prescribed medications worldwide." },
+    { buildIbuprofen, "Ibuprofen/Advil", CAT_PHARMA, "NSAID",
+      "Ibuprofen blocks pain-causing prostaglandins, reducing pain, fever, and inflammation. It works within 30 minutes and is safe for most people, making it the world's most popular over-the-counter painkiller." },
+    { buildNaproxen, "Naproxen/Aleve", CAT_PHARMA, "NSAID",
+      "Naproxen is a longer-acting pain reliever than ibuprofen; one dose lasts 12 hours. Athletes favor it for joint pain, and it's branded as Aleve. Fewer doses needed daily makes it convenient." },
+    { buildDiclofenac, "Diclofenac/Voltaren", CAT_PHARMA, "NSAID",
+      "Diclofenac is a potent NSAID stronger than ibuprofen for severe pain and arthritis. It reduces inflammation effectively but has higher gastrointestinal side effects. Many countries restrict it for heart safety." },
+    { buildIndomethacin, "Indomethacin/Indocin", CAT_PHARMA, "NSAID",
+      "Indomethacin is one of the most powerful NSAIDs, used for severe arthritis, migraines, and gout. Its strength makes it effective but requires careful dosing. It's often reserved for cases where other NSAIDs fail." },
+    { buildCelecoxib, "Celecoxib/Celebrex", CAT_PHARMA, "COX-2 inhibitor",
+      "Celecoxib targets COX-2 specifically, reducing pain with fewer stomach problems than traditional NSAIDs. Developed as a safer alternative, it still carries cardiovascular risks. Patients appreciate the reduced gastrointestinal side effects." },
+    { buildMeloxicam, "Meloxicam/Mobic", CAT_PHARMA, "NSAID",
+      "Meloxicam is a once-daily NSAID for arthritis patients. Its long half-life means steady pain relief without multiple doses. It's particularly popular for chronic pain management in seniors." },
+    { buildAcetaminophen, "Tylenol", CAT_PHARMA, "Paracetamol",
+      "Acetaminophen (Tylenol) reduces pain and fever but doesn't reduce inflammation like NSAIDs. It's gentler on stomachs and safe during pregnancy. Overdose damages the liver, requiring careful dosing." },
     // === STEROID HORMONES (131-140) ===
-    { buildTestosterone, "Testosterone", CAT_HORMONES, "Male sex hormone" },
-    { buildDHT, "DHT", CAT_HORMONES, "Dihydrotestosterone" },
-    { buildAndrostenedione, "Androstenedione", CAT_HORMONES, "Androgen precursor" },
-    { buildEstradiol, "Estradiol/E2", CAT_HORMONES, "Primary estrogen" },
-    { buildEstrone, "Estrone/E1", CAT_HORMONES, "Postmenopausal estrogen" },
-    { buildEstriol, "Estriol/E3", CAT_HORMONES, "Pregnancy estrogen" },
-    { buildProgesterone, "Progesterone", CAT_HORMONES, "Pregnancy hormone" },
-    { buildCortisol, "Cortisol", CAT_HORMONES, "Stress hormone" },
-    { buildCortisone, "Cortisone", CAT_HORMONES, "Cortisol precursor" },
-    { buildAldosterone, "Aldosterone", CAT_HORMONES, "Salt balance" },
+    { buildTestosterone, "Testosterone", CAT_HORMONES, "Male sex hormone",
+      "Testosterone is the primary male sex hormone driving masculine traits, muscle growth, and aggression. Females produce small amounts; males produce 10 times more. It's essential for bone density and libido." },
+    { buildDHT, "DHT", CAT_HORMONES, "Dihydrotestosterone",
+      "Dihydrotestosterone (DHT) is testosterone's more potent form, causing male pattern baldness. Blocking DHT prevents baldness but can reduce some masculine characteristics. It's why many baldness treatments target DHT production." },
+    { buildAndrostenedione, "Androstenedione", CAT_HORMONES, "Androgen precursor",
+      "Androstenedione is a male hormone precursor that your body converts to testosterone. Athletes once used it as a supplement, but it was banned from sports competition. Your adrenal glands naturally produce small amounts daily." },
+    { buildEstradiol, "Estradiol/E2", CAT_HORMONES, "Primary estrogen",
+      "Estradiol is the most potent estrogen, responsible for female sexual traits and reproduction. Women produce about 100 micrograms daily; men produce trace amounts. Birth control pills often contain synthetic estradiol to prevent ovulation." },
+    { buildEstrone, "Estrone/E1", CAT_HORMONES, "Postmenopausal estrogen",
+      "Estrone is a weaker form of estrogen produced mainly after menopause. It's created in fat tissue, which is why postmenopausal weight gain increases estrone levels. Unlike estradiol, estrone remains more stable throughout the day." },
+    { buildEstriol, "Estriol/E3", CAT_HORMONES, "Pregnancy estrogen",
+      "Estriol is the main estrogen during pregnancy, produced in enormous quantities by the placenta. It protects the developing baby and prepares the body for delivery. Estriol levels drop dramatically after birth, causing postpartum hormone shifts." },
+    { buildProgesterone, "Progesterone", CAT_HORMONES, "Pregnancy hormone",
+      "Progesterone is the 'pregnancy hormone' preparing the uterus to receive a fertilized egg. It maintains pregnancy and prevents premature labor. Levels rise after ovulation, signaling the body it's ready for pregnancy." },
+    { buildCortisol, "Cortisol", CAT_HORMONES, "Stress hormone",
+      "Cortisol is your stress hormone, rising when you're anxious or scared. It mobilizes glucose for fight-or-flight response but chronic stress causes health problems. Cortisol peaks in early morning, helping you wake up naturally." },
+    { buildCortisone, "Cortisone", CAT_HORMONES, "Cortisol precursor",
+      "Cortisone is cortisol's inactive form, stored in tissue until your body needs it. Doctors prescribe cortisone shots for joint pain and inflammation. It's different from cortisol because it doesn't act until your body converts it." },
+    { buildAldosterone, "Aldosterone", CAT_HORMONES, "Salt balance",
+      "Aldosterone controls salt and water balance, regulating blood pressure. Your kidneys release it when sodium levels drop, making you retain water. This is why too much salt raises blood pressure over time." },
     // === HOUSEHOLD CHEMICALS (141-150) ===
-    { buildBleach, "Bleach/NaOCl", CAT_HOUSEHOLD, "Disinfectant" },
-    { buildLye, "Lye/NaOH", CAT_HOUSEHOLD, "Caustic soda" },
-    { buildTableSalt, "Table Salt/NaCl", CAT_HOUSEHOLD, "Sodium chloride" },
-    { buildBakingSoda, "Baking Soda/NaHCO3", CAT_HOUSEHOLD, "Sodium bicarbonate" },
-    { buildWashingSoda, "Washing Soda/Na2CO3", CAT_HOUSEHOLD, "Sodium carbonate" },
-    { buildSodiumFluoride, "Sodium Fluoride/NaF", CAT_HOUSEHOLD, "Toothpaste" },
-    { buildSodiumNitrate, "Sodium Nitrate/NaNO3", CAT_HOUSEHOLD, "Preservative" },
-    { buildSodiumNitrite, "Sodium Nitrite/NaNO2", CAT_HOUSEHOLD, "Meat curing" },
-    { buildSodiumSulfate, "Sodium Sulfate/Na2SO4", CAT_HOUSEHOLD, "Detergent filler" },
-    { buildMSG, "MSG", CAT_HOUSEHOLD, "Flavor enhancer" },
+    { buildBleach, "Bleach/NaOCl", CAT_HOUSEHOLD, "Disinfectant",
+      "Bleach (sodium hypochlorite) disinfects surfaces and water by releasing dangerous free radicals that destroy bacteria and viruses. It's toxic if swallowed and creates poisonous gas when mixed with ammonia. Diluted properly, it's safe for sanitizing." },
+    { buildLye, "Lye/NaOH", CAT_HOUSEHOLD, "Caustic soda",
+      "Lye (sodium hydroxide) is one of the strongest bases, used to unclog drains and make soap. It can cause severe chemical burns, completely dissolving organic material. Never touch lye without gloves; it liquefies skin on contact." },
+    { buildTableSalt, "Table Salt/NaCl", CAT_HOUSEHOLD, "Sodium chloride",
+      "Table salt (sodium chloride) seasons food and is essential for nerve function and blood pressure regulation. Your body needs about 500 mg daily, but Americans consume 10 times that amount. Too much salt increases heart disease and stroke risk." },
+    { buildBakingSoda, "Baking Soda/NaHCO3", CAT_HOUSEHOLD, "Sodium bicarbonate",
+      "Baking soda (sodium bicarbonate) releases carbon dioxide when heated, making cakes and cookies fluffy. It's mildly alkaline, so it neutralizes acid reflux. Many people use it as a natural deodorant and cleaning paste." },
+    { buildWashingSoda, "Washing Soda/Na2CO3", CAT_HOUSEHOLD, "Sodium carbonate",
+      "Washing soda (sodium carbonate) is stronger than baking soda and boosts laundry detergent power. It breaks down grease and stains more effectively than regular soap. Mixed with baking soda, it makes an excellent gentle cleaner." },
+    { buildSodiumFluoride, "Sodium Fluoride/NaF", CAT_HOUSEHOLD, "Toothpaste",
+      "Sodium fluoride strengthens tooth enamel, preventing cavities by replacing hydroxyl with fluoride. It's added to most toothpastes and drinking water in many cities. Some people worry about fluoride despite safety evidence, calling it controversial." },
+    { buildSodiumNitrate, "Sodium Nitrate/NaNO3", CAT_HOUSEHOLD, "Preservative",
+      "Sodium nitrate preserves cured meats like bacon and hot dogs by killing harmful bacteria. It's been used for centuries, long before refrigeration. High consumption links to increased cancer risk, leading to health debates." },
+    { buildSodiumNitrite, "Sodium Nitrite/NaNO2", CAT_HOUSEHOLD, "Meat curing",
+      "Sodium nitrite is more potent than nitrate for meat preservation and faster-acting. It also prevents clostridium botulinum toxin, potentially deadly if untreated. Modern curing combines it with nitrate for safety and effectiveness." },
+    { buildSodiumSulfate, "Sodium Sulfate/Na2SO4", CAT_HOUSEHOLD, "Detergent filler",
+      "Sodium sulfate fills detergents to increase volume cheaply. It doesn't help clean but makes products easier to handle. It's also used in laxatives and glass manufacturing as an economical filler." },
+    { buildMSG, "MSG", CAT_HOUSEHOLD, "Flavor enhancer",
+      "MSG (monosodium glutamate) enhances savory flavors, making food taste more delicious. Your tongue has specific receptors detecting umami, the fifth basic taste. It's naturally abundant in tomatoes, parmesan cheese, and aged foods." },
     // === ACIDS (151-161) ===
-    { buildCitricAcid, "Citric Acid", CAT_ACIDS, "Citrus fruits" },
-    { buildCarbonicAcid, "Carbonic Acid/H2CO3", CAT_ACIDS, "CO2 in water" },
-    { buildBoricAcid, "Boric Acid/H3BO3", CAT_ACIDS, "Antiseptic" },
-    { buildOxalicAcid, "Oxalic Acid", CAT_ACIDS, "Rust remover" },
-    { buildTartaricAcid, "Tartaric Acid", CAT_ACIDS, "Wine acid" },
-    { buildMalicAcid, "Malic Acid", CAT_ACIDS, "Apple acid" },
-    { buildHydrofluoricAcid, "Hydrofluoric Acid/HF", CAT_ACIDS, "Glass etching" },
-    { buildHydrobromicAcid, "Hydrobromic Acid/HBr", CAT_ACIDS, "Strong acid" },
-    { buildHydroiodicAcid, "Hydroiodic Acid/HI", CAT_ACIDS, "Strong acid" },
-    { buildPerchloricAcid, "Perchloric Acid/HClO4", CAT_ACIDS, "Strongest acid" },
-    { buildAcrylicAcid, "Acrylic Acid", CAT_ACIDS, "Polymer precursor" },
+    { buildCitricAcid, "Citric Acid", CAT_ACIDS, "Citrus fruits",
+      "Citric acid gives lemons and limes their sour taste. It's used in foods, drinks, and cleaning products for its acidity. Chemically produced citric acid is indistinguishable from natural sources and costs less." },
+    { buildCarbonicAcid, "Carbonic Acid/H2CO3", CAT_ACIDS, "CO2 in water",
+      "Carbonic acid forms when carbon dioxide dissolves in water, making fizzy drinks bubbly. It's extremely weak, so soda doesn't harm teeth directly. However, sugar in soda causes decay; the acid may increase risk." },
+    { buildBoricAcid, "Boric Acid/H3BO3", CAT_ACIDS, "Antiseptic",
+      "Boric acid is a weak acid used as an antiseptic in eye drops and mouthwash. It's toxic if ingested in large quantities, especially for babies. Borax, its salt form, is used in detergents and glass making." },
+    { buildOxalicAcid, "Oxalic Acid", CAT_ACIDS, "Rust remover",
+      "Oxalic acid dissolves rust and mineral deposits, found naturally in spinach and rhubarb. Eating too much can interfere with calcium absorption, which is why oxalate reduction is recommended for kidney stone patients. It creates insoluble salts with calcium." },
+    { buildTartaricAcid, "Tartaric Acid", CAT_ACIDS, "Wine acid",
+      "Tartaric acid gives wine its tart taste and occurs naturally in grapes. It precipitates as cream of tartar (potassium bitartrate) during wine aging. Bakers use cream of tartar as a leavening agent in baked goods alongside baking soda." },
+    { buildMalicAcid, "Malic Acid", CAT_ACIDS, "Apple acid",
+      "Malic acid makes apples and tart candies sour, providing that pucker-inducing sensation. Your body produces it during cellular respiration as an energy intermediate. Some athletes use malic acid supplements, believing it reduces fatigue, though evidence is mixed." },
+    { buildHydrofluoricAcid, "Hydrofluoric Acid/HF", CAT_ACIDS, "Glass etching",
+      "Hydrofluoric acid (HF) dissolves glass and rock, making it unique among common acids. Despite being weak compared to hydrochloric acid, it's extremely dangerous because fluoride ions penetrate tissue deeply. A small skin exposure can cause fatal heart arrhythmias." },
+    { buildHydrobromicAcid, "Hydrobromic Acid/HBr", CAT_ACIDS, "Strong acid",
+      "Hydrobromic acid is a strong acid used in pharmaceuticals and organic synthesis. It's less common than hydrochloric acid but equally corrosive. Bromide salts have been used historically as sedatives, though barbiturates replaced them." },
+    { buildHydroiodicAcid, "Hydroiodic Acid/HI", CAT_ACIDS, "Strong acid",
+      "Hydroiodic acid (HI) is a strong, colorless acid used in laboratory and industrial synthesis. It's unstable, slowly decomposing to iodine and water. Iodide salts are important in nuclear medicine and photography." },
+    { buildPerchloricAcid, "Perchloric Acid/HClO4", CAT_ACIDS, "Strongest acid",
+      "Perchloric acid is the strongest of common acids, extremely corrosive and potentially explosive. It's used as a catalyst in explosives and rocket fuel production. Perchlorate salts are found in some food supplies from environmental contamination." },
+    { buildAcrylicAcid, "Acrylic Acid", CAT_ACIDS, "Polymer precursor",
+      "Acrylic acid polymerizes into polyacrylate, used in super glue and diapers' absorbent gels. Acrylic acid itself is corrosive and irritating. It's produced on an enormous industrial scale for various plastics." },
     // === PLASTICS (162-179) ===
-    { buildVinylChloride, "Vinyl Chloride/PVC", CAT_PLASTICS, "PVC monomer" },
-    { buildMethylMethacrylate, "MMA/Plexiglas", CAT_PLASTICS, "Acrylic monomer" },
-    { buildTetrafluoroethylene, "TFE/Teflon", CAT_PLASTICS, "PTFE monomer" },
-    { buildCaprolactam, "Caprolactam/Nylon-6", CAT_PLASTICS, "Nylon-6 monomer" },
-    { buildAcrylonitrile, "Acrylonitrile/ABS", CAT_PLASTICS, "ABS component" },
-    { buildButadiene, "1,3-Butadiene/ABS", CAT_PLASTICS, "Rubber/ABS" },
-    { buildBisphenolA, "Bisphenol A/BPA", CAT_PLASTICS, "Polycarbonate" },
-    { buildTerephthalicAcid, "Terephthalic Acid/PET", CAT_PLASTICS, "PET monomer" },
-    { buildVinylAcetate, "Vinyl Acetate/EVA", CAT_PLASTICS, "EVA monomer" },
-    { buildDimethylsiloxane, "PDMS/Silicone", CAT_PLASTICS, "Silicone monomer" },
-    { buildAdipicAcid, "Adipic Acid/Nylon-6,6", CAT_PLASTICS, "Nylon monomer" },
-    { buildHexamethylenediamine, "HMDA/Nylon-6,6", CAT_PLASTICS, "Nylon monomer" },
-    { buildIsoprene, "Isoprene/Rubber", CAT_PLASTICS, "Natural rubber" },
-    { buildPEDimer, "PE Dimer/HDPE", CAT_PLASTICS, "Polyethylene" },
-    { buildPPDimer, "PP Dimer", CAT_PLASTICS, "Polypropylene" },
-    { buildPVCTrimer, "PVC Trimer", CAT_PLASTICS, "PVC oligomer" },
-    { buildPSDimer, "PS Dimer", CAT_PLASTICS, "Polystyrene" },
-    { buildPTFETrimer, "PTFE Trimer/Teflon", CAT_PLASTICS, "Teflon oligomer" },
+    { buildVinylChloride, "Vinyl Chloride/PVC", CAT_PLASTICS, "PVC monomer",
+      "Vinyl chloride polymerizes into polyvinyl chloride (PVC), the third most common plastic. Workers exposed to vinyl chloride dust develop angiosarcoma liver cancer. PVC is now made more safely, but the hazard remains with improper handling." },
+    { buildMethylMethacrylate, "MMA/Plexiglas", CAT_PLASTICS, "Acrylic monomer",
+      "Methyl methacrylate polymerizes into acrylic glass (Plexiglas), stronger and lighter than regular glass. It's used in aquariums, aircraft windows, and dental prosthetics. Acrylic sheets are shatter-resistant and easily molded when heated." },
+    { buildTetrafluoroethylene, "TFE/Teflon", CAT_PLASTICS, "PTFE monomer",
+      "TFE polymerizes into PTFE (Teflon), the non-stick coating on frying pans. It's heat-resistant to 260°C and chemically inert. Teflon was discovered accidentally when a refrigerant experiment produced this slippery powder." },
+    { buildCaprolactam, "Caprolactam/Nylon-6", CAT_PLASTICS, "Nylon-6 monomer",
+      "Caprolactam polymerizes into nylon-6, used in clothing fibers, carpets, and car parts. Nylon revolutionized textiles in the 1930s, replacing silk and natural fibers. Its strength and elasticity make it ideal for stockings and parachutes." },
+    { buildAcrylonitrile, "Acrylonitrile/ABS", CAT_PLASTICS, "ABS component",
+      "Acrylonitrile is a component of ABS plastic, found in Lego bricks and automotive dashboards. It's carcinogenic and volatile, requiring careful handling in factories. ABS combines hardness with flexibility for durable consumer products." },
+    { buildButadiene, "1,3-Butadiene/ABS", CAT_PLASTICS, "Rubber/ABS",
+      "Butadiene polymerizes into synthetic rubber, replacing natural rubber for car tires and hoses. World War II accelerated synthetic rubber development when natural rubber supplies were cut off. It's also used in ABS plastic and nitrile gloves." },
+    { buildBisphenolA, "Bisphenol A/BPA", CAT_PLASTICS, "Polycarbonate",
+      "BPA polymerizes into polycarbonate plastic, used in water bottles and sports equipment. BPA leaches into drinks and foods, acting as an endocrine disruptor. Many countries now restrict BPA in baby bottles and sippy cups." },
+    { buildTerephthalicAcid, "Terephthalic Acid/PET", CAT_PLASTICS, "PET monomer",
+      "Terephthalic acid polymerizes into PET plastic, used in soda bottles and polyester clothing. PET is recyclable, labeled as #1 plastic, and the most recycled plastic worldwide. Its durability and clarity make it ideal for beverage containers." },
+    { buildVinylAcetate, "Vinyl Acetate/EVA", CAT_PLASTICS, "EVA monomer",
+      "Vinyl acetate polymerizes into ethylene vinyl acetate (EVA), used in shoe cushioning and flexible packaging. EVA is flexible yet durable, making comfortable shoe soles. It's also used in adhesive applications and protective coatings." },
+    { buildDimethylsiloxane, "PDMS/Silicone", CAT_PLASTICS, "Silicone monomer",
+      "PDMS polymerizes into silicone, used in sealants, medical implants, and cooking utensils. Silicone is biocompatible and heat-resistant, ideal for breast implants and baking pans. It's water-repellent yet breathable, used in waterproofing." },
+    { buildAdipicAcid, "Adipic Acid/Nylon-6,6", CAT_PLASTICS, "Nylon monomer",
+      "Adipic acid is a nylon-6,6 monomer, combined with hexamethylenediamine. Nylon-6,6 is stiffer than nylon-6, used in engineering applications. It's also used in polyester-polyol production for rigid foams and coatings." },
+    { buildHexamethylenediamine, "HMDA/Nylon-6,6", CAT_PLASTICS, "Nylon monomer",
+      "HMDA is nylon-6,6's second monomer, reacted with adipic acid. It's harder and stiffer than nylon-6, used in tough applications like gears and bearings. HMDA production is energy-intensive but essential for engineering plastics." },
+    { buildIsoprene, "Isoprene/Rubber", CAT_PLASTICS, "Natural rubber",
+      "Isoprene polymerizes into natural rubber, tapped from rubber trees. Synthetic isoprene matches natural rubber's properties, making tires and elastic products. Your body produces isoprene naturally, which is why it's on your breath." },
+    { buildPEDimer, "PE Dimer/HDPE", CAT_PLASTICS, "Polyethylene",
+      "Polyethylene dimers represent the basic unit of polyethylene (HDPE/LDPE), the most common plastic. PE is made from ethylene monomers; the dimer shows how they link. Everything from bags to milk jugs is made from PE." },
+    { buildPPDimer, "PP Dimer", CAT_PLASTICS, "Polypropylene",
+      "Polypropylene (PP) dimers represent PP plastic units, used in food containers and car parts. PP is stronger than PE and withstands higher temperatures. It's the plastic your microwave containers are labeled with." },
+    { buildPVCTrimer, "PVC Trimer", CAT_PLASTICS, "PVC oligomer",
+      "PVC trimers show how vinyl chloride units combine in PVC plastic. PVC is rigid, making pipes and window frames, or flexible for vinyl records and shower curtains. It requires additives (plasticizers) to be flexible." },
+    { buildPSDimer, "PS Dimer", CAT_PLASTICS, "Polystyrene",
+      "Polystyrene dimers represent PS plastic, used in foam cups and hard cases. PS is rigid and brittle when solid, lightweight when foamed. It's made by dissolving carbon dioxide in melted polystyrene." },
+    { buildPTFETrimer, "PTFE Trimer/Teflon", CAT_PLASTICS, "Teflon oligomer",
+      "PTFE trimers show how TFE units bond, representing Teflon's basic structure. PTFE is the slipperiest known material, used beyond cookware in medical devices and machinery. Its perfluoro bonds make it extremely stable." },
     // === FATTY ACIDS (180-189) ===
-    { buildElaidicAcid, "Elaidic Acid/trans-9", CAT_FATS, "Industrial trans fat" },
-    { buildOleicAcid, "Oleic Acid/cis-9", CAT_FATS, "Olive oil" },
-    { buildVaccenicAcid, "Vaccenic Acid/trans-11", CAT_FATS, "Natural trans fat" },
-    { buildTransPalmitoleicAcid, "trans-Palmitoleic", CAT_FATS, "Dairy fat" },
-    { buildLinoelaidicAcid, "Linoelaidic/trans,trans", CAT_FATS, "Hydrogenation" },
-    { buildRumenicAcid, "Rumenic Acid/CLA", CAT_FATS, "Conjugated linoleic" },
-    { buildStearicAcid, "Stearic Acid/C18:0", CAT_FATS, "Saturated fat" },
-    { buildPalmiticAcid, "Palmitic Acid/C16:0", CAT_FATS, "Palm oil" },
-    { buildLinoleicAcid, "Linoleic Acid/Omega-6", CAT_FATS, "Essential FA" },
-    { buildAlphaLinolenicAcid, "ALA/Omega-3", CAT_FATS, "Plant omega-3" },
+    { buildElaidicAcid, "Elaidic Acid/trans-9", CAT_FATS, "Industrial trans fat",
+      "Elaidic acid is a trans fatty acid from industrial hydrogenation. Trans fats raise bad cholesterol and lower good cholesterol, increasing heart disease risk. Many countries now ban or limit artificial trans fats in foods." },
+    { buildOleicAcid, "Oleic Acid/cis-9", CAT_FATS, "Olive oil",
+      "Oleic acid is the monounsaturated fat making olive oil liquid at room temperature. It's considered healthy, abundant in Mediterranean diets. Your body can synthesize oleic acid from other fats." },
+    { buildVaccenicAcid, "Vaccenic Acid/trans-11", CAT_FATS, "Natural trans fat",
+      "Vaccenic acid is a natural trans fat from ruminant animals like cows and sheep. Unlike industrial trans fats, natural trans fats in small amounts don't raise disease risk as much. Grass-fed dairy has higher vaccenic acid levels." },
+    { buildTransPalmitoleicAcid, "trans-Palmitoleic", CAT_FATS, "Dairy fat",
+      "Trans-palmitoleic is a trans fat from dairy products, naturally occurring in small amounts. Unlike industrial trans fats, dairy trans fats don't raise heart disease risk as much. Grass-fed butter has higher trans-palmitoleic levels." },
+    { buildLinoelaidicAcid, "Linoelaidic/trans,trans", CAT_FATS, "Hydrogenation",
+      "Linoelaidic acid has two trans double bonds, formed during hydrogenation of vegetable oils. It's more common in processed foods, raising cholesterol problems. This is why nutritionists recommend avoiding hydrogenated oils in margarine." },
+    { buildRumenicAcid, "Rumenic Acid/CLA", CAT_FATS, "Conjugated linoleic",
+      "Rumenic acid is a conjugated linoleic acid (CLA) from grass-fed meat and dairy. Some studies suggest CLA aids fat loss and muscle building, though effects are modest. Grass-fed animals produce more CLA than grain-fed ones." },
+    { buildStearicAcid, "Stearic Acid/C18:0", CAT_FATS, "Saturated fat",
+      "Stearic acid is a saturated fat found in animal fats and cocoa butter. Unlike other saturated fats, stearic acid doesn't raise LDL cholesterol. Your body converts it to oleic acid, the healthy monounsaturated fat." },
+    { buildPalmiticAcid, "Palmitic Acid/C16:0", CAT_FATS, "Palm oil",
+      "Palmitic acid is the main saturated fat in palm oil, abundant and cheap. It raises cholesterol and increases heart disease risk. Palm oil production drives rainforest deforestation, making it environmentally controversial." },
+    { buildLinoleicAcid, "Linoleic Acid/Omega-6", CAT_FATS, "Essential FA",
+      "Linoleic acid is an essential omega-6 polyunsaturated fat you must obtain from food. Found in vegetable oils and nuts, it's vital for skin health and inflammation. Modern diets contain excessive omega-6, leading to inflammation imbalances." },
+    { buildAlphaLinolenicAcid, "ALA/Omega-3", CAT_FATS, "Plant omega-3",
+      "ALA is an essential omega-3 fat from plants, found in flaxseed and walnuts. Your body converts ALA to EPA and DHA, though inefficiently. Getting both omega-3 and omega-6 in balance is crucial for health." },
     // === METAL COMPOUNDS (190-198) ===
-    { buildRust, "Rust/Fe2O3", CAT_METALS, "Iron oxide" },
-    { buildMagnetite, "Magnetite/Fe3O4", CAT_METALS, "Magnetic iron" },
-    { buildIronPentacarbonyl, "Iron Pentacarbonyl", CAT_METALS, "Fe(CO)5" },
-    { buildCopperSulfate, "Copper Sulfate/CuSO4", CAT_METALS, "Blue vitriol" },
-    { buildVerdigris, "Verdigris/Patina", CAT_METALS, "Copper carbonate" },
-    { buildFerrocene, "Ferrocene", CAT_METALS, "Sandwich compound" },
-    { buildCisplatin, "Cisplatin", CAT_METALS, "Cancer drug" },
-    { buildAluminumOxide, "Alumina/Al2O3", CAT_METALS, "Aluminum oxide" },
-    { buildTitaniumDioxide, "Titania/TiO2", CAT_METALS, "White pigment" },
+    { buildRust, "Rust/Fe2O3", CAT_METALS, "Iron oxide",
+      "Rust (iron oxide) forms when iron oxidizes, causing corrosion and weakness. Rust is electrochemically complex, requiring both oxygen and moisture. Preventing rust costs billions annually through painting, galvanizing, and stainless steel." },
+    { buildMagnetite, "Magnetite/Fe3O4", CAT_METALS, "Magnetic iron",
+      "Magnetite is a magnetic iron oxide naturally occurring as a mineral. Iron-loving bacteria use magnetite for navigation. Magnetite is red, compared to rust's red-brown, and found in ancient sediments." },
+    { buildIronPentacarbonyl, "Iron Pentacarbonyl", CAT_METALS, "Fe(CO)5",
+      "Iron pentacarbonyl is a volatile iron compound used in metal plating and synthesis. It's extremely toxic and flammable, requiring extreme caution. Despite dangers, it's valuable in nanomaterial production." },
+    { buildCopperSulfate, "Copper Sulfate/CuSO4", CAT_METALS, "Blue vitriol",
+      "Copper sulfate is bright blue, used as a fungicide and algicide in agriculture. It's toxic to aquatic life, making it effective for water treatment. Medieval times saw copper sulfate used as a pigment for blue paints." },
+    { buildVerdigris, "Verdigris/Patina", CAT_METALS, "Copper carbonate",
+      "Verdigris (copper carbonate patina) forms when copper oxidizes, giving it a distinctive green color. Statue of Liberty is green because of verdigris forming on its copper surface. Renaissance artists used verdigris as a green pigment in paintings." },
+    { buildFerrocene, "Ferrocene", CAT_METALS, "Sandwich compound",
+      "Ferrocene is an organometallic compound with an iron atom sandwiched between two aromatic rings. Its unusual structure revolutionized organometallic chemistry. It's used as a fuel additive and in research for advanced materials." },
+    { buildCisplatin, "Cisplatin", CAT_METALS, "Cancer drug",
+      "Cisplatin is a platinum-based chemotherapy drug that binds DNA, killing cancer cells. It's one of the most effective cancer drugs but causes severe side effects like hearing loss. Its geometry makes it work; the trans isomer is inactive." },
+    { buildAluminumOxide, "Alumina/Al2O3", CAT_METALS, "Aluminum oxide",
+      "Aluminum oxide (alumina) is extremely hard, used as sandpaper and polishing compound. It's also the main component of rubies and sapphires (colored by trace elements). Alumina protects aluminum from rusting by forming a protective layer." },
+    { buildTitaniumDioxide, "Titania/TiO2", CAT_METALS, "White pigment",
+      "Titanium dioxide is bright white, used in paints, cosmetics, and sunscreen. It's one of the whitest substances known, scattering all visible light. Nanoparticle TiO2 in sunscreen is controversial for potential toxicity." },
     // === NEUROTRANSMITTERS (199-202) ===
-    { buildAcetylcholine, "Acetylcholine", CAT_NEUROTRANS, "Muscle/memory" },
-    { buildGABA, "GABA", CAT_NEUROTRANS, "Inhibitory NT" },
-    { buildGlutamate, "Glutamate", CAT_NEUROTRANS, "Excitatory NT" },
-    { buildNorepinephrine, "Norepinephrine", CAT_NEUROTRANS, "Fight-or-flight" },
+    { buildAcetylcholine, "Acetylcholine", CAT_NEUROTRANS, "Muscle/memory",
+      "Acetylcholine enables muscle contraction and memory formation at synapses. Your brain uses acetylcholine to consolidate memories; Alzheimer's involves acetylcholine deficiency. Some pesticides work by blocking acetylcholine breakdown." },
+    { buildGABA, "GABA", CAT_NEUROTRANS, "Inhibitory NT",
+      "GABA is your brain's main inhibitory neurotransmitter, calming excitement. Benzodiazepine tranquilizers work by enhancing GABA function. Alcohol also enhances GABA, explaining its sedative effects but also addiction potential." },
+    { buildGlutamate, "Glutamate", CAT_NEUROTRANS, "Excitatory NT",
+      "Glutamate is your brain's main excitatory neurotransmitter, essential for learning and memory. Excessive glutamate damages neurons (excitotoxicity), linked to Alzheimer's and stroke. MSG in food provides glutamate, though it doesn't cross the blood-brain barrier." },
+    { buildNorepinephrine, "Norepinephrine", CAT_NEUROTRANS, "Fight-or-flight",
+      "Norepinephrine is your fight-or-flight hormone released by the sympathetic nervous system. It increases heart rate, blood pressure, and alertness during stress. Stimulant drugs like cocaine and amphetamines increase norepinephrine levels." },
     // === ENERGY MOLECULES (203-205) ===
-    { buildATP, "ATP", CAT_ENERGY, "Energy currency" },
-    { buildADP, "ADP", CAT_ENERGY, "Adenosine diphosphate" },
-    { buildNADH, "NADH", CAT_ENERGY, "Electron carrier" },
-    // === ANTIBIOTICS (206-208) ===
-    { buildPenicillinG, "Penicillin G", CAT_PHARMA, "Beta-lactam" },
-    { buildAmoxicillin, "Amoxicillin", CAT_PHARMA, "Broad-spectrum" },
-    { buildVancomycin, "Vancomycin", CAT_PHARMA, "Glycopeptide" },
+    { buildATP, "ATP", CAT_ENERGY, "Energy currency",
+      "ATP (adenosine triphosphate) is your cells' energy currency, released when cells burn glucose. You produce about your body weight in ATP daily, recycling it constantly. Every muscle contraction, nerve impulse, and heartbeat requires ATP hydrolysis." },
+    { buildADP, "ADP", CAT_ENERGY, "Adenosine diphosphate",
+      "ADP (adenosine diphosphate) is ATP with one phosphate removed, storing energy release. It's quickly recharged back to ATP by mitochondria. The ATP-ADP cycle occurs millions of times per second in your body." },
+    { buildNADH, "NADH", CAT_ENERGY, "Electron carrier",
+      "NADH shuttles electrons through cellular respiration, carrying energy from glucose breakdown. When NADH donates electrons, it becomes NAD+, recycled endlessly. Performance athletes sometimes supplement with NAD+ precursors, though benefits are unproven." },
+    // === ANTIBIOTICS & IMMUNOSUPPRESSANTS (206-210) ===
+    { buildPenicillinG, "Penicillin G", CAT_PHARMA, "Beta-lactam",
+      "Penicillin G was the first widely used antibiotic, discovered accidentally by Fleming in 1928. It revolutionized medicine, saving millions from bacterial infections. It works by breaking bacterial cell walls, which human cells lack." },
+    { buildAmoxicillin, "Amoxicillin", CAT_PHARMA, "Broad-spectrum",
+      "Amoxicillin is a penicillin derivative with broader bacterial spectrum and better absorption. It's one of the most prescribed antibiotics worldwide. Amoxicillin remains highly effective because most bacteria haven't developed resistance." },
+    { buildVancomycin, "Vancomycin", CAT_PHARMA, "Glycopeptide",
+      "Vancomycin is a powerful antibiotic used for serious infections and antibiotic-resistant bacteria. It works differently from penicillin, making it effective against resistant strains. IV vancomycin is the last resort for some life-threatening infections." },
+    { buildMethotrexate, "Methotrexate", CAT_PHARMA, "Immunosuppressant",
+      "Methotrexate blocks folic acid metabolism, slowing rapidly dividing cells. Doctors use it for cancer, autoimmune diseases, and severe rheumatoid arthritis. It's toxic at high doses but effective at lower doses with careful monitoring." },
+    { buildHydroxychloroquine, "Hydroxychloroquine", CAT_PHARMA, "Antimalarial/Immunosuppressant",
+      "Hydroxychloroquine reduces inflammation by interfering with immune cell function. It's used for lupus, rheumatoid arthritis, and historically for malaria prevention. It gained attention during COVID-19 despite unproven benefits in treating the virus." },
+    { buildFluconazole, "Fluconazole", CAT_PHARMA, "Antifungal triazole",
+      "Fluconazole is a triazole antifungal that inhibits fungal cell membrane synthesis by blocking lanosterol 14α-demethylase. It effectively treats candida infections (thrush), cryptococcal meningitis, and other systemic fungal infections. Fluconazole is well-absorbed orally and penetrates body tissues well, making it a first-line treatment for many fungal infections. Its broad spectrum and favorable pharmacokinetics have made it one of the most prescribed antifungals worldwide. It works by disrupting ergosterol synthesis in fungal cell membranes, which is absent in human cells, providing good selectivity. Fluconazole has been used successfully for over 30 years since its introduction in 1990, and it remains effective despite some emerging resistant strains." },
     // === EXPLOSIVES (209-211) ===
-    { buildTNT, "TNT", CAT_OTHER, "Trinitrotoluene" },
-    { buildNitroglycerin, "Nitroglycerin", CAT_PHARMA, "Explosive/angina" },
-    { buildRDX, "RDX", CAT_OTHER, "Military explosive" },
+    { buildTNT, "TNT", CAT_OTHER, "Trinitrotoluene",
+      "TNT (trinitrotoluene) is a stable explosive used in military applications and mining. It requires a detonator to explode, making it safer to handle than other explosives. The yellow color of TNT can stain skin and clothing permanently." },
+    { buildNitroglycerin, "Nitroglycerin", CAT_PHARMA, "Explosive/angina",
+      "Nitroglycerin relieves angina (heart pain) by dilating blood vessels, improving blood flow. It was first synthesized in 1847 but took until the 1870s to recognize medical use. Ironically, Nobel Prize creator Alfred Nobel discovered this use treating his chest pain." },
+    { buildRDX, "RDX", CAT_OTHER, "Military explosive",
+      "RDX is a military explosive more powerful than TNT, used in detonators and shaped charges. It's less stable than TNT, requiring careful handling. Modern ammunition often uses RDX in primer formulations." },
     // === SWEETENERS (212-215) ===
-    { buildSucrose, "Sucrose/Table Sugar", CAT_SUGARS, "Disaccharide" },
-    { buildAspartame, "Aspartame", CAT_OTHER, "NutraSweet" },
-    { buildSaccharin, "Saccharin", CAT_OTHER, "Sweet'N Low" },
-    { buildSucralose, "Sucralose/Splenda", CAT_OTHER, "Chlorinated sugar" },
+    { buildSucrose, "Sucrose/Table Sugar", CAT_SUGARS, "Disaccharide",
+      "Sucrose is table sugar made by plants combining glucose and fructose. Plants make it for energy storage; animals can't synthesize it. Sucrose was once rare and precious; now it's leading contributor to obesity and diabetes." },
+    { buildAspartame, "Aspartame", CAT_OTHER, "NutraSweet",
+      "Aspartame is a sweetener 200 times sweeter than sugar with no calories. It's made from aspartic acid and phenylalanine, amino acids. People with phenylketonuria (PKU) cannot safely consume aspartame due to phenylalanine." },
+    { buildSaccharin, "Saccharin", CAT_OTHER, "Sweet'N Low",
+      "Saccharin is the oldest artificial sweetener, 300 times sweeter than sugar. Once suspected of causing cancer, decades of research proved it safe. It has a bitter aftertaste that makes it less popular than newer sweeteners." },
+    { buildSucralose, "Sucralose/Splenda", CAT_OTHER, "Chlorinated sugar",
+      "Sucralose is made by replacing hydroxyl groups in sucrose with chlorine. It's 600 times sweeter than sugar and completely calorie-free. Splenda is the most common brand, heat-stable enough for baking." },
     // === PESTICIDES (216-218) ===
-    { buildDDT, "DDT", CAT_OTHER, "Pesticide" },
-    { buildGlyphosate, "Glyphosate/Roundup", CAT_OTHER, "Herbicide" },
-    { buildMalathion, "Malathion", CAT_OTHER, "Insecticide" },
+    { buildDDT, "DDT", CAT_OTHER, "Pesticide",
+      "DDT is an insecticide that revolutionized malaria prevention but later banned in most countries. It persists in the environment for decades, accumulating in animals. It causes eggshell thinning in birds, nearly driving eagles extinct." },
+    { buildGlyphosate, "Glyphosate/Roundup", CAT_OTHER, "Herbicide",
+      "Glyphosate (Roundup) kills weeds by inhibiting plant protein synthesis. It's the world's most used herbicide, used with genetically modified crops. The WHO classified it as 'probably carcinogenic,' sparking controversy and lawsuits." },
+    { buildMalathion, "Malathion", CAT_OTHER, "Insecticide",
+      "Malathion is an insecticide used against mosquitoes and agricultural pests. It's less toxic than older organophosphates but still dangerous to humans. California uses aerial malathion spraying against fruit flies, causing public concern." },
     // === FRAGRANCES (219-222) ===
-    { buildVanillin, "Vanillin/Vanilla", CAT_FLAVORS, "Vanilla flavor" },
-    { buildLimonene, "Limonene/Citrus", CAT_FLAVORS, "Citrus scent" },
-    { buildMenthol, "Menthol/Mint", CAT_FLAVORS, "Cooling sensation" },
-    { buildCinnamaldehyde, "Cinnamaldehyde/Cinnamon", CAT_FLAVORS, "Cinnamon" },
+    { buildVanillin, "Vanillin/Vanilla", CAT_FLAVORS, "Vanilla flavor",
+      "Vanillin is the compound giving vanilla its distinctive flavor and aroma. It's also found in turmeric, clove oil, and wood smoke. Most 'vanilla' flavoring is synthetic vanillin, cheaper and faster than extracting from vanilla beans." },
+    { buildLimonene, "Limonene/Citrus", CAT_FLAVORS, "Citrus scent",
+      "Limonene is the terpene giving citrus fruits their fresh smell. It's used in cleaning products and has potential cancer-fighting properties. Your body absorbs limonene through skin, which is why lemon scent feels refreshing." },
+    { buildMenthol, "Menthol/Mint", CAT_FLAVORS, "Cooling sensation",
+      "Menthol gives peppermint its cooling sensation by activating temperature-sensing nerve receptors. It tricks your nerves into thinking your mouth is cold. Menthol appears in cough drops, toothpaste, and sports creams." },
+    { buildCinnamaldehyde, "Cinnamaldehyde/Cinnamon", CAT_FLAVORS, "Cinnamon",
+      "Cinnamaldehyde is the compound giving cinnamon its spicy warmth. It activates pain receptors, which is why cinnamon burns slightly. Pure cinnamaldehyde can cause allergic reactions; true cinnamon is safer than cassia." },
     // === LACHRYMATORY (223) ===
-    { buildPropanethialSoxide, "Onion Factor/Tears", CAT_FLAVORS, "Makes you cry" },
+    { buildPropanethialSoxide, "Onion Factor/Tears", CAT_FLAVORS, "Makes you cry",
+      "Propanethial S-oxide is released when cutting onions, irritating your eyes. Your body interprets this as pain, triggering tears. Chilling onions before cutting reduces this compound's release." },
     // === ENVIRONMENTAL (224-225) ===
-    { buildCFC12, "CFC-12/Freon", CAT_OTHER, "Ozone depleter" },
-    { buildSF6, "SF6/Greenhouse", CAT_OTHER, "Potent GHG" },
+    { buildCFC12, "CFC-12/Freon", CAT_OTHER, "Ozone depleter",
+      "CFC-12 (Freon) was used in refrigerators and air conditioners for decades. It's extremely stable in the atmosphere, persisting for 100+ years. CFCs destroy ozone high in the atmosphere, creating the ozone hole." },
+    { buildSF6, "SF6/Greenhouse", CAT_OTHER, "Potent GHG",
+      "SF6 (sulfur hexafluoride) is a potent greenhouse gas used in electrical equipment. It traps 23,500 times more heat than CO2 over 100 years. SF6 lasts 3,200 years in the atmosphere, making it extremely concerning." },
     // === ANESTHETICS (226-228) ===
-    { buildLidocaine, "Lidocaine/Xylocaine", CAT_PHARMA, "Local anesthetic" },
-    { buildKetamine, "Ketamine", CAT_PHARMA, "Dissociative" },
-    { buildSevoflurane, "Sevoflurane", CAT_PHARMA, "Inhalation anesthetic" },
+    { buildLidocaine, "Lidocaine/Xylocaine", CAT_PHARMA, "Local anesthetic",
+      "Lidocaine is a local anesthetic used in dentistry, minor surgery, and topical creams. It blocks nerve signals near the injection site without affecting your consciousness. Lidocaine patches provide pain relief for arthritis and shingles." },
+    { buildKetamine, "Ketamine", CAT_PHARMA, "Dissociative",
+      "Ketamine is a dissociative anesthetic used in surgery and emergency rooms. It produces dreamlike detachment where patients feel pain-free and unaware. Recently approved for depression treatment despite abuse potential." },
+    { buildSevoflurane, "Sevoflurane", CAT_PHARMA, "Inhalation anesthetic",
+      "Sevoflurane is a modern inhalation anesthetic with rapid onset and recovery. It's gentler than older anesthetics and rarely causes liver problems. Children wake up faster from sevoflurane, reducing post-operative confusion." },
     // === PSYCHEDELICS (229-231) ===
-    { buildLSD, "LSD", CAT_PHARMA, "Psychedelic" },
-    { buildPsilocybin, "Psilocybin/Shrooms", CAT_PHARMA, "Magic mushroom" },
-    { buildMescaline, "Mescaline/Peyote", CAT_PHARMA, "Peyote cactus" },
+    { buildLSD, "LSD", CAT_PHARMA, "Psychedelic",
+      "LSD (lysergic acid diethylamide) is a powerful psychedelic altering perception and consciousness. It's not addictive but causes psychological dependence and flashbacks. Some researchers study LSD for treating depression and PTSD." },
+    { buildPsilocybin, "Psilocybin/Shrooms", CAT_PHARMA, "Magic mushroom",
+      "Psilocybin is the active compound in magic mushrooms, producing hallucinations and altered thinking. Research suggests psilocybin-assisted therapy helps depression and cluster headaches. It's slowly becoming legal for therapeutic research." },
+    { buildMescaline, "Mescaline/Peyote", CAT_PHARMA, "Peyote cactus",
+      "Mescaline is a psychedelic in peyote cactus and San Pedro cactus, used in indigenous ceremonies. It causes profound hallucinations lasting 12 hours. Indigenous peoples use mescaline for spiritual experiences and healing." },
     // === SYNTHETIC DRUGS (232-234) ===
-    { buildPCP, "PCP/Phencyclidine", CAT_PHARMA, "Dissociative hallucinogen" },
-    { buildMDMA, "MDMA/Ecstasy", CAT_PHARMA, "Party drug" },
-    { buildMethylone, "Methylone/Bath Salts", CAT_PHARMA, "Synthetic cathinone" },
+    { buildPCP, "PCP/Phencyclidine", CAT_PHARMA, "Dissociative hallucinogen",
+      "PCP (phencyclidine) is a powerful dissociative drug causing detachment from reality and pain. It's particularly dangerous because it triggers bizarre, aggressive behavior. PCP users sometimes harm themselves without realizing it." },
+    { buildMDMA, "MDMA/Ecstasy", CAT_PHARMA, "Party drug",
+      "MDMA (Ecstasy) increases serotonin and dopamine, creating euphoria and empathy. Users experience increased heart rate and body temperature. Repeated use damages serotonin neurons, causing lasting mood problems." },
+    { buildMethylone, "Methylone/Bath Salts", CAT_PHARMA, "Synthetic cathinone",
+      "Methylone (Bath Salts) is a synthetic cathinone similar to MDMA but more dangerous. It causes extreme paranoia, violent behavior, and hallucinations. Emergency rooms report severe complications including rapid heart rate and seizures." },
     // === PRESCRIPTION DRUGS (235-238) ===
-    { buildValium, "Valium/Diazepam", CAT_PHARMA, "Benzodiazepine tranquilizer" },
-    { buildMethamphetamine, "Methamphetamine/Crystal Meth", CAT_PHARMA, "Powerful stimulant" },
-    { buildCodeine, "Codeine", CAT_PHARMA, "Opioid pain reliever" },
-    { buildMethadone, "Methadone", CAT_PHARMA, "Synthetic opioid agonist" },
+    { buildValium, "Valium/Diazepam", CAT_PHARMA, "Benzodiazepine tranquilizer",
+      "Valium (diazepam) is a benzodiazepine tranquilizer used for anxiety and muscle spasms. It was wildly overprescribed in the 1960s-70s, creating addiction epidemics. Long-term use causes tolerance, making higher doses necessary." },
+    { buildMethamphetamine, "Methamphetamine/Crystal Meth", CAT_PHARMA, "Powerful stimulant",
+      "Methamphetamine (crystal meth) is a powerful stimulant causing euphoria and extreme wakefulness. It's highly addictive and devastates teeth, skin, and brain dopamine neurons. Chronic use causes paranoia, violence, and psychosis." },
+    { buildCodeine, "Codeine", CAT_PHARMA, "Opioid pain reliever",
+      "Codeine is a mild opioid pain reliever and cough suppressant in many medicines. Your body converts codeine to morphine, the active form. Some people lack the enzyme for conversion, making it ineffective." },
+    { buildMethadone, "Methadone", CAT_PHARMA, "Synthetic opioid agonist",
+      "Methadone is a synthetic opioid used to treat opioid addiction. It prevents withdrawal symptoms and blocks heroin's euphoria. Methadone maintenance allows addicts to function and rebuild lives." },
     // === ANTIHISTAMINES & DECONGESTANTS (239-244) ===
-    { buildDiphenhydramine, "Diphenhydramine/Benadryl", CAT_PHARMA, "1st gen antihistamine" },
-    { buildChlorpheniramine, "Chlorpheniramine/Chlor-Trimeton", CAT_PHARMA, "1st gen antihistamine" },
-    { buildLoratadine, "Loratadine/Claritin", CAT_PHARMA, "2nd gen antihistamine" },
-    { buildCetirizine, "Cetirizine/Zyrtec", CAT_PHARMA, "2nd gen antihistamine" },
-    { buildFexofenadine, "Fexofenadine/Allegra", CAT_PHARMA, "2nd gen antihistamine" },
-    { buildPseudoephedrine, "Pseudoephedrine", CAT_PHARMA, "Decongestant" },
+    { buildDiphenhydramine, "Diphenhydramine/Benadryl", CAT_PHARMA, "1st gen antihistamine",
+      "Diphenhydramine (Benadryl) is a first-generation antihistamine causing drowsiness. It's used for allergies and as a sleep aid, but newer antihistamines are safer. Anticholinergic effects increase dementia risk in elderly people." },
+    { buildChlorpheniramine, "Chlorpheniramine/Chlor-Trimeton", CAT_PHARMA, "1st gen antihistamine",
+      "Chlorpheniramine is an older antihistamine causing significant drowsiness. It's used in allergy medications and cough syrups combined with other drugs. Newer antihistamines have fewer side effects." },
+    { buildLoratadine, "Loratadine/Claritin", CAT_PHARMA, "2nd gen antihistamine",
+      "Loratadine (Claritin) is a non-drowsy second-generation antihistamine. It targets histamine receptors without crossing the blood-brain barrier. Most effective when taken regularly before allergy season starts." },
+    { buildCetirizine, "Cetirizine/Zyrtec", CAT_PHARMA, "2nd gen antihistamine",
+      "Cetirizine (Zyrtec) is another non-drowsy antihistamine for allergies. It's long-acting, effective for 24 hours from one dose. Some people experience mild drowsiness despite 'non-drowsy' labeling." },
+    { buildFexofenadine, "Fexofenadine/Allegra", CAT_PHARMA, "2nd gen antihistamine",
+      "Fexofenadine (Allegra) is a non-drowsy antihistamine that doesn't cross the blood-brain barrier. Food reduces absorption significantly, so it's best taken on empty stomach. It's effective within 30 minutes." },
+    { buildPseudoephedrine, "Pseudoephedrine", CAT_PHARMA, "Decongestant",
+      "Pseudoephedrine is a decongestant that shrinks nasal blood vessels, reducing congestion. It's restricted in many stores because it's used to make methamphetamine. Phenylephrine is a safer alternative but less effective." },
     // === BLOOD PRESSURE MEDICATIONS (245-263) ===
     // ACE Inhibitors
-    { buildLisinopril, "Lisinopril", CAT_PHARMA, "ACE inhibitor" },
-    { buildEnalapril, "Enalapril", CAT_PHARMA, "ACE inhibitor" },
-    { buildRamipril, "Ramipril", CAT_PHARMA, "ACE inhibitor" },
+    { buildLisinopril, "Lisinopril", CAT_PHARMA, "ACE inhibitor",
+      "Lisinopril (ACE inhibitor) lowers blood pressure by relaxing blood vessels. It prevents angiotensin II from constricting vessels. ACE inhibitors are first-line treatment for hypertension and heart failure." },
+    { buildEnalapril, "Enalapril", CAT_PHARMA, "ACE inhibitor",
+      "Enalapril is another ACE inhibitor that must be converted to its active form by the liver. It's longer-acting than some ACE inhibitors, effective for 24 hours. It's used after heart attacks to prevent further damage." },
+    { buildRamipril, "Ramipril", CAT_PHARMA, "ACE inhibitor",
+      "Ramipril (Altace) is an ACE inhibitor used for hypertension and heart disease prevention. Studies show it reduces stroke and heart attack risk in high-risk patients. It's taken once or twice daily." },
     // ARBs
-    { buildLosartan, "Losartan", CAT_PHARMA, "ARB" },
-    { buildValsartan, "Valsartan", CAT_PHARMA, "ARB" },
-    { buildTelmisartan, "Telmisartan", CAT_PHARMA, "ARB" },
+    { buildLosartan, "Losartan", CAT_PHARMA, "ARB",
+      "Losartan (ARB) blocks angiotensin receptors instead of reducing angiotensin production. ARBs work differently than ACE inhibitors and have fewer side effects. They're alternative first-line treatments for hypertension." },
+    { buildValsartan, "Valsartan", CAT_PHARMA, "ARB",
+      "Valsartan is another ARB used for hypertension and heart failure. It's effective when combined with other medications. Some batches were recalled for contamination concerns in recent years." },
+    { buildTelmisartan, "Telmisartan", CAT_PHARMA, "ARB",
+      "Telmisartan is a long-acting ARB requiring once-daily dosing. It's effective for 24 hours after a single dose. Patients appreciate the convenience of once-daily treatment." },
     // Beta Blockers
-    { buildMetoprolol, "Metoprolol", CAT_PHARMA, "Beta blocker" },
-    { buildAtenolol, "Atenolol", CAT_PHARMA, "Beta blocker" },
-    { buildCarvedilol, "Carvedilol", CAT_PHARMA, "Beta blocker" },
+    { buildMetoprolol, "Metoprolol", CAT_PHARMA, "Beta blocker",
+      "Metoprolol is a beta blocker slowing heart rate and reducing blood pressure. It's used after heart attacks to protect the heart. Metoprolol reduces anxiety by calming the sympathetic nervous system." },
+    { buildAtenolol, "Atenolol", CAT_PHARMA, "Beta blocker",
+      "Atenolol is a cardioselective beta blocker primarily affecting the heart. It's popular for hypertension and migraine prevention. Atenolol can cause fatigue and reduced sexual function." },
+    { buildCarvedilol, "Carvedilol", CAT_PHARMA, "Beta blocker",
+      "Carvedilol is a combined alpha/beta blocker, more effective than pure beta blockers. It also provides additional protection for the heart. Carvedilol improves survival after heart attacks." },
     // Calcium Channel Blockers
-    { buildAmlodipine, "Amlodipine", CAT_PHARMA, "Calcium channel blocker" },
-    { buildDiltiazem, "Diltiazem", CAT_PHARMA, "Calcium channel blocker" },
-    { buildNifedipine, "Nifedipine", CAT_PHARMA, "Calcium channel blocker" },
+    { buildAmlodipine, "Amlodipine", CAT_PHARMA, "Calcium channel blocker",
+      "Amlodipine (Norvasc) is a calcium channel blocker that relaxes blood vessels. It's effective with minimal side effects and once-daily dosing. Ankle swelling is a common side effect affecting about 10% of users." },
+    { buildDiltiazem, "Diltiazem", CAT_PHARMA, "Calcium channel blocker",
+      "Diltiazem is a calcium channel blocker and heart rate slower used for hypertension and angina. It's particularly useful in patients who can't tolerate beta blockers. Diltiazem also has antiarrhythmic effects." },
+    { buildNifedipine, "Nifedipine", CAT_PHARMA, "Calcium channel blocker",
+      "Nifedipine is a potent calcium channel blocker used for severe hypertension and angina. Immediate-release forms work rapidly; extended-release forms provide stable control. Nifedipine causes reflex tachycardia if you drop blood pressure too fast." },
     // Diuretics
-    { buildHydrochlorothiazide, "Hydrochlorothiazide/HCTZ", CAT_PHARMA, "Diuretic" },
-    { buildFurosemide, "Furosemide/Lasix", CAT_PHARMA, "Diuretic" },
-    { buildSpironolactone, "Spironolactone", CAT_PHARMA, "Potassium-sparing diuretic" },
+    { buildHydrochlorothiazide, "Hydrochlorothiazide/HCTZ", CAT_PHARMA, "Diuretic",
+      "HCTZ is a thiazide diuretic, one of the oldest blood pressure drugs. It works by reducing body fluid volume. HCTZ can cause gout and worsen diabetes due to glucose effects." },
+    { buildFurosemide, "Furosemide/Lasix", CAT_PHARMA, "Diuretic",
+      "Furosemide (Lasix) is a loop diuretic stronger than HCTZ, used for fluid overload. It works on the kidney's loop of Henle. Furosemide can cause severe electrolyte imbalances if not monitored." },
+    { buildSpironolactone, "Spironolactone", CAT_PHARMA, "Potassium-sparing diuretic",
+      "Spironolactone is a potassium-sparing diuretic blocking aldosterone. Unlike other diuretics, it retains potassium, requiring careful monitoring. It's used in heart failure and resistant hypertension." },
     // === ANTIVIRALS (264-269) ===
-    { buildOseltamivir, "Oseltamivir/Tamiflu", CAT_PHARMA, "Influenza antiviral" },
-    { buildNirmatrelvir, "Nirmatrelvir (Paxlovid)", CAT_PHARMA, "COVID protease inhibitor" },
-    { buildRitonavir, "Ritonavir (Paxlovid component)", CAT_PHARMA, "Protease inhibitor" },
-    { buildMolnupiravir, "Molnupiravir/Lagevrio", CAT_PHARMA, "COVID antiviral" },
-    { buildRemdesivir, "Remdesivir/Veklury", CAT_PHARMA, "COVID/Ebola antiviral" },
-    { buildDexamethasone, "Dexamethasone", CAT_PHARMA, "Corticosteroid" },
+    { buildOseltamivir, "Oseltamivir/Tamiflu", CAT_PHARMA, "Influenza antiviral",
+      "Oseltamivir (Tamiflu) stops flu virus replication if taken early. It reduces symptoms by 1-2 days if started within 48 hours. Its effectiveness against new flu strains varies yearly." },
+    { buildNirmatrelvir, "Nirmatrelvir (Paxlovid)", CAT_PHARMA, "COVID protease inhibitor",
+      "Nirmatrelvir is Paxlovid's main component, a protease inhibitor blocking COVID-19 virus multiplication. Taken with ritonavir as a booster, it's highly effective for early COVID-19. It must be started within 5 days of symptom onset." },
+    { buildRitonavir, "Ritonavir (Paxlovid component)", CAT_PHARMA, "Protease inhibitor",
+      "Ritonavir is a protease inhibitor from the 1990s that boosts other drugs' levels. In Paxlovid, it increases nirmatrelvir concentration. Ritonavir alone was an HIV medication before new better drugs emerged." },
+    { buildMolnupiravir, "Molnupiravir/Lagevrio", CAT_PHARMA, "COVID antiviral",
+      "Molnupiravir (Lagevrio) is an antiviral that causes viral mutations making replication impossible. Taken early, it reduces hospitalization and death. It's less effective than Paxlovid but works on variants better." },
+    { buildRemdesivir, "Remdesivir/Veklury", CAT_PHARMA, "COVID/Ebola antiviral",
+      "Remdesivir (Veklury) stops viral replication by incorporating into viral RNA. Developed for Ebola, it became famous treating severe COVID-19. Early studies showed modest benefit, reducing hospitalization time." },
+    { buildDexamethasone, "Dexamethasone", CAT_PHARMA, "Corticosteroid",
+      "Dexamethasone is a corticosteroid that reduces severe COVID-19 inflammation. It's most effective when oxygen is needed but doesn't help mild cases. It's also used for allergies, autoimmune diseases, and cancer." },
     // === RANDOM (270) ===
-    { buildRandomMolecule, "Random", CAT_OTHER, "Random structure" },
+    { buildRandomMolecule, "Random", CAT_OTHER, "Random structure",
+      "Random structures are computer-generated molecules for educational visualization. They help students understand chemical bonding diversity. Random molecules demonstrate how atoms can arrange in countless configurations." },
     // === EXOTIC STRUCTURES (233-249) ===
-    { buildCubane, "Cubane", CAT_ORGANIC, "C8H8 - Cube-shaped" },
-    { buildBuckminsterfullerene, "Buckyball/C60", CAT_ORGANIC, "Carbon soccer ball" },
-    { buildAdamantane, "Adamantane", CAT_ORGANIC, "C10H16 - Diamond cage" },
-    { buildChlorophyll, "Chlorophyll a", CAT_ENERGY, "Plant pigment core" },
-    { buildXenonDifluoride, "Xenon Difluoride (XeF2)", CAT_OTHER, "Linear noble gas" },
-    { buildRheniumChlorideDimer, "[Re2Cl8]2- Dimer", CAT_OTHER, "Quadruple metal bond" },
-    { buildTungstenHexacarbonyl, "W(CO)6 Hexacarbonyl", CAT_OTHER, "Octahedral carbonyl" },
-    { buildOCarborane, "o-Carborane (C2B10H12)", CAT_OTHER, "Icosahedral cage" },
-    { buildDodecaborate, "[B12H12]2- Dodecaborate", CAT_OTHER, "Perfect icosahedron" },
-    { buildCatenane, "[2]Catenane", CAT_OTHER, "Interlocked rings" },
-    { buildRotaxane, "Rotaxane", CAT_OTHER, "Ring on axle" },
-    { buildTrefoilKnot, "Molecular Trefoil Knot", CAT_OTHER, "Knotted loop" },
-    { buildPropellane, "[1.1.1]Propellane", CAT_ORGANIC, "Inverted C-C bond" },
-    { buildPrismane, "Prismane (C6H6)", CAT_ORGANIC, "Triangular prism" },
-    { buildTetrahedrane, "Tetrahedrane (C4H4)", CAT_ORGANIC, "Carbon tetrahedron" },
-    { buildDewarBenzene, "Dewar Benzene", CAT_ORGANIC, "Bent benzene isomer" },
+    { buildCubane, "Cubane", CAT_ORGANIC, "C8H8 - Cube-shaped",
+      "Cubane is a remarkable cage structure where eight carbons form a perfect cube. It's highly strained but surprisingly stable. Scientists study cubane derivatives for potential drug development." },
+    { buildBuckminsterfullerene, "Buckyball/C60", CAT_ORGANIC, "Carbon soccer ball",
+      "Buckyball (C60) is 60 carbons arranged like a soccer ball, discovered in 1985. It's a single sheet of graphite rolled into a sphere. Scientists have explored buckyballs for drug delivery and materials." },
+    { buildAdamantane, "Adamantane", CAT_ORGANIC, "C10H16 - Diamond cage",
+      "Adamantane is a cage structure mimicking diamond's carbon arrangement. It's used in antivirals and as a building block for complex molecules. Its symmetry makes it useful in medicinal chemistry." },
+    { buildChlorophyll, "Chlorophyll a", CAT_ENERGY, "Plant pigment core",
+      "Chlorophyll absorbs light for photosynthesis, giving plants their green color. Its central magnesium atom captures photons. Chlorophyll is nearly identical to hemoglobin except hemoglobin has iron." },
+    { buildXenonDifluoride, "Xenon Difluoride (XeF2)", CAT_OTHER, "Linear noble gas",
+      "Xenon difluoride (XeF2) has a linear geometry with xenon bonded to fluorines. Despite noble gas inertness, XeF2 forms via intense UV. It's used in nuclear fuel reprocessing." },
+    { buildRheniumChlorideDimer, "[Re2Cl8]2- Dimer", CAT_OTHER, "Quadruple metal bond",
+      "Rhenium chloride dimers have quadruple bonds between rhenium atoms. This was shocking to chemists; metal-metal quadruple bonds were thought impossible. It's a landmark in inorganic chemistry." },
+    { buildTungstenHexacarbonyl, "W(CO)6 Hexacarbonyl", CAT_OTHER, "Octahedral carbonyl",
+      "Tungsten hexacarbonyl (W(CO)6) is octahedral with carbons surrounding tungsten. Carbonyls are fundamental in organometallic chemistry. It's used in catalysis and organic synthesis." },
+    { buildOCarborane, "o-Carborane (C2B10H12)", CAT_OTHER, "Icosahedral cage",
+      "o-Carborane is an icosahedral cage with boron and carbon atoms. It's incredibly stable and used in boron neutron capture therapy for cancer. Its geometry resembles an icosahedron." },
+    { buildDodecaborate, "[B12H12]2- Dodecaborate", CAT_OTHER, "Perfect icosahedron",
+      "Dodecaborate ([B12H12]2-) is a perfect icosahedron of 12 boron atoms. It's one of the most symmetrical molecules in chemistry. Dodecaborate salts are used in boron research." },
+    { buildCatenane, "[2]Catenane", CAT_OTHER, "Interlocked rings",
+      "Catenane molecules consist of interlocked rings that cannot pass through each other. Creating interlocked rings requires careful synthesis. Catenanes represent breakthrough in topological chemistry." },
+    { buildRotaxane, "Rotaxane", CAT_OTHER, "Ring on axle",
+      "Rotaxane has a ring threaded on an axle, prevented from sliding off by bulky stoppers. Like a bead on a rod, the ring can rotate freely. Rotaxanes demonstrate mechanical properties at molecular scale." },
+    { buildTrefoilKnot, "Molecular Trefoil Knot", CAT_OTHER, "Knotted loop",
+      "Molecular trefoil knots are knotted loops resembling a trinity knot symbol. Scientists synthesized the first molecular knot in 1989, stunning chemists. Knotted molecules explore topology in chemistry." },
+    { buildPropellane, "[1.1.1]Propellane", CAT_ORGANIC, "Inverted C-C bond",
+      "Propellane ([1.1.1]) has an unusual inverted C-C bond between bridgeheads. It's incredibly strained, showing chemistry's limits. Propellanes are fascinating for theoretical chemistry." },
+    { buildPrismane, "Prismane (C6H6)", CAT_ORGANIC, "Triangular prism",
+      "Prismane is a benzene isomer with triangular prism geometry. It converts to benzene over time at room temperature. Prismane demonstrates how aromatic systems can rearrange." },
+    { buildTetrahedrane, "Tetrahedrane (C4H4)", CAT_ORGANIC, "Carbon tetrahedron",
+      "Tetrahedrane (C4H4) is a tetrahedron of four carbons. It's one of the smallest possible ring hydrocarbon. Tetrahedrane is extremely strained but has been synthesized." },
+    { buildDewarBenzene, "Dewar Benzene", CAT_ORGANIC, "Bent benzene isomer",
+      "Dewar benzene is a bent isomer of benzene with unusual bonding. It converts to benzene when heated. Dewar benzene challenges our understanding of aromaticity and resonance." },
 };
 
 static const int NUM_MOLECULES = sizeof(molecules) / sizeof(molecules[0]);
