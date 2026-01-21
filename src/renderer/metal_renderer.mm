@@ -79,7 +79,8 @@ static bool createComputePipelines(MetalRendererImpl* impl) {
         // If running outside a bundle, try to load from a metallib file
         NSString* libraryPath = [[NSBundle mainBundle] pathForResource:@"default" ofType:@"metallib"];
         if (libraryPath) {
-            library = [impl->device newLibraryWithFile:libraryPath error:&error];
+            NSURL* libraryURL = [NSURL fileURLWithPath:libraryPath];
+            library = [impl->device newLibraryWithURL:libraryURL error:&error];
         }
 
         if (!library) {
@@ -113,7 +114,10 @@ static bool createComputePipelines(MetalRendererImpl* impl) {
             }
 
             MTLCompileOptions* options = [[MTLCompileOptions alloc] init];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             options.fastMathEnabled = YES;
+#pragma clang diagnostic pop
 
             library = [impl->device newLibraryWithSource:shaderSource options:options error:&error];
             if (!library) {

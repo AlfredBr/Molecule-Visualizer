@@ -12,8 +12,6 @@ using namespace metal;
 
 // ============== Constants ==============
 
-constant float PI = 3.14159265359f;
-
 // CPK colors for atoms (R, G, B)
 constant float3 atomColors[18] = {
     float3(0.95f, 0.95f, 0.95f),  // H - white
