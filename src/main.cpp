@@ -413,6 +413,67 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         }
         ImGui::End();
 
+        // CPK Color Reference Panel
+        ImGui::SetNextWindowSize(ImVec2(280, 450), ImGuiCond_FirstUseEver);
+        ImGui::Begin("CPK Color Reference");
+        {
+            ImGui::Text("CPK Atom Colors:");
+            ImGui::Separator();
+
+            // Define colors matching the CUDA renderer
+            ImVec4 cpkColors[] = {
+                {0.95f, 0.95f, 0.95f, 1.0f},  // H - white
+                {0.2f,  0.2f,  0.2f,  1.0f},  // C - dark gray
+                {0.2f,  0.3f,  0.9f,  1.0f},  // N - blue
+                {0.9f,  0.2f,  0.2f,  1.0f},  // O - red
+                {1.0f,  0.5f,  0.0f,  1.0f},  // P - orange
+                {0.9f,  0.8f,  0.2f,  1.0f},  // S - yellow
+                {0.2f,  0.9f,  0.2f,  1.0f},  // Cl - green
+                {0.6f,  0.1f,  0.1f,  1.0f},  // Br - dark red
+                {0.5f,  0.9f,  0.5f,  1.0f},  // F - light green
+                {0.5f,  0.1f,  0.5f,  1.0f},  // I - purple
+                {0.7f,  0.5f,  0.9f,  1.0f},  // Na - metallic purple
+                {0.85f, 0.75f, 0.55f, 1.0f},  // Si - tan
+                {1.0f,  0.65f, 0.65f, 1.0f},  // B - salmon
+                {0.88f, 0.4f,  0.2f,  1.0f},  // Fe - orange/brown
+                {0.85f, 0.55f, 0.2f,  1.0f},  // Cu - copper
+                {0.75f, 0.75f, 0.8f,  1.0f},  // Al - silver
+                {0.6f,  0.6f,  0.65f, 1.0f},  // Ti - gray
+                {0.85f, 0.85f, 0.88f, 1.0f},  // Pt - white
+            };
+
+            const char* atomNames[] = {
+                "H - Hydrogen (White)",
+                "C - Carbon (Dark Gray)",
+                "N - Nitrogen (Blue)",
+                "O - Oxygen (Red)",
+                "P - Phosphorus (Orange)",
+                "S - Sulfur (Yellow)",
+                "Cl - Chlorine (Green)",
+                "Br - Bromine (Dark Red)",
+                "F - Fluorine (Light Green)",
+                "I - Iodine (Purple)",
+                "Na - Sodium (Metallic Purple)",
+                "Si - Silicon (Tan)",
+                "B - Boron (Salmon)",
+                "Fe - Iron (Orange/Brown)",
+                "Cu - Copper (Copper)",
+                "Al - Aluminum (Silver)",
+                "Ti - Titanium (Gray)",
+                "Pt - Platinum (White)",
+            };
+
+            // Display color swatches in a grid
+            for (int i = 0; i < 18; i++) {
+                char id[32];
+                snprintf(id, sizeof(id), "##cpk_color_%d", i);
+                ImGui::ColorButton(id, cpkColors[i], ImGuiColorEditFlags_NoBorder | ImGuiColorEditFlags_NoTooltip, ImVec2(20, 20));
+                ImGui::SameLine();
+                ImGui::Text("%s", atomNames[i]);
+            }
+        }
+        ImGui::End();
+
         // Rendering
         ImGui::Render();
         const float clear_color[4] = { 0.1f, 0.1f, 0.15f, 1.0f };
