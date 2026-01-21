@@ -11,6 +11,7 @@
 #include <d3d11.h>
 #include <tchar.h>
 #include <stdio.h>
+#include <cctype>
 
 #include "renderer/cuda_renderer.h"
 #include "molecule/molecule_db.h"
@@ -94,7 +95,11 @@ static float                    g_rotSpeed = 1.0f;
 static bool                     g_rotateX = false;
 static bool                     g_rotateY = true;
 
+// Molecule Browser Search
+static char                     g_searchBuffer[256] = "";
+
 // Forward declarations
+bool StringContains(const char* str, const char* search);
 bool CreateDeviceD3D(HWND hWnd);
 void CleanupDeviceD3D();
 void CreateRenderTarget();
@@ -308,30 +313,75 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         ImGui::End();
 
         // Browse Molecules Panel
-        ImGui::SetNextWindowSize(ImVec2(280, 300), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(280, 400), ImGuiCond_FirstUseEver);
         ImGui::Begin("Browse Molecules");
         {
-            for (int cat = 0; cat < CAT_COUNT; cat++)
+            // Search input field with clear button
+            ImGui::InputTextWithHint("##search", "Search molecules...", g_searchBuffer, sizeof(g_searchBuffer));
+            ImGui::SameLine();
+            if (ImGui::Button("Clear", ImVec2(50, 0)))
             {
-                if (ImGui::TreeNode(molecule_get_category_name(cat)))
+                g_searchBuffer[0] = '\0';
+            }
+            ImGui::Separator();
+
+            // Browse molecules with search filtering
+            bool hasSearchResults = false;
+
+            if (g_searchBuffer[0] == '\0')
+            {
+                // No search: show categories
+                for (int cat = 0; cat < CAT_COUNT; cat++)
                 {
-                    for (int i = 0; i < molecule_get_count(); i++)
+                    if (ImGui::TreeNode(molecule_get_category_name(cat)))
                     {
-                        if (molecule_get_category(i) == cat)
+                        for (int i = 0; i < molecule_get_count(); i++)
                         {
-                            bool isSelected = (g_currentMolecule == i);
-                            if (ImGui::Selectable(molecule_get_name(i), isSelected))
+                            if (molecule_get_category(i) == cat)
                             {
-                                g_currentMolecule = i;
-                                molecule_build(g_currentMolecule, &g_molecule);
-                            }
-                            if (ImGui::IsItemHovered())
-                            {
-                                ImGui::SetTooltip("%s", molecule_get_description(i));
+                                bool isSelected = (g_currentMolecule == i);
+                                if (ImGui::Selectable(molecule_get_name(i), isSelected))
+                                {
+                                    g_currentMolecule = i;
+                                    molecule_build(g_currentMolecule, &g_molecule);
+                                }
+                                if (ImGui::IsItemHovered())
+                                {
+                                    ImGui::SetTooltip("%s", molecule_get_description(i));
+                                }
                             }
                         }
+                        ImGui::TreePop();
                     }
-                    ImGui::TreePop();
+                }
+            }
+            else
+            {
+                // Search: show matching molecules across all categories
+                for (int i = 0; i < molecule_get_count(); i++)
+                {
+                    const char* name = molecule_get_name(i);
+                    const char* desc = molecule_get_description(i);
+
+                    if (StringContains(name, g_searchBuffer) || StringContains(desc, g_searchBuffer))
+                    {
+                        hasSearchResults = true;
+                        bool isSelected = (g_currentMolecule == i);
+                        if (ImGui::Selectable(name, isSelected))
+                        {
+                            g_currentMolecule = i;
+                            molecule_build(g_currentMolecule, &g_molecule);
+                        }
+                        if (ImGui::IsItemHovered())
+                        {
+                            ImGui::SetTooltip("%s", desc);
+                        }
+                    }
+                }
+
+                if (!hasSearchResults)
+                {
+                    ImGui::TextDisabled("No matches found");
                 }
             }
         }
@@ -498,6 +548,34 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     UnregisterClassW(wc.lpszClassName, wc.hInstance);
 
     return 0;
+}
+
+// === Molecule Browser Helper Functions ===
+
+// Case-insensitive string search
+static bool StringContains(const char* str, const char* search)
+{
+    if (!str || !search || search[0] == '\0')
+        return true;  // Empty search matches everything
+
+    // Simple case-insensitive substring search
+    for (size_t i = 0; str[i]; ++i)
+    {
+        bool match = true;
+        for (size_t j = 0; search[j]; ++j)
+        {
+            char c1 = tolower((unsigned char)str[i + j]);
+            char c2 = tolower((unsigned char)search[j]);
+            if (c1 != c2)
+            {
+                match = false;
+                break;
+            }
+        }
+        if (match)
+            return true;
+    }
+    return false;
 }
 
 // === DirectX 11 Helper Functions ===
