@@ -11010,17 +11010,32 @@ void buildMethamphetamine(Molecule* mol) {
     addAtom(mol, r + 3.8f, -0.3f, 0.0f, ATOM_N);      // 9: NH
     addAtom(mol, r + 5.1f, 0.3f, 0.0f, ATOM_C);       // 10: CH3 (N-methyl)
 
-    // Hydrogens on benzene
+    // Hydrogens on benzene ring (all 6 carbons)
     float rH = 2.4f;
-    addAtom(mol, rH * cosf(PI/3), rH * sinf(PI/3), 0.0f, ATOM_H);     // 11: H on C1
-    addAtom(mol, rH * cosf(5*PI/3), rH * sinf(5*PI/3), 0.0f, ATOM_H); // 12: H on C5
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, rH * cosf(angle), rH * sinf(angle), 0.0f, ATOM_H);  // 11-16: H on benzene
+    }
 
-    // Hydrogens on amine
-    addAtom(mol, r + 4.0f, -1.2f, 0.0f, ATOM_H);      // 13: H on NH
+    // Hydrogens on CH2 group
+    addAtom(mol, r + 1.5f, -0.8f, 0.0f, ATOM_H);      // 17: H on CH2
+    addAtom(mol, r + 1.1f, 0.8f, 0.0f, ATOM_H);       // 18: H on CH2
 
-    // Hydrogens on methyl groups (simplified)
-    addAtom(mol, r + 3.4f, 2.4f, 0.0f, ATOM_H);       // 14: H on CH3
-    addAtom(mol, r + 5.5f, 1.2f, 0.0f, ATOM_H);       // 15: H on N-CH3
+    // Hydrogen on CH chiral center
+    addAtom(mol, r + 2.6f, 0.5f, -1.0f, ATOM_H);      // 19: H on CH
+
+    // Hydrogens on CH3 (on chiral center)
+    addAtom(mol, r + 3.4f, 2.4f, 0.0f, ATOM_H);       // 20: H on CH3
+    addAtom(mol, r + 3.0f, 1.9f, -0.8f, ATOM_H);      // 21: H on CH3
+    addAtom(mol, r + 2.2f, 2.3f, 0.5f, ATOM_H);       // 22: H on CH3
+
+    // Hydrogen on amine
+    addAtom(mol, r + 4.0f, -1.2f, 0.0f, ATOM_H);      // 23: H on NH
+
+    // Hydrogens on N-CH3 methyl group
+    addAtom(mol, r + 5.5f, 1.2f, 0.0f, ATOM_H);       // 24: H on N-CH3
+    addAtom(mol, r + 5.3f, -0.4f, 0.0f, ATOM_H);      // 25: H on N-CH3
+    addAtom(mol, r + 5.8f, 0.4f, -0.8f, ATOM_H);      // 26: H on N-CH3
 
     // Benzene ring bonds
     for (int i = 0; i < 6; i++) {
@@ -11034,12 +11049,22 @@ void buildMethamphetamine(Molecule* mol) {
     addBond(mol, 7, 9, 1);   // CH-NH
     addBond(mol, 9, 10, 1);  // NH-CH3
 
-    // Hydrogen bonds
-    addBond(mol, 1, 11, 1);
-    addBond(mol, 5, 12, 1);
-    addBond(mol, 9, 13, 1);
-    addBond(mol, 8, 14, 1);
-    addBond(mol, 10, 15, 1);
+    // Hydrogen bonds on benzene ring
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, 11 + i, 1);  // H on each benzene carbon
+    }
+
+    // Hydrogen bonds on side chain
+    addBond(mol, 6, 17, 1);   // H on CH2
+    addBond(mol, 6, 18, 1);   // H on CH2
+    addBond(mol, 7, 19, 1);   // H on CH
+    addBond(mol, 8, 20, 1);   // H on CH3
+    addBond(mol, 8, 21, 1);   // H on CH3
+    addBond(mol, 8, 22, 1);   // H on CH3
+    addBond(mol, 9, 23, 1);   // H on NH
+    addBond(mol, 10, 24, 1);  // H on N-CH3
+    addBond(mol, 10, 25, 1);  // H on N-CH3
+    addBond(mol, 10, 26, 1);  // H on N-CH3
 
     centerMolecule(mol);
 }
