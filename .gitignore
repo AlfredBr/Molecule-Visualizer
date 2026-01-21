@@ -75,3 +75,6 @@ molvis.ini
 
 # Legacy binaries
 /legacy/*.exe
+
+# third party libraries
+/third_party/imgui
