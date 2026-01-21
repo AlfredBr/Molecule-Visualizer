@@ -14523,7 +14523,230 @@ void buildDewarBenzene(Molecule* mol) {
     centerMolecule(mol);
 }
 
-// ============== MOLECULE REGISTRY (249 molecules) ==============
+// Build Hydroxyproline (C5H9NO3)
+void buildHydroxyproline(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Hydroxyproline (C5H9NO3)");
+
+    // 5-membered ring with N and OH on one carbon
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);      // Alpha C
+    addAtom(mol, -1.2f, 0.0f, 0.0f, ATOM_N);     // N (in ring)
+    addAtom(mol, 1.3f, 0.7f, 0.0f, ATOM_C);      // COOH C
+    addAtom(mol, 1.3f, 2.0f, 0.0f, ATOM_O);
+    addAtom(mol, 2.4f, 0.0f, 0.0f, ATOM_O);
+    addAtom(mol, 0.0f, -1.5f, 0.0f, ATOM_C);     // Ring C with OH
+    addAtom(mol, -0.8f, -2.2f, 0.0f, ATOM_O);    // OH on ring
+    addAtom(mol, -1.4f, -1.5f, 0.0f, ATOM_C);    // Ring C
+    addAtom(mol, -1.8f, -0.05f, 0.0f, ATOM_H);   // H on N
+    addAtom(mol, 0.0f, 0.6f, 0.9f, ATOM_H);
+    addAtom(mol, 3.2f, 0.5f, 0.0f, ATOM_H);
+    addAtom(mol, 0.5f, -2.0f, 0.9f, ATOM_H);
+    addAtom(mol, -1.9f, -2.0f, 0.9f, ATOM_H);
+    addAtom(mol, -1.9f, -2.0f, -0.9f, ATOM_H);
+    addAtom(mol, -1.5f, -2.8f, 0.0f, ATOM_H);    // H on OH
+
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 0, 2, 1);
+    addBond(mol, 2, 3, 2);
+    addBond(mol, 2, 4, 1);
+    addBond(mol, 0, 5, 1);
+    addBond(mol, 5, 6, 1);
+    addBond(mol, 5, 7, 1);
+    addBond(mol, 7, 1, 1);
+    addBond(mol, 1, 8, 1);
+    addBond(mol, 0, 9, 1);
+    addBond(mol, 4, 10, 1);
+    addBond(mol, 5, 11, 1);
+    addBond(mol, 7, 12, 1);
+    addBond(mol, 7, 13, 1);
+    addBond(mol, 6, 14, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Niacinamide/Vitamin B3 (C6H6N2O)
+void buildNiacinamide(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Niacinamide/Vitamin B3 (C6H6N2O)");
+
+    // Pyridine ring
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        if (i == 0) {
+            addAtom(mol, r * cosf(angle), r * sinf(angle), 0.0f, ATOM_N);  // N at position 1
+        } else {
+            addAtom(mol, r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // C at 2-6
+        }
+    }
+
+    // Amide group (-CONH2) at position 3
+    addAtom(mol, 2.4f, 0.8f, 0.0f, ATOM_C);      // C=O carbon
+    addAtom(mol, 3.5f, 1.2f, 0.0f, ATOM_O);      // =O
+    addAtom(mol, 2.4f, -0.3f, 0.0f, ATOM_N);     // NH2
+    addAtom(mol, 3.3f, -0.8f, 0.0f, ATOM_H);     // H on N
+    addAtom(mol, 1.5f, -0.7f, 0.0f, ATOM_H);     // H on N
+
+    // Hydrogens on ring
+    float hR = 2.4f;
+    for (int i = 0; i < 6; i++) {
+        if (i != 2) {  // Skip position 3 where amide is
+            float angle = i * PI / 3.0f;
+            addAtom(mol, hR * cosf(angle), hR * sinf(angle), 0.0f, ATOM_H);
+        }
+    }
+
+    // Ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // Amide bonds
+    addBond(mol, 2, 6, 1);   // C-CO
+    addBond(mol, 6, 7, 2);   // C=O
+    addBond(mol, 6, 8, 1);   // C-N
+    addBond(mol, 8, 9, 1);   // N-H
+    addBond(mol, 8, 10, 1);  // N-H
+
+    // Hydrogen bonds
+    addBond(mol, 1, 11, 1);
+    addBond(mol, 3, 12, 1);
+    addBond(mol, 4, 13, 1);
+    addBond(mol, 5, 14, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Glycerin/Glycerol (C3H8O3)
+void buildGlycerin(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Glycerin/Glycerol (C3H8O3)");
+
+    // Three carbons in a chain
+    addAtom(mol, -1.5f, 0.0f, 0.0f, ATOM_C);     // C1
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);      // C2 (central)
+    addAtom(mol, 1.5f, 0.0f, 0.0f, ATOM_C);      // C3
+
+    // Three OH groups
+    addAtom(mol, -1.5f, 1.2f, 0.0f, ATOM_O);     // OH on C1
+    addAtom(mol, 0.0f, 1.2f, 0.0f, ATOM_O);      // OH on C2
+    addAtom(mol, 1.5f, 1.2f, 0.0f, ATOM_O);      // OH on C3
+
+    // Hydrogens on carbons and oxygens
+    addAtom(mol, -1.5f, -0.8f, 0.85f, ATOM_H);   // H on C1
+    addAtom(mol, -1.5f, -0.8f, -0.85f, ATOM_H);  // H on C1
+    addAtom(mol, 0.0f, -0.8f, 0.85f, ATOM_H);    // H on C2
+    addAtom(mol, -2.3f, 1.6f, 0.0f, ATOM_H);     // H on OH
+    addAtom(mol, -0.8f, 1.6f, 0.0f, ATOM_H);     // H on OH
+    addAtom(mol, 2.3f, 1.6f, 0.0f, ATOM_H);      // H on OH
+    addAtom(mol, 1.5f, -0.8f, 0.85f, ATOM_H);    // H on C3
+    addAtom(mol, 1.5f, -0.8f, -0.85f, ATOM_H);   // H on C3
+
+    // Bonds
+    addBond(mol, 0, 1, 1);  // C-C
+    addBond(mol, 1, 2, 1);  // C-C
+    addBond(mol, 0, 3, 1);  // C-O
+    addBond(mol, 1, 4, 1);  // C-O
+    addBond(mol, 2, 5, 1);  // C-O
+    addBond(mol, 0, 6, 1);  // C-H
+    addBond(mol, 0, 7, 1);  // C-H
+    addBond(mol, 1, 8, 1);  // C-H
+    addBond(mol, 3, 9, 1);  // O-H
+    addBond(mol, 4, 10, 1); // O-H
+    addBond(mol, 5, 11, 1); // O-H
+    addBond(mol, 2, 12, 1); // C-H
+    addBond(mol, 2, 13, 1); // C-H
+
+    centerMolecule(mol);
+}
+
+// Build Glycolic Acid (C2H4O3)
+void buildGlycolicAcid(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Glycolic Acid (C2H4O3)");
+
+    // CH2-OH and COOH groups
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);      // CH2-OH carbon
+    addAtom(mol, 1.5f, 0.0f, 0.0f, ATOM_C);      // Carboxylic acid carbon
+    addAtom(mol, 2.2f, 1.1f, 0.0f, ATOM_O);      // =O
+    addAtom(mol, 2.2f, -1.1f, 0.0f, ATOM_O);     // OH
+    addAtom(mol, 0.0f, 1.2f, 0.0f, ATOM_O);      // OH on CH2
+    addAtom(mol, 3.1f, -1.1f, 0.0f, ATOM_H);     // H on carboxylic acid
+    addAtom(mol, 0.8f, 1.6f, 0.0f, ATOM_H);      // H on CH2 OH
+    addAtom(mol, -0.9f, 0.5f, 0.0f, ATOM_H);     // H on CH2
+    addAtom(mol, -0.9f, -0.5f, 0.0f, ATOM_H);    // H on CH2
+
+    addBond(mol, 0, 1, 1);  // C-C
+    addBond(mol, 1, 2, 2);  // C=O
+    addBond(mol, 1, 3, 1);  // C-OH
+    addBond(mol, 0, 4, 1);  // C-OH
+    addBond(mol, 3, 5, 1);  // O-H
+    addBond(mol, 4, 6, 1);  // O-H
+    addBond(mol, 0, 7, 1);  // C-H
+    addBond(mol, 0, 8, 1);  // C-H
+
+    centerMolecule(mol);
+}
+
+// Build Salicylic Acid (C7H6O3) - BHA
+void buildSalicylicAcid(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Salicylic Acid (C7H6O3)");
+
+    // Benzene ring with OH and COOH substituents
+    float r = 1.4f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * PI / 3.0f;
+        addAtom(mol, r * cosf(angle), r * sinf(angle), 0.0f, ATOM_C);  // 0-5
+    }
+
+    // COOH group at position 0
+    addAtom(mol, r + 1.3f, 0.0f, 0.0f, ATOM_C);  // 6: COOH C
+    addAtom(mol, r + 2.0f, 1.1f, 0.0f, ATOM_O);  // 7: =O
+    addAtom(mol, r + 2.0f, -1.1f, 0.0f, ATOM_O); // 8: OH
+    addAtom(mol, r + 2.9f, -1.1f, 0.0f, ATOM_H); // 9: H on COOH
+
+    // OH group at position 1 (ortho to COOH)
+    addAtom(mol, r * cosf(PI/3) + 0.5f, r * sinf(PI/3) + 0.9f, 0.0f, ATOM_O);  // 10: OH
+    addAtom(mol, r * cosf(PI/3) + 1.2f, r * sinf(PI/3) + 1.4f, 0.0f, ATOM_H);  // 11: H on OH
+
+    // Hydrogens on benzene
+    float hR = 2.4f;
+    addAtom(mol, hR * cosf(2*PI/3), hR * sinf(2*PI/3), 0.0f, ATOM_H);  // 12: H on C2
+    addAtom(mol, hR * cosf(PI), hR * sinf(PI), 0.0f, ATOM_H);           // 13: H on C3
+    addAtom(mol, hR * cosf(4*PI/3), hR * sinf(4*PI/3), 0.0f, ATOM_H);   // 14: H on C4
+    addAtom(mol, hR * cosf(5*PI/3), hR * sinf(5*PI/3), 0.0f, ATOM_H);   // 15: H on C5
+
+    // Benzene ring bonds
+    for (int i = 0; i < 6; i++) {
+        addBond(mol, i, (i + 1) % 6, (i % 2 == 0) ? 2 : 1);
+    }
+
+    // COOH bonds
+    addBond(mol, 0, 6, 1);  // C-COOH
+    addBond(mol, 6, 7, 2);  // C=O
+    addBond(mol, 6, 8, 1);  // C-OH
+    addBond(mol, 8, 9, 1);  // O-H
+
+    // OH bonds
+    addBond(mol, 1, 10, 1); // C-OH
+    addBond(mol, 10, 11, 1);// O-H
+
+    // Hydrogen bonds
+    addBond(mol, 2, 12, 1);
+    addBond(mol, 3, 13, 1);
+    addBond(mol, 4, 14, 1);
+    addBond(mol, 5, 15, 1);
+
+    centerMolecule(mol);
+}
+
+// ============== MOLECULE REGISTRY (258 molecules) ==============
 
 typedef void (*MoleculeBuilder)(Molecule*);
 
@@ -14743,7 +14966,9 @@ static MoleculeInfo molecules[] = {
       "Asparagine was the first amino acid discovered, isolated from asparagus in 1806. It's non-essential as your body can make it. When you cook high-asparagine foods at high heat with sugars, acrylamide forms, which is a potential carcinogen." },
     { buildGlutamine, "Glutamine", CAT_AMINO_ACIDS, "Polar AA",
       "Glutamine is the most abundant amino acid in your blood and muscles. Your immune cells use it as fuel, especially during illness or stress. Hospitals give glutamine to burn patients and those recovering from surgery to speed healing." },
-    // === VITAMINS (102-115) ===
+    { buildHydroxyproline, "Hydroxyproline", CAT_AMINO_ACIDS, "Collagen AA",
+      "Hydroxyproline is almost exclusively found in collagen, making up about 10% of it. Your body makes it by modifying proline after the protein is built. Vitamin C is essential for this modification, which is why scurvy victims have weak collagen." },
+    // === VITAMINS (103-116) ===
     { buildAscorbicAcid, "Vitamin C", CAT_VITAMINS, "Ascorbic acid",
       "Vitamin C is essential for making collagen, healing wounds, and immune function. Humans and guinea pigs are among the few mammals that can't synthesize it. Sailors discovered citrus fruits cured scurvy, though they didn't understand why until the 1930s." },
     { buildThiamine, "Vitamin B1", CAT_VITAMINS, "Thiamine",
@@ -14772,7 +14997,9 @@ static MoleculeInfo molecules[] = {
       "Vitamin K1 is essential for blood clotting, named from the German 'Koagulation.' Green leafy vegetables are the best source. People on blood thinners must maintain consistent vitamin K intake because it can interfere with their medication." },
     { buildNicotinamide, "Nicotinamide", CAT_VITAMINS, "B3 amide form",
       "Nicotinamide is a form of vitamin B3 that doesn't cause the flushing associated with niacin. It's being studied for preventing skin cancer and improving skin appearance. It's part of NAD+, a molecule important for cellular energy and longevity research." },
-    // === CONTROLLED SUBSTANCES (116-122) ===
+    { buildNiacinamide, "Niacinamide (Alt. B3)", CAT_VITAMINS, "Vitamin B3 variant",
+      "Niacinamide is another name for nicotinamide, vitamin B3's amide form. Skincare products tout it for reducing pore size, redness, and supporting the skin barrier. Unlike niacin, it doesn't cause flushing, making it ideal for sensitive skin formulations." },
+    // === CONTROLLED SUBSTANCES (117-123) ===
     { buildCocaine, "Cocaine", CAT_PHARMA, "Stimulant alkaloid",
       "Cocaine comes from coca leaves, chewed in South America for thousands of years. It blocks dopamine reuptake, causing intense euphoria and addiction. Once used in Coca-Cola and as a local anesthetic, it remains medically useful for certain eye and nose surgeries." },
     { buildHeroin, "Heroin", CAT_PHARMA, "Opioid",
@@ -14846,7 +15073,9 @@ static MoleculeInfo molecules[] = {
       "Sodium sulfate fills detergents to increase volume cheaply. It doesn't help clean but makes products easier to handle. It's also used in laxatives and glass manufacturing as an economical filler." },
     { buildMSG, "MSG", CAT_HOUSEHOLD, "Flavor enhancer",
       "MSG (monosodium glutamate) enhances savory flavors, making food taste more delicious. Your tongue has specific receptors detecting umami, the fifth basic taste. It's naturally abundant in tomatoes, parmesan cheese, and aged foods." },
-    // === ACIDS (151-161) ===
+    { buildGlycerin, "Glycerin", CAT_HOUSEHOLD, "Humectant moisturizer",
+      "Glycerin (glycerol) is a sweet liquid that absorbs water from the air, making it perfect for moisturizers and cosmetics. It's a byproduct of biodiesel production and soap making. Glycerin lubricates skin, reduces wrinkles' appearance, and is used in suppositories." },
+    // === ACIDS (152-167) ===
     { buildCitricAcid, "Citric Acid", CAT_ACIDS, "Citrus fruits",
       "Citric acid gives lemons and limes their sour taste. It's used in foods, drinks, and cleaning products for its acidity. Chemically produced citric acid is indistinguishable from natural sources and costs less." },
     { buildCarbonicAcid, "Carbonic Acid/H2CO3", CAT_ACIDS, "CO2 in water",
@@ -14859,6 +15088,10 @@ static MoleculeInfo molecules[] = {
       "Tartaric acid gives wine its tart taste and occurs naturally in grapes. It precipitates as cream of tartar (potassium bitartrate) during wine aging. Bakers use cream of tartar as a leavening agent in baked goods alongside baking soda." },
     { buildMalicAcid, "Malic Acid", CAT_ACIDS, "Apple acid",
       "Malic acid makes apples and tart candies sour, providing that pucker-inducing sensation. Your body produces it during cellular respiration as an energy intermediate. Some athletes use malic acid supplements, believing it reduces fatigue, though evidence is mixed." },
+    { buildGlycolicAcid, "Glycolic Acid", CAT_ACIDS, "AHA exfoliant",
+      "Glycolic acid is the smallest AHA (alpha hydroxy acid), derived from sugar cane, making it highly effective at exfoliating skin. Used in skincare products to improve skin texture, reduce acne, and minimize wrinkles by removing dead skin cells. It's the mildest AHA but very effective, penetrating skin well due to its small molecular size." },
+    { buildSalicylicAcid, "Salicylic Acid", CAT_ACIDS, "BHA acne fighter",
+      "Salicylic acid is the primary BHA (beta hydroxy acid) used in skincare, derived from willow bark and wintergreen. Unlike AHAs, it's lipophilic (fat-soluble), allowing it to penetrate oil-clogged pores to treat acne. Found in most acne spot treatments and blackhead-fighting products worldwide." },
     { buildHydrofluoricAcid, "Hydrofluoric Acid/HF", CAT_ACIDS, "Glass etching",
       "Hydrofluoric acid (HF) dissolves glass and rock, making it unique among common acids. Despite being weak compared to hydrochloric acid, it's extremely dangerous because fluoride ions penetrate tissue deeply. A small skin exposure can cause fatal heart arrhythmias." },
     { buildHydrobromicAcid, "Hydrobromic Acid/HBr", CAT_ACIDS, "Strong acid",
