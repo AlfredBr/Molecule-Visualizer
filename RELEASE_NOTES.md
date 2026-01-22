@@ -1,6 +1,15 @@
 
 # MolVis Release Notes
 
+## v0.3.8 (2026-01-21)
+
+### New Features
+- Periodic Table panel in the UI showing a simple grid of supported elements with CPK colors
+- Elements present in the currently selected molecule are highlighted for quick reference
+
+### Notes
+- The table displays a subset of elements used by MolVis (H, C, N, O, F, Na, Al, Si, P, S, Cl, B, Br, I, Ti, Fe, Cu, Pt) placed at their standard period/group positions
+
 ## v0.3.7 (2026-01-21)
 
 ### New Features
