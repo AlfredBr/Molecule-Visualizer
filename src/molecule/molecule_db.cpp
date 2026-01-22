@@ -1233,6 +1233,27 @@ void buildBisphenolA(Molecule* mol) {
     addAtom(mol, 3.6f, 3.6f, 0.0f, ATOM_O);    // 17 OH
     addAtom(mol, 4.4f, 3.6f, 0.0f, ATOM_H);    // 18
 
+    // Methyl hydrogens on C9 (CH3)
+    addAtom(mol, 0.9f, 2.9f, 1.2f, ATOM_H);    // 19
+    addAtom(mol, -0.9f, 2.9f, 1.2f, ATOM_H);   // 20
+    addAtom(mol, 0.0f, 1.5f, 1.6f, ATOM_H);    // 21
+    // Methyl hydrogens on C10 (CH3)
+    addAtom(mol, 0.9f, 2.9f, -1.2f, ATOM_H);   // 22
+    addAtom(mol, -0.9f, 2.9f, -1.2f, ATOM_H);  // 23
+    addAtom(mol, 0.0f, 1.5f, -1.6f, ATOM_H);   // 24
+
+    // Ring hydrogens (approximate positions)
+    // Left ring: H on C0, C1, C3, C5
+    addAtom(mol, -3.4f, -0.8f, 0.0f, ATOM_H);  // 25 (C0)
+    addAtom(mol, -4.6f,  1.2f, 0.0f, ATOM_H);  // 26 (C1)
+    addAtom(mol, -1.4f,  3.2f, 0.0f, ATOM_H);  // 27 (C3)
+    addAtom(mol, -1.4f, -0.8f, 0.0f, ATOM_H);  // 28 (C5)
+    // Right ring: H on C12, C13, C14, C16
+    addAtom(mol,  1.4f, -0.8f, 0.0f, ATOM_H);  // 29 (C12)
+    addAtom(mol,  3.4f, -0.8f, 0.0f, ATOM_H);  // 30 (C13)
+    addAtom(mol,  4.6f,  1.2f, 0.0f, ATOM_H);  // 31 (C14)
+    addAtom(mol,  1.4f,  3.2f, 0.0f, ATOM_H);  // 32 (C16)
+
     // Bonds for left ring
     addBond(mol, 0, 1, 2);
     addBond(mol, 1, 2, 1);
@@ -1258,6 +1279,13 @@ void buildBisphenolA(Molecule* mol) {
     addBond(mol, 16, 11, 1);
     addBond(mol, 15, 17, 1);
     addBond(mol, 17, 18, 1);
+
+    // Bonds: methyl H
+    addBond(mol, 9, 19, 1);  addBond(mol, 9, 20, 1);  addBond(mol, 9, 21, 1);
+    addBond(mol,10, 22, 1);  addBond(mol,10, 23, 1);  addBond(mol,10, 24, 1);
+    // Bonds: ring H
+    addBond(mol, 0, 25, 1);  addBond(mol, 1, 26, 1);  addBond(mol, 3, 27, 1);  addBond(mol, 5, 28, 1);
+    addBond(mol,12, 29, 1);  addBond(mol,13, 30, 1);  addBond(mol,14, 31, 1);  addBond(mol,16, 32, 1);
 
     centerMolecule(mol);
 }
