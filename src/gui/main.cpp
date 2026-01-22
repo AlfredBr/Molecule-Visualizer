@@ -261,7 +261,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    // io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // Uncomment if using docking branch
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // Uncomment if using docking branch
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
