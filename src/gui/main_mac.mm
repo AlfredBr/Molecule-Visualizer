@@ -164,7 +164,9 @@ int main(int argc, char* argv[]) {
         printf("Metal renderer initialized\n");
 
         // Application state (matching Windows version)
+
         Molecule molecule = {};
+        Molecule renderMolecule = {};
         // Note: g_currentMolecule is initialized from saved config via LoadWindowConfig()
         float rotX = 0.3f;
         float rotY = 0.0f;
@@ -175,15 +177,44 @@ int main(int argc, char* argv[]) {
         float rotSpeed = 1.0f;
         bool rotateX = false;
         bool rotateY = true;
+        static bool hideHydrogen = false;
+
+        // Helper: Build filtered molecule (optionally hide hydrogens)
+        auto BuildRenderMolecule = [](const Molecule& src, Molecule& dst, bool hideH) {
+            dst.numAtoms = 0; dst.numBonds = 0;
+            strncpy(dst.name, src.name, sizeof(dst.name));
+            int mapOldToNew[MAX_ATOMS];
+            for (int i = 0; i < src.numAtoms; ++i) mapOldToNew[i] = -1;
+            for (int i = 0; i < src.numAtoms; ++i) {
+                const Atom& a = src.atoms[i];
+                if (hideH && a.type == ATOM_H) { mapOldToNew[i] = -1; continue; }
+                if (dst.numAtoms >= MAX_ATOMS) break;
+                mapOldToNew[i] = dst.numAtoms;
+                dst.atoms[dst.numAtoms] = a;
+                dst.numAtoms++;
+            }
+            for (int i = 0; i < src.numBonds; ++i) {
+                int n1 = mapOldToNew[src.bonds[i].atom1];
+                int n2 = mapOldToNew[src.bonds[i].atom2];
+                if (n1 < 0 || n2 < 0) continue;
+                if (dst.numBonds >= MAX_BONDS) break;
+                dst.bonds[dst.numBonds].atom1 = n1;
+                dst.bonds[dst.numBonds].atom2 = n2;
+                dst.bonds[dst.numBonds].order = src.bonds[i].order;
+                dst.numBonds++;
+            }
+        };
 
         // Load initial molecule
         molecule_build(g_currentMolecule, &molecule);
+        BuildRenderMolecule(molecule, renderMolecule, hideHydrogen);
 
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // Uncomment if using docking branch
 
         // Set ImGui ini file path to persist window positions
         io.IniFilename = g_imguiIniPath;
@@ -245,6 +276,9 @@ int main(int argc, char* argv[]) {
                 ImGui_ImplSDL2_NewFrame();
                 ImGui::NewFrame();
 
+                // Enable Docking
+		        ImGui::DockSpaceOverViewport();
+
                 // === MolVis UI ===
 
                 // Main menu bar
@@ -284,6 +318,7 @@ int main(int argc, char* argv[]) {
                     ImGui::EndMainMenuBar();
                 }
 
+
                 // Auto-rotate
                 if (autoRotate) {
                     if (rotateX) rotX += 0.01f * rotSpeed;
@@ -294,11 +329,11 @@ int main(int argc, char* argv[]) {
                 int curW, curH;
                 renderer->getSize(&curW, &curH);
 
-                // Render molecule to Metal texture
-                renderer->render(&molecule, rotX, rotY, zoom, offsetX, offsetY);
+                // Render filtered molecule to Metal texture
+                renderer->render(&renderMolecule, rotX, rotY, zoom, offsetX, offsetY);
 
                 // Render molecule name overlay
-                renderer->renderText(molecule.name, 10, 10, 3);
+                renderer->renderText(renderMolecule.name, 10, 10, 3);
 
                 // Molecule Viewport Panel
                 ImGui::SetNextWindowSize(ImVec2(820, 640), ImGuiCond_FirstUseEver);
@@ -412,22 +447,189 @@ int main(int argc, char* argv[]) {
                 }
                 ImGui::End();
 
+
+                // Molecule Options Panel
+                ImGui::SetNextWindowSize(ImVec2(240, 80), ImGuiCond_FirstUseEver);
+                ImGui::Begin("Molecule Options");
+                {
+                    ImGui::TextDisabled("Rendering options");
+                    ImGui::Separator();
+                    if (ImGui::Checkbox("Hide Hydrogen (H)", &hideHydrogen)) {
+                        BuildRenderMolecule(molecule, renderMolecule, hideHydrogen);
+                    }
+                    ImGui::TextDisabled("Does not affect Periodic Table");
+                }
+                ImGui::End();
+
+                // Periodic Table Panel
+                ImGui::SetNextWindowSize(ImVec2(860, 360), ImGuiCond_FirstUseEver);
+                ImGui::Begin("Periodic Table");
+                {
+                    struct ElementInfo { const char* symbol; const char* name; int period; int group; int atomType; };
+                    static const ElementInfo elements[] = {
+                        {"H",  "Hydrogen",        1,  1, ATOM_H},     {"He", "Helium",          1, 18, -1},
+                        {"Li", "Lithium",         2,  1, -1},         {"Be", "Beryllium",       2,  2, -1},
+                        {"B",  "Boron",           2, 13, ATOM_B},     {"C",  "Carbon",          2, 14, ATOM_C},
+                        {"N",  "Nitrogen",        2, 15, ATOM_N},     {"O",  "Oxygen",          2, 16, ATOM_O},
+                        {"F",  "Fluorine",        2, 17, ATOM_F},     {"Ne", "Neon",            2, 18, -1},
+                        {"Na", "Sodium",          3,  1, ATOM_NA},    {"Mg", "Magnesium",       3,  2, -1},
+                        {"Al", "Aluminum",        3, 13, ATOM_AL},    {"Si", "Silicon",         3, 14, ATOM_SI},
+                        {"P",  "Phosphorus",      3, 15, ATOM_P},     {"S",  "Sulfur",          3, 16, ATOM_S},
+                        {"Cl", "Chlorine",        3, 17, ATOM_CL},    {"Ar", "Argon",           3, 18, -1},
+                        {"K",  "Potassium",       4,  1, -1},         {"Ca", "Calcium",         4,  2, -1},
+                        {"Sc", "Scandium",        4,  3, -1},         {"Ti", "Titanium",        4,  4, ATOM_TI},
+                        {"V",  "Vanadium",        4,  5, -1},         {"Cr", "Chromium",        4,  6, -1},
+                        {"Mn", "Manganese",       4,  7, -1},         {"Fe", "Iron",            4,  8, ATOM_FE},
+                        {"Co", "Cobalt",          4,  9, -1},         {"Ni", "Nickel",          4, 10, -1},
+                        {"Cu", "Copper",          4, 11, ATOM_CU},    {"Zn", "Zinc",            4, 12, -1},
+                        {"Ga", "Gallium",         4, 13, -1},         {"Ge", "Germanium",       4, 14, -1},
+                        {"As", "Arsenic",         4, 15, -1},         {"Se", "Selenium",        4, 16, -1},
+                        {"Br", "Bromine",         4, 17, ATOM_BR},    {"Kr", "Krypton",         4, 18, -1},
+                        {"Rb", "Rubidium",        5,  1, -1},         {"Sr", "Strontium",       5,  2, -1},
+                        {"Y",  "Yttrium",         5,  3, -1},         {"Zr", "Zirconium",       5,  4, -1},
+                        {"Nb", "Niobium",         5,  5, -1},         {"Mo", "Molybdenum",      5,  6, -1},
+                        {"Tc", "Technetium",      5,  7, -1},         {"Ru", "Ruthenium",       5,  8, -1},
+                        {"Rh", "Rhodium",         5,  9, -1},         {"Pd", "Palladium",       5, 10, -1},
+                        {"Ag", "Silver",          5, 11, -1},         {"Cd", "Cadmium",         5, 12, -1},
+                        {"In", "Indium",          5, 13, -1},         {"Sn", "Tin",             5, 14, -1},
+                        {"Sb", "Antimony",        5, 15, -1},         {"Te", "Tellurium",       5, 16, -1},
+                        {"I",  "Iodine",          5, 17, ATOM_I},     {"Xe", "Xenon",           5, 18, -1},
+                        {"Cs", "Cesium",          6,  1, -1},         {"Ba", "Barium",          6,  2, -1},
+                        {"La", "Lanthanum",       6,  3, -1},         {"Ce", "Cerium",          6,  4, -1},
+                        {"Pr", "Praseodymium",    6,  5, -1},         {"Nd", "Neodymium",       6,  6, -1},
+                        {"Pm", "Promethium",      6,  7, -1},         {"Sm", "Samarium",        6,  8, -1},
+                        {"Eu", "Europium",        6,  9, -1},         {"Gd", "Gadolinium",      6, 10, -1},
+                        {"Tb", "Terbium",         6, 11, -1},         {"Dy", "Dysprosium",      6, 12, -1},
+                        {"Ho", "Holmium",         6, 13, -1},         {"Er", "Erbium",          6, 14, -1},
+                        {"Tm", "Thulium",         6, 15, -1},         {"Yb", "Ytterbium",      6, 16, -1},
+                        {"Lu", "Lutetium",        6, 17, -1},         {"Hf", "Hafnium",         6,  4, -1},
+                        {"Ta", "Tantalum",        6,  5, -1},         {"W",  "Tungsten",        6,  6, -1},
+                        {"Re", "Rhenium",         6,  7, ATOM_RE},    {"Os", "Osmium",          6,  8, -1},
+                        {"Ir", "Iridium",         6,  9, -1},         {"Pt", "Platinum",        6, 10, ATOM_PT},
+                        {"Au", "Gold",            6, 11, -1},         {"Hg", "Mercury",         6, 12, -1},
+                        {"Tl", "Thallium",        6, 13, -1},         {"Pb", "Lead",            6, 14, -1},
+                        {"Bi", "Bismuth",         6, 15, -1},         {"Po", "Polonium",        6, 16, -1},
+                        {"At", "Astatine",        6, 17, -1},         {"Rn", "Radon",           6, 18, -1},
+                        {"Fr", "Francium",        7,  1, -1},         {"Ra", "Radium",          7,  2, -1},
+                        {"Ac", "Actinium",        7,  3, -1},         {"Th", "Thorium",         7,  4, -1},
+                        {"Pa", "Protactinium",    7,  5, -1},         {"U",  "Uranium",         7,  6, -1},
+                        {"Np", "Neptunium",       7,  7, -1},         {"Pu", "Plutonium",       7,  8, -1},
+                        {"Am", "Americium",       7,  9, -1},         {"Cm", "Curium",          7, 10, -1},
+                        {"Bk", "Berkelium",       7, 11, -1},         {"Cf", "Californium",     7, 12, -1},
+                        {"Es", "Einsteinium",     7, 13, -1},         {"Fm", "Fermium",         7, 14, -1},
+                        {"Md", "Mendelevium",     7, 15, -1},         {"No", "Nobelium",        7, 16, -1},
+                        {"Lr", "Lawrencium",      7, 17, -1},         {"Rf", "Rutherfordium",   7,  4, -1},
+                        {"Db", "Dubnium",         7,  5, -1},         {"Sg", "Seaborgium",      7,  6, -1},
+                        {"Bh", "Bohrium",         7,  7, -1},         {"Hs", "Hassium",         7,  8, -1},
+                        {"Mt", "Meitnerium",      7,  9, -1},         {"Ds", "Darmstadtium",    7, 10, -1},
+                        {"Rg", "Roentgenium",     7, 11, -1},         {"Cn", "Copernicium",     7, 12, -1},
+                        {"Nh", "Nihonium",        7, 13, -1},         {"Fl", "Flerovium",       7, 14, -1},
+                        {"Mc", "Moscovium",       7, 15, -1},         {"Lv", "Livermorium",     7, 16, -1},
+                        {"Ts", "Tennessine",      7, 17, -1},         {"Og", "Oganesson",       7, 18, -1},
+                    };
+
+                    // CPK color lookup for supported internal atom types
+                    auto get_cpk_color = [](int atomType) -> ImVec4 {
+                        switch (atomType) {
+                        case ATOM_H:  return ImVec4(0.95f, 0.95f, 0.95f, 1.0f);
+                        case ATOM_C:  return ImVec4(0.20f, 0.20f, 0.20f, 1.0f);
+                        case ATOM_N:  return ImVec4(0.20f, 0.30f, 0.90f, 1.0f);
+                        case ATOM_O:  return ImVec4(0.90f, 0.20f, 0.20f, 1.0f);
+                        case ATOM_P:  return ImVec4(1.00f, 0.50f, 0.00f, 1.0f);
+                        case ATOM_S:  return ImVec4(0.90f, 0.80f, 0.20f, 1.0f);
+                        case ATOM_CL: return ImVec4(0.20f, 0.90f, 0.20f, 1.0f);
+                        case ATOM_BR: return ImVec4(0.60f, 0.10f, 0.10f, 1.0f);
+                        case ATOM_F:  return ImVec4(0.50f, 0.90f, 0.50f, 1.0f);
+                        case ATOM_I:  return ImVec4(0.50f, 0.10f, 0.50f, 1.0f);
+                        case ATOM_NA: return ImVec4(0.70f, 0.50f, 0.90f, 1.0f);
+                        case ATOM_SI: return ImVec4(0.85f, 0.75f, 0.55f, 1.0f);
+                        case ATOM_B:  return ImVec4(1.00f, 0.65f, 0.65f, 1.0f);
+                        case ATOM_FE: return ImVec4(0.88f, 0.40f, 0.20f, 1.0f);
+                        case ATOM_CU: return ImVec4(0.85f, 0.55f, 0.20f, 1.0f);
+                        case ATOM_AL: return ImVec4(0.75f, 0.75f, 0.80f, 1.0f);
+                        case ATOM_TI: return ImVec4(0.60f, 0.60f, 0.65f, 1.0f);
+                        case ATOM_PT: return ImVec4(0.85f, 0.85f, 0.88f, 1.0f);
+                        case ATOM_RE: return ImVec4(0.51f, 0.51f, 0.56f, 1.0f);
+                        default:      return ImVec4(0.32f, 0.32f, 0.36f, 1.0f);
+                        }
+                    };
+
+                    // Compute presence of each supported type in current molecule (not affected by hideHydrogen)
+                    bool present[ATOM_TYPE_COUNT] = {false};
+                    for (int i = 0; i < molecule.numAtoms; ++i) {
+                        int t = molecule.atoms[i].type;
+                        if (t >= 0 && t < ATOM_TYPE_COUNT) present[t] = true;
+                    }
+
+                    // Layout constants
+                    const ImVec2 cellSize(36, 30);
+                    const ImVec2 spacing(6, 6);
+                    const float topMargin = 18.0f;
+                    const float leftMargin = 18.0f;
+                    ImVec2 origin = ImGui::GetCursorScreenPos();
+
+                    // Group number row
+                    for (int c = 1; c <= 18; ++c) {
+                        ImVec2 pos(origin.x + leftMargin + (c-1)*(cellSize.x + spacing.x) + 10.0f, origin.y);
+                        ImGui::SetCursorScreenPos(pos);
+                        ImGui::Text("%d", c);
+                    }
+
+                    // Draw each element as a colored button placed by (period, group)
+                    for (const auto& e : elements) {
+                        float x = leftMargin + (e.group - 1) * (cellSize.x + spacing.x);
+                        float y = topMargin + (e.period - 1) * (cellSize.y + spacing.y);
+                        ImGui::SetCursorScreenPos(ImVec2(origin.x + x, origin.y + y));
+                        bool isPresent = (e.atomType >= 0 && e.atomType < ATOM_TYPE_COUNT) ? present[e.atomType] : false;
+                        ImVec4 neutral = ImVec4(0.32f, 0.32f, 0.36f, 1.0f);
+                        ImVec4 base = isPresent ? get_cpk_color(e.atomType) : neutral;
+                        ImVec4 hovered = ImVec4(base.x * 0.9f, base.y * 0.9f, base.z * 0.9f, 1.0f);
+                        ImVec4 active  = ImVec4(base.x * 0.8f, base.y * 0.8f, base.z * 0.8f, 1.0f);
+                        ImGui::PushID(e.symbol);
+                        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 3.0f);
+                        ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, isPresent ? 2.0f : 0.0f);
+                        ImGui::PushStyleColor(ImGuiCol_Border, isPresent ? ImVec4(1.0f,1.0f,0.2f,1.0f) : ImVec4(0,0,0,0));
+                        ImGui::PushStyleColor(ImGuiCol_Button, base);
+                        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, hovered);
+                        ImGui::PushStyleColor(ImGuiCol_ButtonActive, active);
+                        ImVec4 textCol = (base.x*0.299f + base.y*0.587f + base.z*0.114f) < 0.5f ? ImVec4(1,1,1,1) : ImVec4(0,0,0,1);
+                        ImGui::PushStyleColor(ImGuiCol_Text, textCol);
+                        ImGui::Button(e.symbol, cellSize);
+                        if (ImGui::IsItemHovered()) {
+                            ImGui::BeginTooltip();
+                            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1,1,1,1));
+                            ImGui::TextUnformatted(e.name);
+                            if (isPresent) {
+                                ImGui::Spacing();
+                                ImGui::TextColored(ImVec4(1.0f, 0.95f, 0.3f, 1.0f), "Present in molecule");
+                            }
+                            ImGui::PopStyleColor();
+                            ImGui::EndTooltip();
+                        }
+                        ImGui::PopStyleColor(5);
+                        ImGui::PopStyleVar(2);
+                        ImGui::PopID();
+                    }
+                    ImGui::Dummy(ImVec2(0, topMargin + 7*(cellSize.y + spacing.y)));
+                    ImGui::Separator();
+                    ImGui::TextDisabled("Highlighted elements are present in the selected molecule.");
+                }
+                ImGui::End();
+
                 // Description Panel - Educational info about the current molecule
                 ImGui::SetNextWindowSize(ImVec2(350, 280), ImGuiCond_FirstUseEver);
                 ImGui::Begin("Description");
                 {
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.7f, 1.0f)); // Warm yellow text
-                    ImGui::TextWrapped("%s", molecule.name);
+                    ImGui::TextWrapped("%s", renderMolecule.name);
                     ImGui::PopStyleColor();
                     ImGui::Separator();
                     ImGui::Spacing();
                     ImGui::TextWrapped("%s", molecule_get_long_description(g_currentMolecule));
                     ImGui::Spacing();
                     ImGui::Separator();
-
-                    // Molecule Info
-                    ImGui::Text("Atoms: %d", molecule.numAtoms);
-                    ImGui::Text("Bonds: %d", molecule.numBonds);
+                    ImGui::Text("Atoms: %d", renderMolecule.numAtoms);
+                    ImGui::Text("Bonds: %d", renderMolecule.numBonds);
                     ImGui::Text("Category: %s", molecule_get_category_name(molecule_get_category(g_currentMolecule)));
                 }
                 ImGui::End();
@@ -492,7 +694,7 @@ int main(int argc, char* argv[]) {
                     ImGui::Text("CPK Atom Colors:");
                     ImGui::Separator();
 
-                    // Define colors matching the Metal renderer
+                    // Define colors matching the CUDA/Windows renderer
                     ImVec4 cpkColors[] = {
                         {0.95f, 0.95f, 0.95f, 1.0f},  // H - white
                         {0.2f,  0.2f,  0.2f,  1.0f},  // C - dark gray
@@ -512,6 +714,7 @@ int main(int argc, char* argv[]) {
                         {0.75f, 0.75f, 0.8f,  1.0f},  // Al - silver
                         {0.6f,  0.6f,  0.65f, 1.0f},  // Ti - gray
                         {0.85f, 0.85f, 0.88f, 1.0f},  // Pt - white
+                        {0.51f, 0.51f, 0.56f, 1.0f},  // Re - metallic gray
                     };
 
                     const char* atomNames[] = {
@@ -533,10 +736,11 @@ int main(int argc, char* argv[]) {
                         "Al - Aluminum (Silver)",
                         "Ti - Titanium (Gray)",
                         "Pt - Platinum (White)",
+                        "Re - Rhenium (Gray)",
                     };
 
                     // Display color swatches in a grid
-                    for (int i = 0; i < 18; i++) {
+                    for (int i = 0; i < ATOM_TYPE_COUNT; i++) {
                         char id[32];
                         snprintf(id, sizeof(id), "##cpk_color_%d", i);
                         ImGui::ColorButton(id, cpkColors[i], ImGuiColorEditFlags_NoBorder | ImGuiColorEditFlags_NoTooltip, ImVec2(20, 20));
