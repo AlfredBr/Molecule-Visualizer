@@ -92,7 +92,7 @@ if(MOLVIS_BUILD_MACOS)
 
     # macOS-specific sources
     set(MACOS_SOURCES
-        ${CMAKE_SOURCE_DIR}/src/main_mac.mm
+        ${CMAKE_SOURCE_DIR}/src/gui/main_mac.mm
         ${CMAKE_SOURCE_DIR}/src/renderer/metal_renderer.mm
     )
 
