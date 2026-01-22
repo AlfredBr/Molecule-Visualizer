@@ -1,6 +1,6 @@
 Set-Alias run ./run_windows.ps1
 
-Remove-Item -Force ./molvis.exe
+Remove-Item -Force ./molvis.exe -ErrorAction SilentlyContinue
 
 ./build.bat
 
