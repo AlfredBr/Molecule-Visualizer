@@ -1052,7 +1052,7 @@ void buildAmmonia(Molecule* mol) {
 void buildBleach(Molecule* mol) {
     mol->numAtoms = 0;
     mol->numBonds = 0;
-    strcpy(mol->name, "Bleach/NaOCl");
+    strcpy(mol->name, "Bleach (NaOCl)");
 
     // Ionic compound: Na+ and OCl-
     addAtom(mol, -1.5f, 0.0f, 0.0f, ATOM_NA);   // Na+
@@ -1071,7 +1071,7 @@ void buildBleach(Molecule* mol) {
 void buildLye(Molecule* mol) {
     mol->numAtoms = 0;
     mol->numBonds = 0;
-    strcpy(mol->name, "Lye/NaOH");
+    strcpy(mol->name, "Lye (NaOH)");
 
     // Ionic compound: Na+ and OH-
     addAtom(mol, -1.2f, 0.0f, 0.0f, ATOM_NA);   // Na+

@@ -496,7 +496,7 @@ void buildAmmonia(Molecule* mol) {
 void buildBleach(Molecule* mol) {
     mol->numAtoms = 0;
     mol->numBonds = 0;
-    strcpy(mol->name, "Bleach/NaOCl");
+    strcpy(mol->name, "Bleach (NaOCl)");
 
     // Ionic compound: Na+ and OCl-
     addAtom(mol, -1.5f, 0.0f, 0.0f, ATOM_NA);   // Na+
@@ -515,7 +515,7 @@ void buildBleach(Molecule* mol) {
 void buildLye(Molecule* mol) {
     mol->numAtoms = 0;
     mol->numBonds = 0;
-    strcpy(mol->name, "Lye/NaOH");
+    strcpy(mol->name, "Lye (NaOH)");
 
     // Ionic compound: Na+ and OH-
     addAtom(mol, -1.2f, 0.0f, 0.0f, ATOM_NA);   // Na+
@@ -15206,7 +15206,7 @@ static MoleculeInfo molecules[] = {
       "Serotonin regulates mood, sleep, and appetite. Surprisingly, 95% of your body's serotonin is in your gut, not your brain. Many antidepressants work by increasing serotonin levels. Sunlight and exercise naturally boost serotonin production." },
     { buildNitricOxide, "NO", CAT_SIMPLE, "Nitric oxide",
       "Nitric oxide is a tiny signaling molecule your body uses to dilate blood vessels. Discovered in the 1980s, it won the Nobel Prize in 1998. Viagra works by enhancing nitric oxide's effects. Lightning also produces NO in the atmosphere." },
-    { buildHydrogenPeroxide, "H2O2", CAT_HOUSEHOLD, "Hydrogen peroxide",
+    { buildHydrogenPeroxide, "Hydrogen Peroxide/H2O2", CAT_HOUSEHOLD, "Hydrogen peroxide",
       "Hydrogen peroxide is water with an extra oxygen atom, making it a powerful oxidizer. Dilute solutions clean wounds by killing bacteria with oxygen bubbles. Your white blood cells produce H2O2 to destroy invading pathogens." },
     { buildSulfuricAcid, "H2SO4", CAT_ACIDS, "Sulfuric acid",
       "Sulfuric acid is the most produced chemical in the world, used in fertilizers, petroleum refining, and batteries. It's so corrosive it can char paper and dissolve metals. Acid rain forms when SO2 emissions create sulfuric acid in clouds." },
@@ -15465,7 +15465,7 @@ static MoleculeInfo molecules[] = {
       "Sodium nitrite is more potent than nitrate for meat preservation and faster-acting. It also prevents clostridium botulinum toxin, potentially deadly if untreated. Modern curing combines it with nitrate for safety and effectiveness." },
     { buildSodiumSulfate, "Sodium Sulfate/Na2SO4", CAT_HOUSEHOLD, "Detergent filler",
       "Sodium sulfate fills detergents to increase volume cheaply. It doesn't help clean but makes products easier to handle. It's also used in laxatives and glass manufacturing as an economical filler." },
-    { buildMSG, "MSG", CAT_HOUSEHOLD, "Flavor enhancer",
+    { buildMSG, "Monosodium Glutamate/MSG", CAT_HOUSEHOLD, "Flavor enhancer",
       "MSG (monosodium glutamate) enhances savory flavors, making food taste more delicious. Your tongue has specific receptors detecting umami, the fifth basic taste. It's naturally abundant in tomatoes, parmesan cheese, and aged foods." },
     { buildGlycerin, "Glycerin", CAT_HOUSEHOLD, "Humectant moisturizer",
       "Glycerin (glycerol) is a sweet liquid that absorbs water from the air, making it perfect for moisturizers and cosmetics. It's a byproduct of biodiesel production and soap making. Glycerin lubricates skin, reduces wrinkles' appearance, and is used in suppositories." },
