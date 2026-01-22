@@ -13,7 +13,7 @@ using namespace metal;
 // ============== Constants ==============
 
 // CPK colors for atoms (R, G, B)
-constant float3 atomColors[18] = {
+constant float3 atomColors[19] = {
     float3(0.95f, 0.95f, 0.95f),  // H - white
     float3(0.2f,  0.2f,  0.2f),   // C - dark gray
     float3(0.2f,  0.3f,  0.9f),   // N - blue
@@ -32,6 +32,7 @@ constant float3 atomColors[18] = {
     float3(0.75f, 0.75f, 0.8f),   // Al - silver
     float3(0.6f,  0.6f,  0.65f),  // Ti - gray
     float3(0.85f, 0.85f, 0.88f),  // Pt - white
+    float3(0.51f, 0.51f, 0.56f),  // Re - metallic gray
 };
 
 // ============== Data Structures ==============
@@ -424,7 +425,7 @@ kernel void renderMoleculeKernel(
             float3 hitPos = ro + t * rd;
             hitNormal = normalize(hitPos - center);
             int atomType = atoms[i].type;
-            if (atomType >= 0 && atomType < 18) {
+            if (atomType >= 0 && atomType < 19) {
                 hitColor = atomColors[atomType];
             } else {
                 hitColor = float3(0.5f, 0.5f, 0.5f);

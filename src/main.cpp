@@ -12,6 +12,7 @@
 #include <tchar.h>
 #include <stdio.h>
 #include <cctype>
+#include <string.h>
 
 #include "renderer/cuda_renderer.h"
 #include "molecule/molecule_db.h"
@@ -99,6 +100,8 @@ static bool                     g_rotateY = true;
 static char                     g_searchBuffer[256] = "";
 // UI fonts
 static ImFont*                  g_fontTooltip = nullptr;
+// Molecule options
+static bool                     g_hideHydrogen = false; // affects rendering only
 
 // Forward declarations
 bool StringContains(const char* str, const char* search);
@@ -107,6 +110,89 @@ void CleanupDeviceD3D();
 void CreateRenderTarget();
 void CleanupRenderTarget();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+// Build a copy of molecule used for rendering, optionally hiding hydrogens
+static void BuildRenderMolecule(const Molecule& src, Molecule& dst, bool hideHydrogen)
+{
+    dst.numAtoms = 0; dst.numBonds = 0;
+    strncpy(dst.name, src.name, sizeof(dst.name));
+    int mapOldToNew[MAX_ATOMS];
+    for (int i = 0; i < src.numAtoms; ++i) mapOldToNew[i] = -1;
+    // Copy atoms
+    for (int i = 0; i < src.numAtoms; ++i) {
+        const Atom& a = src.atoms[i];
+        if (hideHydrogen && a.type == ATOM_H) { mapOldToNew[i] = -1; continue; }
+        if (dst.numAtoms >= MAX_ATOMS) break;
+        mapOldToNew[i] = dst.numAtoms;
+        dst.atoms[dst.numAtoms] = a;
+        dst.numAtoms++;
+    }
+    // Copy bonds, skipping any that reference hidden atoms; remap indices
+    for (int i = 0; i < src.numBonds; ++i) {
+        int n1 = mapOldToNew[src.bonds[i].atom1];
+        int n2 = mapOldToNew[src.bonds[i].atom2];
+        if (n1 < 0 || n2 < 0) continue;
+        if (dst.numBonds >= MAX_BONDS) break;
+        dst.bonds[dst.numBonds].atom1 = n1;
+        dst.bonds[dst.numBonds].atom2 = n2;
+        dst.bonds[dst.numBonds].order = src.bonds[i].order;
+        dst.numBonds++;
+    }
+}
+
+// Compute element presence flags for our internal 18 types.
+// Uses actual atoms plus a best-effort formula parse from the display name to include elements like H
+// even if the model omits them. Rendering options (e.g., hide H) do not affect this.
+static void ComputePresenceFlags(const Molecule& mol, int moleculeIndex, bool present[ATOM_TYPE_COUNT])
+{
+    for (int i = 0; i < ATOM_TYPE_COUNT; ++i) present[i] = false;
+    // From atoms in the model
+    for (int i = 0; i < mol.numAtoms; ++i) {
+        int t = mol.atoms[i].type; if (t >= 0 && t < ATOM_TYPE_COUNT) present[t] = true;
+    }
+    // From formula in name (if available)
+    auto markBySymbol = [&](const char* sym){
+        if (strcmp(sym, "H") == 0) present[ATOM_H] = true;
+        else if (strcmp(sym, "C") == 0) present[ATOM_C] = true;
+        else if (strcmp(sym, "N") == 0) present[ATOM_N] = true;
+        else if (strcmp(sym, "O") == 0) present[ATOM_O] = true;
+        else if (strcmp(sym, "P") == 0) present[ATOM_P] = true;
+        else if (strcmp(sym, "S") == 0) present[ATOM_S] = true;
+        else if (strcmp(sym, "F") == 0) present[ATOM_F] = true;
+        else if (strcmp(sym, "Cl") == 0) present[ATOM_CL] = true;
+        else if (strcmp(sym, "Br") == 0) present[ATOM_BR] = true;
+        else if (strcmp(sym, "I") == 0) present[ATOM_I] = true;
+        else if (strcmp(sym, "Na") == 0) present[ATOM_NA] = true;
+        else if (strcmp(sym, "Si") == 0) present[ATOM_SI] = true;
+        else if (strcmp(sym, "B") == 0) present[ATOM_B] = true;
+        else if (strcmp(sym, "Fe") == 0) present[ATOM_FE] = true;
+        else if (strcmp(sym, "Cu") == 0) present[ATOM_CU] = true;
+        else if (strcmp(sym, "Al") == 0) present[ATOM_AL] = true;
+        else if (strcmp(sym, "Ti") == 0) present[ATOM_TI] = true;
+        else if (strcmp(sym, "Pt") == 0) present[ATOM_PT] = true;
+        else if (strcmp(sym, "Re") == 0) present[ATOM_RE] = true;
+    };
+
+    const char* disp = molecule_get_name(moleculeIndex);
+    if (disp) {
+        // Look inside parentheses for a formula-like section, else scan whole string
+        const char* src = strchr(disp, '(');
+        const char* end = src ? strchr(src, ')') : nullptr;
+        if (!src) src = disp; // fallback to whole name
+        if (!end) end = src + strlen(src);
+        for (const char* p = src; p < end; ) {
+            if (*p >= 'A' && *p <= 'Z') {
+                char sym[3] = {0,0,0}; sym[0] = *p; ++p;
+                if (p < end && *p >= 'a' && *p <= 'z') { sym[1] = *p; ++p; }
+                markBySymbol(sym);
+                // skip optional digits
+                while (p < end && *p >= '0' && *p <= '9') ++p;
+            } else {
+                ++p;
+            }
+        }
+    }
+}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -268,8 +354,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             if (g_rotateY) g_rotY += 0.01f * g_rotSpeed;
         }
 
+        // Prepare molecule for rendering (apply view options without touching source data)
+        Molecule renderMol;
+        BuildRenderMolecule(g_molecule, renderMol, g_hideHydrogen);
         // Render molecule to CUDA texture
-        renderer_render(g_pRenderer, &g_molecule, g_rotX, g_rotY, g_zoom, g_offsetX, g_offsetY);
+        renderer_render(g_pRenderer, &renderMol, g_rotX, g_rotY, g_zoom, g_offsetX, g_offsetY);
 
         // Render molecule name overlay using GPU text kernel
         renderer_render_text(g_pRenderer, g_molecule.name, 10, 10, 3);
@@ -469,6 +558,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         }
         ImGui::End();
 
+        // Molecule Options Panel
+        ImGui::SetNextWindowSize(ImVec2(240, 80), ImGuiCond_FirstUseEver);
+        ImGui::Begin("Molecule Options");
+        {
+            ImGui::TextDisabled("Rendering options");
+            ImGui::Separator();
+            ImGui::Checkbox("Hide Hydrogen (H)", &g_hideHydrogen);
+            ImGui::TextDisabled("Does not affect Periodic Table");
+        }
+        ImGui::End();
+
         // Periodic Table Panel
         ImGui::SetNextWindowSize(ImVec2(860, 360), ImGuiCond_FirstUseEver);
         ImGui::Begin("Periodic Table");
@@ -513,7 +613,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 {"Tm", "Thulium",         6, 15, -1},         {"Yb", "Ytterbium",      6, 16, -1},
                 {"Lu", "Lutetium",        6, 17, -1},         {"Hf", "Hafnium",         6,  4, -1},
                 {"Ta", "Tantalum",        6,  5, -1},         {"W",  "Tungsten",        6,  6, -1},
-                {"Re", "Rhenium",         6,  7, -1},         {"Os", "Osmium",          6,  8, -1},
+                {"Re", "Rhenium",         6,  7, ATOM_RE},    {"Os", "Osmium",          6,  8, -1},
                 {"Ir", "Iridium",         6,  9, -1},         {"Pt", "Platinum",        6, 10, ATOM_PT},
                 {"Au", "Gold",            6, 11, -1},         {"Hg", "Mercury",         6, 12, -1},
                 {"Tl", "Thallium",        6, 13, -1},         {"Pb", "Lead",            6, 14, -1},
@@ -558,16 +658,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 case ATOM_AL: return ImVec4(0.75f, 0.75f, 0.80f, 1.0f);
                 case ATOM_TI: return ImVec4(0.60f, 0.60f, 0.65f, 1.0f);
                 case ATOM_PT: return ImVec4(0.85f, 0.85f, 0.88f, 1.0f);
+                case ATOM_RE: return ImVec4(0.51f, 0.51f, 0.56f, 1.0f); // metallic gray
                 default:      return ImVec4(0.32f, 0.32f, 0.36f, 1.0f);
                 }
             };
 
-            // Compute presence of each supported type in current molecule
-            bool present[18] = {false};
-            for (int i = 0; i < g_molecule.numAtoms; ++i) {
-                int t = g_molecule.atoms[i].type;
-                if (t >= 0 && t < 18) present[t] = true;
-            }
+            // Compute presence of each supported type in current molecule (independent of rendering options)
+            bool present[ATOM_TYPE_COUNT];
+            ComputePresenceFlags(g_molecule, g_currentMolecule, present);
 
             // Layout constants
             const ImVec2 cellSize(36, 30);
@@ -591,7 +689,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 float y = topMargin + (e.period - 1) * (cellSize.y + spacing.y);
                 ImGui::SetCursorScreenPos(ImVec2(origin.x + x, origin.y + y));
 
-                bool isPresent = (e.atomType >= 0 && e.atomType < 18) ? present[e.atomType] : false;
+                        bool isPresent = (e.atomType >= 0 && e.atomType < ATOM_TYPE_COUNT) ? present[e.atomType] : false;
                 // Gray for all elements by default; use CPK color only when present
                 ImVec4 neutral = ImVec4(0.32f, 0.32f, 0.36f, 1.0f);
                 ImVec4 base = isPresent ? get_cpk_color(e.atomType) : neutral;
@@ -661,6 +759,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 {0.75f, 0.75f, 0.8f,  1.0f},  // Al - silver
                 {0.6f,  0.6f,  0.65f, 1.0f},  // Ti - gray
                 {0.85f, 0.85f, 0.88f, 1.0f},  // Pt - white
+                {0.51f, 0.51f, 0.56f, 1.0f},  // Re - metallic gray
             };
 
             const char* atomNames[] = {
@@ -682,10 +781,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 "Al - Aluminum (Silver)",
                 "Ti - Titanium (Gray)",
                 "Pt - Platinum (White)",
+                "Re - Rhenium (Gray)",
             };
 
             // Display color swatches in a grid
-            for (int i = 0; i < 18; i++) {
+            for (int i = 0; i < ATOM_TYPE_COUNT; i++) {
                 char id[32];
                 snprintf(id, sizeof(id), "##cpk_color_%d", i);
                 ImGui::ColorButton(id, cpkColors[i], ImGuiColorEditFlags_NoBorder | ImGuiColorEditFlags_NoTooltip, ImVec2(20, 20));

@@ -14,7 +14,7 @@
 // ============== CUDA Device Constants ==============
 
 // CPK colors for atoms (R, G, B)
-__device__ __constant__ float3 atomColors[18] = {
+__device__ __constant__ float3 atomColors[ATOM_TYPE_COUNT] = {
     {0.95f, 0.95f, 0.95f},  // H - white
     {0.2f,  0.2f,  0.2f},   // C - dark gray
     {0.2f,  0.3f,  0.9f},   // N - blue
@@ -33,6 +33,7 @@ __device__ __constant__ float3 atomColors[18] = {
     {0.75f, 0.75f, 0.8f},   // Al - silver
     {0.6f,  0.6f,  0.65f},  // Ti - gray
     {0.85f, 0.85f, 0.88f},  // Pt - white
+    {0.51f, 0.51f, 0.56f},  // Re - metallic gray
 };
 
 // ============== 3D Math Helpers ==============

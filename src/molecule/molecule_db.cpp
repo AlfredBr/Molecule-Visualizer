@@ -52,11 +52,12 @@ static void addAtom(Molecule* mol, float x, float y, float z, int type) {
     Atom* a = &mol->atoms[mol->numAtoms];
     a->x = x; a->y = y; a->z = z;
     a->type = type;
-    float radii[] = {
+    float radii[ATOM_TYPE_COUNT] = {
         0.25f, 0.40f, 0.38f, 0.35f, 0.45f, 0.45f, 0.45f, 0.50f, 0.35f, 0.55f,
-        0.55f, 0.48f, 0.42f, 0.55f, 0.50f, 0.50f, 0.52f, 0.55f
+        0.55f, 0.48f, 0.42f, 0.55f, 0.50f, 0.50f, 0.52f, 0.55f,
+        0.62f // Re (approx)
     };
-    a->radius = radii[type < 18 ? type : 0];
+    a->radius = radii[(type >= 0 && type < ATOM_TYPE_COUNT) ? type : 0];
     mol->numAtoms++;
 }
 
@@ -5731,6 +5732,8 @@ void buildAscorbicAcid(Molecule* mol) {
     addAtom(mol, 3.6f, 0.2f, 0.9f, ATOM_H);
     addAtom(mol, 3.8f, 1.8f, 0.0f, ATOM_H);
     addAtom(mol, 4.0f, 0.9f, -0.9f, ATOM_H);
+    // Missing H on C3 to satisfy C6H8O6
+    addAtom(mol, 2.6f, -0.9f, 0.0f, ATOM_H);
 
     addBond(mol, 0, 1, 2);
     addBond(mol, 1, 2, 1);
@@ -5751,6 +5754,7 @@ void buildAscorbicAcid(Molecule* mol) {
     addBond(mol, 6, 16, 1);
     addBond(mol, 7, 17, 1);
     addBond(mol, 7, 18, 1);
+    addBond(mol, 2, 19, 1);
 
     centerMolecule(mol);
 }
@@ -12979,8 +12983,48 @@ void buildSpironolactone(Molecule* mol) {
     addAtom(mol, 6.5f, -3.3f, 0.0f, ATOM_O);       // 21: O (ether in ring)
     addAtom(mol, 6.5f, -2.0f, 0.0f, ATOM_C);       // 22: CH2 (lactone ring)
 
-    // Acetyl group
+    // Acetyl group (with thio-link)
     addAtom(mol, 7.8f, -2.7f, 0.0f, ATOM_C);       // 23: CH3
+    addAtom(mol, 7.1f, -2.7f, 0.8f, ATOM_S);       // 24: S between 22 and CH3 (simplified thioether)
+
+    // Hydrogens (approximate placement)
+    // CH3 on acetyl
+    addAtom(mol, 8.6f, -2.2f, 0.6f, ATOM_H);       // 25
+    addAtom(mol, 8.6f, -3.4f, 0.0f, ATOM_H);       // 26
+    addAtom(mol, 8.2f, -2.2f, -0.8f, ATOM_H);      // 27
+    // CH2 groups in lactone chain
+    addAtom(mol, 2.6f, -2.6f, 1.0f, ATOM_H);       // 28 (C17)
+    addAtom(mol, 2.0f, -3.1f, -0.6f, ATOM_H);      // 29 (C17)
+    addAtom(mol, 3.9f, -3.3f, 1.0f, ATOM_H);       // 30 (C18)
+    addAtom(mol, 3.3f, -3.8f, -0.6f, ATOM_H);      // 31 (C18)
+    addAtom(mol, 6.5f, -2.0f, 1.0f, ATOM_H);       // 32 (C22)
+    addAtom(mol, 6.5f, -1.4f, -0.6f, ATOM_H);      // 33 (C22)
+    // A/B rings
+    addAtom(mol, -0.8f, 0.5f, 0.0f, ATOM_H);       // 34 (C0)
+    addAtom(mol, -0.6f, -1.0f, 0.0f, ATOM_H);      // 35 (C0)
+    addAtom(mol, 1.3f, 0.7f, 1.0f, ATOM_H);        // 36 (C1)
+    addAtom(mol, 2.6f, 0.0f, 1.0f, ATOM_H);        // 37 (C2)
+    addAtom(mol, 1.3f, -1.3f, 1.0f, ATOM_H);       // 38 (C3)
+    addAtom(mol, 1.3f, -1.3f, -1.0f, ATOM_H);      // 39 (C3)
+    addAtom(mol, -0.4f, -0.9f, 1.0f, ATOM_H);      // 40 (C4)
+    addAtom(mol, 0.9f, 2.6f, 1.0f, ATOM_H);        // 41 (C5)
+    addAtom(mol, 0.9f, 2.6f, -1.0f, ATOM_H);       // 42 (C5)
+    addAtom(mol, 2.6f, 2.8f, 1.0f, ATOM_H);        // 43 (C6)
+    addAtom(mol, 3.9f, 2.1f, 1.0f, ATOM_H);        // 44 (C7)
+    addAtom(mol, 2.6f, 0.7f, 1.0f, ATOM_H);        // 45 (C8)
+    // C ring
+    addAtom(mol, 3.9f, 3.0f, 0.8f, ATOM_H);        // 46 (C9)
+    addAtom(mol, 5.2f, 2.8f, 1.0f, ATOM_H);        // 47 (C10)
+    addAtom(mol, 5.2f, 2.8f, -1.0f, ATOM_H);       // 48 (C10)
+    addAtom(mol, 5.2f, 1.4f, 1.0f, ATOM_H);        // 49 (C11)
+    addAtom(mol, 5.2f, 1.4f, -1.0f, ATOM_H);       // 50 (C11)
+    // D ring side carbon
+    addAtom(mol, 5.2f, 0.0f, 1.0f, ATOM_H);        // 51 (C14)
+    addAtom(mol, 5.8f, -0.6f, -0.6f, ATOM_H);      // 52 (C14)
+    // Extra hydrogens to match formula
+    addAtom(mol, 2.6f, 2.0f, -1.0f, ATOM_H);       // 53 (C9 extra)
+    addAtom(mol, 2.6f, 2.8f, -1.2f, ATOM_H);       // 54 (C6 extra)
+    addAtom(mol, 2.6f, 0.3f, -1.0f, ATOM_H);       // 55 (C8 extra)
 
     // Ring bonds (simplified)
     addBond(mol, 0, 1, 1);
@@ -12994,12 +13038,20 @@ void buildSpironolactone(Molecule* mol) {
     addBond(mol, 7, 8, 1);
     addBond(mol, 8, 2, 1);
 
+    // Complete additional ring bonds (simplified connectivity)
+    addBond(mol, 7, 9, 1);
+    addBond(mol, 9, 10, 1);
+    addBond(mol, 10, 11, 1);
+    addBond(mol, 11, 12, 1);
+    addBond(mol, 12, 8, 1);
+
     // Ketone bond
     addBond(mol, 12, 13, 2);
 
     // Hydroxyl bonds
     addBond(mol, 14, 15, 1);
     addBond(mol, 15, 16, 1);
+    addBond(mol, 12, 14, 1);
 
     // Lactone side chain
     addBond(mol, 4, 17, 1);
@@ -13009,7 +13061,29 @@ void buildSpironolactone(Molecule* mol) {
     addBond(mol, 19, 21, 1);
     addBond(mol, 21, 22, 1);
     addBond(mol, 22, 18, 1);
-    addBond(mol, 22, 23, 1);
+    addBond(mol, 22, 24, 1);   // 22-S
+    addBond(mol, 24, 23, 1);   // S-CH3
+
+    // H bonds
+    addBond(mol, 23, 25, 1); addBond(mol, 23, 26, 1); addBond(mol, 23, 27, 1);
+    addBond(mol, 17, 28, 1); addBond(mol, 17, 29, 1);
+    addBond(mol, 18, 30, 1); addBond(mol, 18, 31, 1);
+    addBond(mol, 22, 32, 1); addBond(mol, 22, 33, 1);
+    addBond(mol, 0, 34, 1); addBond(mol, 0, 35, 1);
+    addBond(mol, 1, 36, 1);
+    addBond(mol, 2, 37, 1);
+    addBond(mol, 3, 38, 1); addBond(mol, 3, 39, 1);
+    addBond(mol, 4, 40, 1);
+    addBond(mol, 5, 41, 1); addBond(mol, 5, 42, 1);
+    addBond(mol, 6, 43, 1);
+    addBond(mol, 7, 44, 1);
+    addBond(mol, 8, 45, 1);
+    addBond(mol, 9, 46, 1); addBond(mol, 10, 47, 1); addBond(mol, 10, 48, 1);
+    addBond(mol, 11, 49, 1); addBond(mol, 11, 50, 1);
+    addBond(mol, 14, 51, 1); addBond(mol, 14, 52, 1);
+    addBond(mol, 9, 53, 1);
+    addBond(mol, 6, 54, 1);
+    addBond(mol, 8, 55, 1);
 
     centerMolecule(mol);
 }
@@ -14237,16 +14311,16 @@ void buildXenonDifluoride(Molecule* mol) {
 void buildRheniumChlorideDimer(Molecule* mol) {
     mol->numAtoms = 0;
     mol->numBonds = 0;
-    strcpy(mol->name, "[Re2Cl8]2- Quadruple Bond");
+    strcpy(mol->name, "[Re2Cl8]^2- Quadruple Bond");
 
     // Two Re atoms with quadruple bond between them
     // Each Re has 4 Cl ligands in eclipsed square planar arrangement
     float reBond = 1.0f;   // Re-Re bond length (very short for quadruple bond)
     float reCl = 1.8f;     // Re-Cl bond length
 
-    // Rhenium atoms (using Ti color - silver/gray metallic)
-    addAtom(mol, -reBond/2, 0.0f, 0.0f, ATOM_TI);  // 0 - Re1
-    addAtom(mol,  reBond/2, 0.0f, 0.0f, ATOM_TI);  // 1 - Re2
+    // Rhenium atoms
+    addAtom(mol, -reBond/2, 0.0f, 0.0f, ATOM_RE);  // 0 - Re1
+    addAtom(mol,  reBond/2, 0.0f, 0.0f, ATOM_RE);  // 1 - Re2
 
     // Chlorines on Re1 (eclipsed square planar)
     addAtom(mol, -reBond/2,  reCl,  0.0f, ATOM_CL);  // 2
@@ -15652,7 +15726,7 @@ static MoleculeInfo molecules[] = {
       "Chlorophyll absorbs light for photosynthesis, giving plants their green color. Its central magnesium atom captures photons. Chlorophyll is nearly identical to hemoglobin except hemoglobin has iron." },
     { buildXenonDifluoride, "Xenon Difluoride (XeF2)", CAT_OTHER, "Linear noble gas",
       "Xenon difluoride (XeF2) has a linear geometry with xenon bonded to fluorines. Despite noble gas inertness, XeF2 forms via intense UV. It's used in nuclear fuel reprocessing." },
-    { buildRheniumChlorideDimer, "[Re2Cl8]2- Dimer", CAT_OTHER, "Quadruple metal bond",
+    { buildRheniumChlorideDimer, "[Re2Cl8]^2- Dimer", CAT_OTHER, "Quadruple metal bond",
       "Rhenium chloride dimers have quadruple bonds between rhenium atoms. This was shocking to chemists; metal-metal quadruple bonds were thought impossible. It's a landmark in inorganic chemistry." },
     { buildTungstenHexacarbonyl, "W(CO)6 Hexacarbonyl", CAT_OTHER, "Octahedral carbonyl",
       "Tungsten hexacarbonyl (W(CO)6) is octahedral with carbons surrounding tungsten. Carbonyls are fundamental in organometallic chemistry. It's used in catalysis and organic synthesis." },
