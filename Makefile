@@ -56,7 +56,7 @@ LIB_PATHS    = /LIBPATH:"$(CUDA_LIB)"
 
 # Application sources
 APP_SOURCES  = \
-	$(SRC_DIR)/main.cpp \
+	$(SRC_DIR)/gui/main.cpp \
 	$(SRC_DIR)/molecule/molecule_db.cpp
 
 # CUDA sources

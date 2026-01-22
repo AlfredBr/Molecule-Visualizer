@@ -203,7 +203,7 @@ if(MOLVIS_BUILD_WINDOWS)
 
     # Windows-specific sources
     set(WINDOWS_SOURCES
-        ${CMAKE_SOURCE_DIR}/src/main.cpp
+        ${CMAKE_SOURCE_DIR}/src/gui/main.cpp
         ${CMAKE_SOURCE_DIR}/src/renderer/cuda_renderer.cu
     )
 
