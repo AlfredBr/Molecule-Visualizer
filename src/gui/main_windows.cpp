@@ -116,6 +116,7 @@ static void BuildRenderMolecule(const Molecule& src, Molecule& dst, bool hideHyd
 {
     dst.numAtoms = 0; dst.numBonds = 0;
     strncpy(dst.name, src.name, sizeof(dst.name));
+    strncpy(dst.formula, src.formula, sizeof(dst.formula));
     int mapOldToNew[MAX_ATOMS];
     for (int i = 0; i < src.numAtoms; ++i) mapOldToNew[i] = -1;
     // Copy atoms
@@ -171,16 +172,14 @@ static void ComputePresenceFlags(const Molecule& mol, int moleculeIndex, bool pr
         else if (strcmp(sym, "Ti") == 0) present[ATOM_TI] = true;
         else if (strcmp(sym, "Pt") == 0) present[ATOM_PT] = true;
         else if (strcmp(sym, "Re") == 0) present[ATOM_RE] = true;
+        else if (strcmp(sym, "Xe") == 0) present[ATOM_XE] = true;
     };
 
-    const char* disp = molecule_get_name(moleculeIndex);
-    if (disp) {
-        // Look inside parentheses for a formula-like section, else scan whole string
-        const char* src = strchr(disp, '(');
-        const char* end = src ? strchr(src, ')') : nullptr;
-        if (!src) src = disp; // fallback to whole name
-        if (!end) end = src + strlen(src);
-        for (const char* p = src; p < end; ) {
+    const char* formula = molecule_get_formula(moleculeIndex);
+    if (formula && formula[0]) {
+        // Parse formula string directly (e.g., "H2O", "C6H12O6", "NaCl")
+        const char* end = formula + strlen(formula);
+        for (const char* p = formula; p < end; ) {
             if (*p >= 'A' && *p <= 'Z') {
                 char sym[3] = {0,0,0}; sym[0] = *p; ++p;
                 if (p < end && *p >= 'a' && *p <= 'z') { sym[1] = *p; ++p; }
@@ -188,7 +187,7 @@ static void ComputePresenceFlags(const Molecule& mol, int moleculeIndex, bool pr
                 // skip optional digits
                 while (p < end && *p >= '0' && *p <= '9') ++p;
             } else {
-                ++p;
+                ++p; // skip parentheses, charges, etc.
             }
         }
     }
@@ -364,7 +363,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         renderer_render(g_pRenderer, &renderMol, g_rotX, g_rotY, g_zoom, g_offsetX, g_offsetY);
 
         // Render molecule name overlay using GPU text kernel
-        renderer_render_text(g_pRenderer, g_molecule.name, 10, 10, 3);
+        // Format as "Name (Formula)" with subscript digits
+        char displayText[128];
+        if (g_molecule.formula[0]) {
+            snprintf(displayText, sizeof(displayText), "%s (%s)", g_molecule.name, g_molecule.formula);
+        } else {
+            snprintf(displayText, sizeof(displayText), "%s", g_molecule.name);
+        }
+        renderer_render_text(g_pRenderer, displayText, 10, 10, 3);
 
         // Molecule Viewport Panel
         ImGui::SetNextWindowSize(ImVec2(820, 640), ImGuiCond_FirstUseEver);
@@ -548,6 +554,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.7f, 1.0f)); // Warm yellow text
             ImGui::TextWrapped("%s", g_molecule.name);
             ImGui::PopStyleColor();
+            // Show formula below name if available
+            if (g_molecule.formula[0]) {
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.9f, 1.0f, 1.0f)); // Light blue text
+                ImGui::Text("Formula: %s", g_molecule.formula);
+                ImGui::PopStyleColor();
+            }
             ImGui::Separator();
             ImGui::Spacing();
             ImGui::TextWrapped("%s", molecule_get_long_description(g_currentMolecule));

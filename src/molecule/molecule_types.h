@@ -57,6 +57,7 @@ struct Molecule {
     int numAtoms;
     int numBonds;
     char name[64];
+    char formula[32];  // Chemical formula (e.g., "H2O")
 };
 
 #endif // MOLECULE_TYPES_H

@@ -47,6 +47,9 @@ const char* molecule_get_name(int index);
 // Get the category of a molecule preset by index
 int molecule_get_category(int index);
 
+// Get the chemical formula of a molecule preset by index
+const char* molecule_get_formula(int index);
+
 // Get the description of a molecule preset by index
 const char* molecule_get_description(int index);
 

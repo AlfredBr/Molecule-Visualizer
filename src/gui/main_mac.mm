@@ -183,6 +183,7 @@ int main(int argc, char* argv[]) {
         auto BuildRenderMolecule = [](const Molecule& src, Molecule& dst, bool hideH) {
             dst.numAtoms = 0; dst.numBonds = 0;
             strncpy(dst.name, src.name, sizeof(dst.name));
+            strncpy(dst.formula, src.formula, sizeof(dst.formula));
             int mapOldToNew[MAX_ATOMS];
             for (int i = 0; i < src.numAtoms; ++i) mapOldToNew[i] = -1;
             for (int i = 0; i < src.numAtoms; ++i) {
@@ -333,7 +334,14 @@ int main(int argc, char* argv[]) {
                 renderer->render(&renderMolecule, rotX, rotY, zoom, offsetX, offsetY);
 
                 // Render molecule name overlay
-                renderer->renderText(renderMolecule.name, 10, 10, 3);
+                // Format as "Name (Formula)" with subscript digits
+                char displayText[128];
+                if (molecule.formula[0]) {
+                    snprintf(displayText, sizeof(displayText), "%s (%s)", molecule.name, molecule.formula);
+                } else {
+                    snprintf(displayText, sizeof(displayText), "%s", molecule.name);
+                }
+                renderer->renderText(displayText, 10, 10, 3);
 
                 // Molecule Viewport Panel
                 ImGui::SetNextWindowSize(ImVec2(820, 640), ImGuiCond_FirstUseEver);
@@ -561,6 +569,43 @@ int main(int argc, char* argv[]) {
                         int t = molecule.atoms[i].type;
                         if (t >= 0 && t < ATOM_TYPE_COUNT) present[t] = true;
                     }
+                    // Also mark elements from formula (for elements not explicitly modeled)
+                    auto markBySymbol = [&](const char* sym){
+                        if (strcmp(sym, "H") == 0) present[ATOM_H] = true;
+                        else if (strcmp(sym, "C") == 0) present[ATOM_C] = true;
+                        else if (strcmp(sym, "N") == 0) present[ATOM_N] = true;
+                        else if (strcmp(sym, "O") == 0) present[ATOM_O] = true;
+                        else if (strcmp(sym, "P") == 0) present[ATOM_P] = true;
+                        else if (strcmp(sym, "S") == 0) present[ATOM_S] = true;
+                        else if (strcmp(sym, "F") == 0) present[ATOM_F] = true;
+                        else if (strcmp(sym, "Cl") == 0) present[ATOM_CL] = true;
+                        else if (strcmp(sym, "Br") == 0) present[ATOM_BR] = true;
+                        else if (strcmp(sym, "I") == 0) present[ATOM_I] = true;
+                        else if (strcmp(sym, "Na") == 0) present[ATOM_NA] = true;
+                        else if (strcmp(sym, "Si") == 0) present[ATOM_SI] = true;
+                        else if (strcmp(sym, "B") == 0) present[ATOM_B] = true;
+                        else if (strcmp(sym, "Fe") == 0) present[ATOM_FE] = true;
+                        else if (strcmp(sym, "Cu") == 0) present[ATOM_CU] = true;
+                        else if (strcmp(sym, "Al") == 0) present[ATOM_AL] = true;
+                        else if (strcmp(sym, "Ti") == 0) present[ATOM_TI] = true;
+                        else if (strcmp(sym, "Pt") == 0) present[ATOM_PT] = true;
+                        else if (strcmp(sym, "Re") == 0) present[ATOM_RE] = true;
+                        else if (strcmp(sym, "Xe") == 0) present[ATOM_XE] = true;
+                    };
+                    const char* formula = molecule_get_formula(g_currentMolecule);
+                    if (formula && formula[0]) {
+                        const char* end = formula + strlen(formula);
+                        for (const char* p = formula; p < end; ) {
+                            if (*p >= 'A' && *p <= 'Z') {
+                                char sym[3] = {0,0,0}; sym[0] = *p; ++p;
+                                if (p < end && *p >= 'a' && *p <= 'z') { sym[1] = *p; ++p; }
+                                markBySymbol(sym);
+                                while (p < end && *p >= '0' && *p <= '9') ++p;
+                            } else {
+                                ++p;
+                            }
+                        }
+                    }
 
                     // Layout constants
                     const ImVec2 cellSize(36, 30);
@@ -622,8 +667,14 @@ int main(int argc, char* argv[]) {
                 ImGui::Begin("Description");
                 {
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.7f, 1.0f)); // Warm yellow text
-                    ImGui::TextWrapped("%s", renderMolecule.name);
+                    ImGui::TextWrapped("%s", molecule.name);
                     ImGui::PopStyleColor();
+                    // Show formula below name if available
+                    if (molecule.formula[0]) {
+                        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.9f, 1.0f, 1.0f)); // Light blue text
+                        ImGui::Text("Formula: %s", molecule.formula);
+                        ImGui::PopStyleColor();
+                    }
                     ImGui::Separator();
                     ImGui::Spacing();
                     ImGui::TextWrapped("%s", molecule_get_long_description(g_currentMolecule));
