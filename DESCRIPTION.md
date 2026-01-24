@@ -11,7 +11,7 @@
 
   src/
   ├── gui/
-  │   ├── main.cpp          # Windows entry point (Win32 + DirectX 11)
+  │   ├── main_windows.cpp  # Windows entry point (Win32 + DirectX 11)
   │   └── main_mac.mm       # macOS entry point (SDL2 + Metal)
   ├── molecule/
   │   ├── molecule_types.h  # Platform-agnostic data structures

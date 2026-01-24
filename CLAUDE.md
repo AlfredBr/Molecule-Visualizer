@@ -58,7 +58,7 @@ struct Molecule { Atom atoms[200]; Bond bonds[250]; int numAtoms, numBonds; char
 
 | Path | Description |
 |------|-------------|
-| `src/gui/main.cpp` | Windows entry point (Win32 + DX11 + ImGui) |
+| `src/gui/main_windows.cpp` | Windows entry point (Win32 + DX11 + ImGui) |
 | `src/gui/main_mac.mm` | macOS entry point (SDL2 + Metal + ImGui) |
 | `src/renderer/cuda_renderer.cu` | CUDA ray-tracing kernels (~25KB) |
 | `src/renderer/metal_renderer.mm` | Metal implementation |

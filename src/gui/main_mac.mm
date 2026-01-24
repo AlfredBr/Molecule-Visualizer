@@ -4,7 +4,7 @@
  * A GPU-accelerated molecular visualization application.
  * Uses SDL2 + Metal + Dear ImGui on macOS.
  *
- * This is the macOS equivalent of main.cpp (Windows version).
+ * This is the macOS equivalent of main_windows.cpp.
  */
 
 #import <Foundation/Foundation.h>

@@ -127,7 +127,7 @@ open build_mac/bin/MolVis.app
 ```
 MolVis/
 ├── src/
-│   ├── main.cpp              # Windows entry point (Win32 + DX11)
+│   ├── main_windows.cpp      # Windows entry point (Win32 + DX11)
 │   ├── main_mac.mm           # macOS entry point (SDL2 + Metal)
 │   ├── renderer/
 │   │   ├── cuda_renderer.h   # Windows renderer interface

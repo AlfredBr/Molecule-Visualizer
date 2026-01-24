@@ -36,7 +36,7 @@ When using Claude API with extended thinking enabled:
 ```
 MolVis/
 ├── src/
-│   ├── main.cpp              # Application entry point (ImGui + Win32 + DX11)
+│   ├── main_windows.cpp      # Application entry point (ImGui + Win32 + DX11)
 │   ├── renderer/
 │   │   ├── cuda_renderer.cu  # CUDA rendering kernels
 │   │   └── cuda_renderer.h   # Renderer interface

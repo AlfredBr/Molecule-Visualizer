@@ -22,7 +22,7 @@ This document outlines a comprehensive plan to port MolVis from Windows (CUDA + 
 
 | File | Change Level | Notes |
 |------|--------------|-------|
-| `src/main.cpp` | **Major rewrite** | Replace Win32/DX11 with Cocoa/Metal |
+| `src/gui/main_windows.cpp` | **Major rewrite** | Replace Win32/DX11 with Cocoa/Metal |
 | `src/renderer/cuda_renderer.cu` | **Full rewrite** | Convert CUDA kernels to Metal compute shaders |
 | `src/renderer/cuda_renderer.h` | **Moderate** | Update API to use Metal types |
 | `src/molecule/molecule_db.cpp` | **None** | Pure C++, fully portable |
@@ -58,7 +58,7 @@ If you want a more "native" macOS feel, you could use:
 ```
 MolVis/
 ├── src/
-│   ├── main.cpp                    # Keep for reference
+│   ├── main_windows.cpp            # Windows entry point
 │   ├── main_mac.mm                 # NEW: macOS entry point (Obj-C++)
 │   ├── renderer/
 │   │   ├── cuda_renderer.cu        # Keep for reference
@@ -274,7 +274,7 @@ private:
 #include "renderer/metal_renderer.h"
 #include "molecule/molecule_db.h"
 
-// ... (similar structure to main.cpp but using Cocoa/Metal)
+// ... (similar structure to main_windows.cpp but using Cocoa/Metal)
 ```
 
 ### 4.2 Alternative: SDL2 Entry Point
