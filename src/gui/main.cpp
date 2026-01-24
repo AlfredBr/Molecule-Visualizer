@@ -605,7 +605,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 {"Ag", "Silver",          5, 11, -1},         {"Cd", "Cadmium",         5, 12, -1},
                 {"In", "Indium",          5, 13, -1},         {"Sn", "Tin",             5, 14, -1},
                 {"Sb", "Antimony",        5, 15, -1},         {"Te", "Tellurium",       5, 16, -1},
-                {"I",  "Iodine",          5, 17, ATOM_I},     {"Xe", "Xenon",           5, 18, -1},
+                {"I",  "Iodine",          5, 17, ATOM_I},     {"Xe", "Xenon",           5, 18, ATOM_XE},
                 {"Cs", "Cesium",          6,  1, -1},         {"Ba", "Barium",          6,  2, -1},
                 {"La", "Lanthanum",       6,  3, -1},         {"Ce", "Cerium",          6,  4, -1},
                 {"Pr", "Praseodymium",    6,  5, -1},         {"Nd", "Neodymium",       6,  6, -1},
@@ -662,6 +662,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 case ATOM_TI: return ImVec4(0.60f, 0.60f, 0.65f, 1.0f);
                 case ATOM_PT: return ImVec4(0.85f, 0.85f, 0.88f, 1.0f);
                 case ATOM_RE: return ImVec4(0.51f, 0.51f, 0.56f, 1.0f); // metallic gray
+                case ATOM_XE: return ImVec4(0.26f, 0.62f, 0.69f, 1.0f); // cyan (noble gas)
                 default:      return ImVec4(0.32f, 0.32f, 0.36f, 1.0f);
                 }
             };
@@ -763,6 +764,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 {0.6f,  0.6f,  0.65f, 1.0f},  // Ti - gray
                 {0.85f, 0.85f, 0.88f, 1.0f},  // Pt - white
                 {0.51f, 0.51f, 0.56f, 1.0f},  // Re - metallic gray
+                {0.26f, 0.62f, 0.69f, 1.0f},  // Xe - cyan (noble gas)
             };
 
             const char* atomNames[] = {
@@ -785,6 +787,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 "Ti - Titanium (Gray)",
                 "Pt - Platinum (White)",
                 "Re - Rhenium (Gray)",
+                "Xe - Xenon (Cyan)",
             };
 
             // Display color swatches in a grid

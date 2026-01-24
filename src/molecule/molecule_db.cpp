@@ -55,7 +55,8 @@ static void addAtom(Molecule* mol, float x, float y, float z, int type) {
     float radii[ATOM_TYPE_COUNT] = {
         0.25f, 0.40f, 0.38f, 0.35f, 0.45f, 0.45f, 0.45f, 0.50f, 0.35f, 0.55f,
         0.55f, 0.48f, 0.42f, 0.55f, 0.50f, 0.50f, 0.52f, 0.55f,
-        0.62f // Re (approx)
+        0.62f, // Re (approx)
+        0.62f  // Xe (noble gas, large)
     };
     a->radius = radii[(type >= 0 && type < ATOM_TYPE_COUNT) ? type : 0];
     mol->numAtoms++;
@@ -14325,7 +14326,7 @@ void buildXenonDifluoride(Molecule* mol) {
     // Xe-F bond length ~2.0 Angstroms
     float bondLen = 1.5f;
 
-    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_PT);      // 0 - Xe (using Pt color - silver)
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_XE);      // 0 - Xe
     addAtom(mol, -bondLen, 0.0f, 0.0f, ATOM_F);   // 1 - F
     addAtom(mol, bondLen, 0.0f, 0.0f, ATOM_F);    // 2 - F
 

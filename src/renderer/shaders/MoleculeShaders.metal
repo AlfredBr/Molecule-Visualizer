@@ -13,7 +13,7 @@ using namespace metal;
 // ============== Constants ==============
 
 // CPK colors for atoms (R, G, B)
-constant float3 atomColors[19] = {
+constant float3 atomColors[20] = {
     float3(0.95f, 0.95f, 0.95f),  // H - white
     float3(0.2f,  0.2f,  0.2f),   // C - dark gray
     float3(0.2f,  0.3f,  0.9f),   // N - blue
@@ -33,6 +33,7 @@ constant float3 atomColors[19] = {
     float3(0.6f,  0.6f,  0.65f),  // Ti - gray
     float3(0.85f, 0.85f, 0.88f),  // Pt - white
     float3(0.51f, 0.51f, 0.56f),  // Re - metallic gray
+    float3(0.26f, 0.62f, 0.69f),  // Xe - cyan (noble gas)
 };
 
 // ============== Data Structures ==============

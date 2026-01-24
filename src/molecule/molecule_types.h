@@ -32,9 +32,10 @@
 #define ATOM_TI 16  // Titanium
 #define ATOM_PT 17  // Platinum
 #define ATOM_RE 18  // Rhenium
+#define ATOM_XE 19  // Xenon
 
 // Total number of defined atom types (for UI arrays, presence flags, etc.)
-#define ATOM_TYPE_COUNT 19
+#define ATOM_TYPE_COUNT 20
 
 // Atom structure
 struct Atom {

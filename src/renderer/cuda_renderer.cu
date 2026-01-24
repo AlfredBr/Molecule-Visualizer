@@ -34,6 +34,7 @@ __device__ __constant__ float3 atomColors[ATOM_TYPE_COUNT] = {
     {0.6f,  0.6f,  0.65f},  // Ti - gray
     {0.85f, 0.85f, 0.88f},  // Pt - white
     {0.51f, 0.51f, 0.56f},  // Re - metallic gray
+    {0.26f, 0.62f, 0.69f},  // Xe - cyan (noble gas)
 };
 
 // ============== 3D Math Helpers ==============
