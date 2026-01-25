@@ -178,6 +178,9 @@ int main(int argc, char* argv[]) {
         bool rotateX = false;
         bool rotateY = true;
         static bool hideHydrogen = false;
+        // Docking options
+        bool lockDocking = true;   // prevent undocking windows
+        bool lockResize = true;    // prevent resizing docked windows
 
         // Helper: Build filtered molecule (optionally hide hydrogens)
         auto BuildRenderMolecule = [](const Molecule& src, Molecule& dst, bool hideH) {
@@ -277,8 +280,11 @@ int main(int argc, char* argv[]) {
                 ImGui_ImplSDL2_NewFrame();
                 ImGui::NewFrame();
 
-                // Enable Docking
-		        ImGui::DockSpaceOverViewport();
+                // Enable Docking with configurable lock options
+                ImGuiDockNodeFlags dockFlags = 0;
+                if (lockDocking) dockFlags |= ImGuiDockNodeFlags_NoUndocking;
+                if (lockResize) dockFlags |= ImGuiDockNodeFlags_NoResize;
+		        ImGui::DockSpaceOverViewport(0, nullptr, dockFlags);
 
                 // === MolVis UI ===
 
@@ -727,6 +733,11 @@ int main(int argc, char* argv[]) {
                         rotX = 0.0f;
                         rotY = 1.57f;
                     }
+
+                    ImGui::Separator();
+                    ImGui::Text("Layout:");
+                    ImGui::Checkbox("Lock Docking", &lockDocking);
+                    ImGui::Checkbox("Lock Resize", &lockResize);
                 }
                 ImGui::End();
 

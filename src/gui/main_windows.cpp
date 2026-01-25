@@ -102,6 +102,9 @@ static char                     g_searchBuffer[256] = "";
 static ImFont*                  g_fontTooltip = nullptr;
 // Molecule options
 static bool                     g_hideHydrogen = false; // affects rendering only
+// Docking options
+static bool                     g_lockDocking = true;   // prevent undocking windows
+static bool                     g_lockResize = true;    // prevent resizing docked windows
 
 // Forward declarations
 bool StringContains(const char* str, const char* search);
@@ -299,8 +302,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-		// Enable Docking
-		ImGui::DockSpaceOverViewport();
+		// Enable Docking with configurable lock options
+		ImGuiDockNodeFlags dockFlags = 0;
+		if (g_lockDocking) dockFlags |= ImGuiDockNodeFlags_NoUndocking;
+		if (g_lockResize) dockFlags |= ImGuiDockNodeFlags_NoResize;
+		ImGui::DockSpaceOverViewport(0, nullptr, dockFlags);
 
         // === MolVis UI ===
 
@@ -535,6 +541,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 g_rotX = 0.0f;
                 g_rotY = 1.57f;
             }
+
+            ImGui::Separator();
+            ImGui::Text("Layout:");
+            ImGui::Checkbox("Lock Docking", &g_lockDocking);
+            ImGui::Checkbox("Lock Resize", &g_lockResize);
         }
         ImGui::End();
 
