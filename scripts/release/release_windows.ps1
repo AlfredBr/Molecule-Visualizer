@@ -129,45 +129,6 @@ foreach ($cfg in $ConfigFiles) {
     }
 }
 
-# Copy documentation
-Write-Host "  Copying documentation..." -ForegroundColor Gray
-$DocFiles = @("README.md", "LICENSE", "RELEASE_NOTES.md")
-foreach ($doc in $DocFiles) {
-    $docPath = Join-Path $ProjectRoot $doc
-    if (Test-Path $docPath) {
-        Copy-Item $docPath $ReleaseDir
-    }
-}
-
-# Copy docs folder (excluding internal docs)
-$DocsDir = Join-Path $ProjectRoot "docs"
-if (Test-Path $DocsDir) {
-    $DocsFiles = Get-ChildItem $DocsDir -File | Where-Object { $_.Name -notmatch "PLAN|TODO|INTERNAL" }
-    if ($DocsFiles.Count -gt 0) {
-        $ReleaseDocsDir = Join-Path $ReleaseDir "docs"
-        New-Item -ItemType Directory -Path $ReleaseDocsDir -Force | Out-Null
-        foreach ($file in $DocsFiles) {
-            Write-Host "  Copying docs/$($file.Name)..." -ForegroundColor Gray
-            Copy-Item $file.FullName $ReleaseDocsDir
-        }
-    }
-}
-
-# Copy CUDA runtime DLLs
-Write-Host "  Locating CUDA runtime DLLs..." -ForegroundColor Gray
-$CudaPath = $env:CUDA_PATH
-if ($CudaPath) {
-    $CudaDllDir = Join-Path $CudaPath "bin"
-    $CudaDlls = Get-ChildItem -Path $CudaDllDir -Filter "cudart64_*.dll" -ErrorAction SilentlyContinue
-    foreach ($dll in $CudaDlls) {
-        Write-Host "    Copying $($dll.Name)..." -ForegroundColor Gray
-        Copy-Item $dll.FullName $ReleaseDir
-    }
-} else {
-    Write-Host "  WARNING: CUDA_PATH not set, CUDA DLLs not included" -ForegroundColor Yellow
-    Write-Host "  Users will need CUDA runtime installed" -ForegroundColor Yellow
-}
-
 # Create ZIP archive
 Write-Host "  Creating ZIP archive..." -ForegroundColor Gray
 Compress-Archive -Path $ReleaseDir -DestinationPath $ZipPath -Force

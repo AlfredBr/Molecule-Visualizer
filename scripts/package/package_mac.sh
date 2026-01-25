@@ -75,29 +75,6 @@ create_dmg() {
     # Create symlink to Applications folder
     ln -s /Applications "$DMG_TEMP/Applications"
 
-    # Create a simple README for the DMG
-    cat > "$DMG_TEMP/README.txt" << 'EOF'
-MolVis - Molecule Visualizer
-============================
-
-Installation:
-  Drag MolVis.app to the Applications folder.
-
-Requirements:
-  - macOS 11.0 (Big Sur) or later
-  - Any Mac with Metal support (Intel or Apple Silicon)
-
-Usage:
-  1. Open MolVis from Applications
-  2. Browse molecules by category in the sidebar
-  3. Use mouse to rotate (drag) and zoom (scroll)
-  4. Adjust view settings in the View Controls panel
-
-For more information, visit:
-  https://github.com/AlfredBr/Molecule-Visualizer
-
-EOF
-
     # Remove old DMG if exists
     rm -f "$DIST_DIR/${DMG_NAME}.dmg"
 

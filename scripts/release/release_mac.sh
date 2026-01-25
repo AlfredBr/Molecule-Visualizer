@@ -146,29 +146,6 @@ package_app() {
         cp -R "$BUILD_DIR/bin/${APP_NAME}.app" "$DMG_TEMP/"
         ln -s /Applications "$DMG_TEMP/Applications"
 
-        cat > "$DMG_TEMP/README.txt" << 'EOF'
-MolVis - Molecule Visualizer
-============================
-
-Installation:
-    1. Drag MolVis.app to the Applications folder
-    2. If you see a warning, right-click and choose Open, or run:
-         xattr -cr /Applications/MolVis.app
-    3. Open MolVis from Applications
-
-Requirements:
-    - macOS 11.0 (Big Sur) or later
-    - Any Mac with Metal support (Intel or Apple Silicon)
-
-Usage:
-    - Browse molecules by category in the sidebar
-    - Drag to rotate, scroll to zoom
-    - Adjust view settings in the View Controls panel
-
-For more information, visit:
-    https://github.com/AlfredBr/Molecule-Visualizer
-EOF
-
         # Remove old DMG if exists
         rm -f "$DIST_DIR/${DMG_NAME}.dmg"
 

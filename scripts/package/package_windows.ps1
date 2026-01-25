@@ -54,61 +54,14 @@ New-Item -ItemType Directory -Path $ReleaseDir -Force | Out-Null
 Write-Host "  Copying molvis.exe..." -ForegroundColor Gray
 Copy-Item $ExePath $ReleaseDir
 
-# Copy configuration file (default settings)
-$IniPath = Join-Path $ProjectRoot "molvis.ini"
-if (Test-Path $IniPath) {
-    Write-Host "  Copying molvis.ini..." -ForegroundColor Gray
-    Copy-Item $IniPath $ReleaseDir
-}
-
-# Copy ImGui configuration
-$ImGuiIni = Join-Path $ProjectRoot "imgui.ini"
-if (Test-Path $ImGuiIni) {
-    Write-Host "  Copying imgui.ini..." -ForegroundColor Gray
-    Copy-Item $ImGuiIni $ReleaseDir
-}
-
-# Copy documentation
-Write-Host "  Copying documentation..." -ForegroundColor Gray
-Copy-Item (Join-Path $ProjectRoot "README.md") $ReleaseDir
-Copy-Item (Join-Path $ProjectRoot "LICENSE") $ReleaseDir
-Copy-Item (Join-Path $ProjectRoot "RELEASE_NOTES.md") $ReleaseDir
-
-# Copy docs folder if it exists and has content
-$DocsDir = Join-Path $ProjectRoot "docs"
-if (Test-Path $DocsDir) {
-    $DocsFiles = Get-ChildItem $DocsDir -File
-    if ($DocsFiles.Count -gt 0) {
-        $ReleaseDocsDir = Join-Path $ReleaseDir "docs"
-        New-Item -ItemType Directory -Path $ReleaseDocsDir -Force | Out-Null
-        foreach ($file in $DocsFiles) {
-            # Skip internal development docs
-            if ($file.Name -notmatch "PLAN|TODO|INTERNAL") {
-                Copy-Item $file.FullName $ReleaseDocsDir
-            }
-        }
+# Copy configuration files
+$ConfigFiles = @("molvis.ini", "imgui.ini")
+foreach ($cfg in $ConfigFiles) {
+    $cfgPath = Join-Path $ProjectRoot $cfg
+    if (Test-Path $cfgPath) {
+        Write-Host "  Copying $cfg..." -ForegroundColor Gray
+        Copy-Item $cfgPath $ReleaseDir
     }
-}
-
-# Find and copy required CUDA runtime DLLs
-Write-Host "  Locating CUDA runtime DLLs..." -ForegroundColor Gray
-$CudaPath = $env:CUDA_PATH
-if ($CudaPath) {
-    $CudaDllDir = Join-Path $CudaPath "bin"
-    $RequiredDlls = @(
-        "cudart64_*.dll"
-    )
-
-    foreach ($pattern in $RequiredDlls) {
-        $dlls = Get-ChildItem -Path $CudaDllDir -Filter $pattern -ErrorAction SilentlyContinue
-        foreach ($dll in $dlls) {
-            Write-Host "    Copying $($dll.Name)..." -ForegroundColor Gray
-            Copy-Item $dll.FullName $ReleaseDir
-        }
-    }
-} else {
-    Write-Host "  Warning: CUDA_PATH not set, skipping CUDA DLL copy" -ForegroundColor Yellow
-    Write-Host "  Users will need CUDA runtime installed" -ForegroundColor Yellow
 }
 
 # Create ZIP archive
