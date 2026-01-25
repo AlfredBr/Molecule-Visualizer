@@ -2,10 +2,10 @@
 # Builds, packages, and uploads a release to GitHub
 #
 # Usage:
-#   .\release_windows.ps1 -Version "0.3.1"
-#   .\release_windows.ps1 -Version "0.3.1" -Draft        # Create as draft
-#   .\release_windows.ps1 -Version "0.3.1" -SkipBuild    # Skip build step
-#   .\release_windows.ps1 -Version "0.3.1" -SkipUpload   # Build/package only
+#   .\scripts\release\release_windows.ps1 -Version "0.3.1"
+#   .\scripts\release\release_windows.ps1 -Version "0.3.1" -Draft        # Create as draft
+#   .\scripts\release\release_windows.ps1 -Version "0.3.1" -SkipBuild    # Skip build step
+#   .\scripts\release\release_windows.ps1 -Version "0.3.1" -SkipUpload   # Build/package only
 
 param(
     [Parameter(Mandatory=$true)]
@@ -17,12 +17,13 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$ProjectRoot = $PSScriptRoot
+$ScriptDir = $PSScriptRoot
+$ProjectRoot = (Resolve-Path "$ScriptDir/../..").Path
 
 Write-Host ""
-Write-Host "╔═══════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
-Write-Host "║         MolVis Windows Release Script                     ║" -ForegroundColor Cyan
-Write-Host "╚═══════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "         MolVis Windows Release Script                     " -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "  Version:     $Version" -ForegroundColor White
 Write-Host "  Draft:       $Draft" -ForegroundColor White
@@ -60,9 +61,9 @@ if (-not $SkipUpload) {
 # Step 1: Build
 # ============================================================
 if (-not $SkipBuild) {
-    Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Blue
+    Write-Host "========================================" -ForegroundColor Blue
     Write-Host " Step 1: Building MolVis" -ForegroundColor Blue
-    Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Blue
+    Write-Host "========================================" -ForegroundColor Blue
     Write-Host ""
 
     Push-Location $ProjectRoot
@@ -93,9 +94,9 @@ if (-not (Test-Path $ExePath)) {
 # ============================================================
 # Step 2: Package
 # ============================================================
-Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Blue
+Write-Host "========================================" -ForegroundColor Blue
 Write-Host " Step 2: Creating Release Package" -ForegroundColor Blue
-Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Blue
+Write-Host "========================================" -ForegroundColor Blue
 Write-Host ""
 
 $OutputDir = Join-Path $ProjectRoot "release"
@@ -204,9 +205,9 @@ if ($SkipUpload) {
 # ============================================================
 # Step 3: Create Git Tag
 # ============================================================
-Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Blue
+Write-Host "========================================" -ForegroundColor Blue
 Write-Host " Step 3: Creating Git Tag" -ForegroundColor Blue
-Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Blue
+Write-Host "========================================" -ForegroundColor Blue
 Write-Host ""
 
 $TagName = "v$Version"
@@ -248,9 +249,9 @@ Write-Host ""
 # ============================================================
 # Step 4: Create GitHub Release
 # ============================================================
-Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Blue
+Write-Host "========================================" -ForegroundColor Blue
 Write-Host " Step 4: Creating GitHub Release" -ForegroundColor Blue
-Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Blue
+Write-Host "========================================" -ForegroundColor Blue
 Write-Host ""
 
 # Build release notes body
@@ -307,9 +308,9 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host ""
-Write-Host "╔═══════════════════════════════════════════════════════════╗" -ForegroundColor Green
-Write-Host "║              Release Published Successfully!              ║" -ForegroundColor Green
-Write-Host "╚═══════════════════════════════════════════════════════════╝" -ForegroundColor Green
+Write-Host "========================================" -ForegroundColor Green
+Write-Host "              Release Published Successfully!              " -ForegroundColor Green
+Write-Host "========================================" -ForegroundColor Green
 Write-Host ""
 Write-Host "  View release at:" -ForegroundColor White
 gh release view $TagName --web 2>$null

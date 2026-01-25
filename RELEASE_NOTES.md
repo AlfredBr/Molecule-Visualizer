@@ -1,6 +1,21 @@
 
 # MolVis Release Notes
 
+## v0.4.0 (2026-01-25)
+
+### Project Improvements
+- **Reorganized scripts directory** - Packaging and release scripts moved to organized subdirectories
+  - `scripts/package/` - DMG and ZIP packaging scripts
+  - `scripts/release/` - GitHub release and upload scripts
+- **Removed unused directories** - Cleaned up empty `platform/windows/` and `include/` directories
+- **Added comprehensive build documentation** - New `docs/BUILDING.md` with complete instructions for:
+  - Building on macOS and Windows
+  - Code signing and notarization for macOS
+  - Packaging and deployment workflows
+- **Consolidated version numbers** - Aligned version across CMakeLists.txt, Info.plist, and package scripts
+
+---
+
 ## v0.3.8 (2026-01-21)
 
 ### New Features

@@ -4,18 +4,19 @@
 # Creates a distributable DMG file for easy installation.
 #
 # Usage:
-#   ./package_mac.sh              Create DMG package
-#   ./package_mac.sh --notarize   Create and notarize (requires Apple Developer account)
+#   ./scripts/package/package_mac.sh              Create DMG package
+#   ./scripts/package/package_mac.sh --notarize   Create and notarize (requires Apple Developer account)
 #
 # The resulting DMG will be in the dist/ directory.
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BUILD_DIR="$SCRIPT_DIR/build_mac"
-DIST_DIR="$SCRIPT_DIR/dist"
+PROJECT_ROOT="$SCRIPT_DIR/../.."
+BUILD_DIR="$PROJECT_ROOT/build_mac"
+DIST_DIR="$PROJECT_ROOT/dist"
 APP_NAME="MolVis"
-VERSION="0.3.6"
+VERSION="0.4.0"
 DMG_NAME="${APP_NAME}-${VERSION}-macOS"
 
 # Colors for output
@@ -40,17 +41,17 @@ print_error() {
 check_app() {
     if [ ! -d "$BUILD_DIR/bin/${APP_NAME}.app" ]; then
         print_status "App not found. Building first..."
-        ./build_mac.sh
+        "$PROJECT_ROOT/build_mac.sh"
     fi
 }
 
 # Generate icon if needed
 generate_icon() {
-    if [ -f "$SCRIPT_DIR/molvis-icon.png" ]; then
-        if [ ! -f "$SCRIPT_DIR/platform/macos/AppIcon.icns" ] || \
-           [ "$SCRIPT_DIR/molvis-icon.png" -nt "$SCRIPT_DIR/platform/macos/AppIcon.icns" ]; then
+    if [ -f "$PROJECT_ROOT/molvis-icon.png" ]; then
+        if [ ! -f "$PROJECT_ROOT/platform/macos/AppIcon.icns" ] || \
+           [ "$PROJECT_ROOT/molvis-icon.png" -nt "$PROJECT_ROOT/platform/macos/AppIcon.icns" ]; then
             print_status "Generating macOS icon..."
-            "$SCRIPT_DIR/scripts/generate_macos_icon.sh"
+            "$PROJECT_ROOT/scripts/generate_macos_icon.sh"
         fi
     fi
 }

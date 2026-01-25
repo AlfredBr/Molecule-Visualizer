@@ -1,7 +1,7 @@
 # CUDA Development Environment Setup Script for PowerShell
 # Run this script to set up the MSVC environment for CUDA development
 #
-# Usage: . .\setup_env.ps1   (note the dot-space at the beginning to "source" it)
+# Usage: . .\scripts\setup_env.ps1   (note the dot-space at the beginning to "source" it)
 #
 # After running, you can use 'nmake' directly
 

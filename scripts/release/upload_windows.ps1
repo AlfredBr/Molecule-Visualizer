@@ -1,5 +1,5 @@
 # Uploads the Windows release assets to an existing GitHub release using GitHub CLI
-# Usage: .\upload_windows.ps1 -Version "0.3.6"
+# Usage: .\scripts\release\upload_windows.ps1 -Version "0.3.6"
 
 param(
     [Parameter(Mandatory=$true)]
@@ -8,8 +8,10 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+$ScriptDir = $PSScriptRoot
+$ProjectRoot = (Resolve-Path "$ScriptDir/../..").Path
 $Tag = "v$Version"
-$ReleaseDir = Join-Path $PSScriptRoot "release"
+$ReleaseDir = Join-Path $ProjectRoot "release"
 $Zip = Join-Path $ReleaseDir "MolVis-$Version-Windows-x64.zip"
 $Sha = Join-Path $ReleaseDir "MolVis-$Version-Windows-x64.zip.sha256"
 

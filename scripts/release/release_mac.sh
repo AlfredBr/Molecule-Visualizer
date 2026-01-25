@@ -4,11 +4,11 @@
 # Creates a local build, packages it, and uploads to GitHub Releases.
 #
 # Usage:
-#   ./release_mac.sh                    Build, package, and release
-#   ./release_mac.sh --version 0.3.2    Specify version explicitly
-#   ./release_mac.sh --draft            Create as draft release
-#   ./release_mac.sh --build-only       Build and package, don't upload
-#   ./release_mac.sh --upload-only      Upload existing package to GitHub
+#   ./scripts/release/release_mac.sh                    Build, package, and release
+#   ./scripts/release/release_mac.sh --version 0.3.2    Specify version explicitly
+#   ./scripts/release/release_mac.sh --draft            Create as draft release
+#   ./scripts/release/release_mac.sh --build-only       Build and package, don't upload
+#   ./scripts/release/release_mac.sh --upload-only      Upload existing package to GitHub
 #
 # Requirements:
 #   - GitHub CLI: brew install gh
@@ -17,8 +17,9 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BUILD_DIR="$SCRIPT_DIR/build_mac"
-DIST_DIR="$SCRIPT_DIR/dist"
+PROJECT_ROOT="$SCRIPT_DIR/../.."
+BUILD_DIR="$PROJECT_ROOT/build_mac"
+DIST_DIR="$PROJECT_ROOT/dist"
 APP_NAME="MolVis"
 
 # Colors for output
@@ -99,7 +100,7 @@ done
 get_version() {
     if [ -z "$VERSION" ]; then
         # Extract version from first ## v line in RELEASE_NOTES.md
-        VERSION=$(grep -m1 "^## v" "$SCRIPT_DIR/RELEASE_NOTES.md" | sed 's/## v\([0-9.]*\).*/\1/')
+        VERSION=$(grep -m1 "^## v" "$PROJECT_ROOT/RELEASE_NOTES.md" | sed 's/## v\([0-9.]*\).*/\1/')
         if [ -z "$VERSION" ]; then
             print_error "Could not detect version from RELEASE_NOTES.md"
             echo "Please specify version with --version"
@@ -130,7 +131,7 @@ check_gh_cli() {
 # Build the application
 build_app() {
     print_status "Building MolVis..."
-    "$SCRIPT_DIR/build_mac.sh"
+    "$PROJECT_ROOT/build_mac.sh"
 }
 
 # Package as DMG
@@ -240,7 +241,7 @@ create_release() {
 
     # Extract release notes for this version from RELEASE_NOTES.md
     # Use sed instead of head -n -1 (which isn't supported on macOS)
-    RELEASE_NOTES=$(awk "/^## v${VERSION}/,/^## v[0-9]/" "$SCRIPT_DIR/RELEASE_NOTES.md" | sed '$ d')
+    RELEASE_NOTES=$(awk "/^## v${VERSION}/,/^## v[0-9]/" "$PROJECT_ROOT/RELEASE_NOTES.md" | sed '$ d')
 
     # Create tag if it doesn't exist
     if ! git rev-parse "$TAG" &>/dev/null; then

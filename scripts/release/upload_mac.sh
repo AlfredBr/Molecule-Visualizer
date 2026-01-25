@@ -1,7 +1,7 @@
 #!/bin/bash
 # upload_mac.sh - Upload a DMG to an existing GitHub release
-# Usage: ./upload_mac.sh <version> <dmg_path>
-# Example: ./upload_mac.sh 0.3.6 dist/MolVis-0.3.6-macOS.dmg
+# Usage: ./scripts/release/upload_mac.sh <version> <dmg_path>
+# Example: ./scripts/release/upload_mac.sh 0.3.6 dist/MolVis-0.3.6-macOS.dmg
 
 set -e
 

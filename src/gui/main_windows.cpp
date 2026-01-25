@@ -16,7 +16,7 @@
 
 #include "renderer/cuda_renderer.h"
 #include "molecule/molecule_db.h"
-#include "include/windowicon.h"
+#include "windowicon.h"
 
 // App config file (stores main window position, last molecule, etc.)
 static char g_configPath[MAX_PATH] = "molvis.ini";

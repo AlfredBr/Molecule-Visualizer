@@ -12,7 +12,8 @@ Write-Host "=== MolVis Windows Release Packager ===" -ForegroundColor Cyan
 Write-Host "Version: $Version" -ForegroundColor Yellow
 
 # Paths
-$ProjectRoot = $PSScriptRoot
+$ScriptDir = $PSScriptRoot
+$ProjectRoot = (Resolve-Path "$ScriptDir/../..").Path
 $BuildDir = Join-Path $ProjectRoot "build_release"
 $OutputDir = Join-Path $ProjectRoot "release"
 $ReleaseDir = Join-Path $OutputDir "MolVis-$Version-Windows"
