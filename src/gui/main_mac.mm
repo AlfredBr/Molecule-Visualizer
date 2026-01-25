@@ -305,6 +305,7 @@ int main(int argc, char* argv[]) {
                                         if (ImGui::MenuItem(molecule_get_name(i), nullptr, g_currentMolecule == i)) {
                                             g_currentMolecule = i;
                                             molecule_build(g_currentMolecule, &molecule);
+                                            BuildRenderMolecule(molecule, renderMolecule, hideHydrogen);
                                         }
                                     }
                                 }
@@ -412,6 +413,7 @@ int main(int argc, char* argv[]) {
                                         {
                                             g_currentMolecule = i;
                                             molecule_build(g_currentMolecule, &molecule);
+                                            BuildRenderMolecule(molecule, renderMolecule, hideHydrogen);
                                         }
                                         if (ImGui::IsItemHovered())
                                         {
@@ -439,6 +441,7 @@ int main(int argc, char* argv[]) {
                                 {
                                     g_currentMolecule = i;
                                     molecule_build(g_currentMolecule, &molecule);
+                                    BuildRenderMolecule(molecule, renderMolecule, hideHydrogen);
                                 }
                                 if (ImGui::IsItemHovered())
                                 {
