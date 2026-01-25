@@ -8160,6 +8160,266 @@ void buildAldosterone(Molecule* mol) {
     centerMolecule(mol);
 }
 
+// Build Oxytocin (C43H66N12O12S2) - Love/bonding hormone, cyclic nonapeptide
+// Sequence: Cys-Tyr-Ile-Gln-Asn-Cys-Pro-Leu-Gly-NH2 with Cys1-Cys6 disulfide bridge
+void buildOxytocin(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Oxytocin (C43H66N12O12S2)");
+
+    // Build simplified peptide backbone with key side chains
+    // The molecule forms a 20-membered ring via disulfide bridge (Cys1-Cys6)
+    // followed by a linear tripeptide tail (Pro-Leu-Gly-NH2)
+
+    // === Residue 1: Cysteine (cyclic, disulfide) ===
+    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_N);           // 0: N (amino)
+    addAtom(mol, 1.2f, 0.5f, 0.5f, ATOM_C);           // 1: Cα
+    addAtom(mol, 2.4f, -0.3f, 0.0f, ATOM_C);          // 2: C=O
+    addAtom(mol, 2.5f, -1.4f, 0.5f, ATOM_O);          // 3: =O
+    addAtom(mol, 1.0f, 1.8f, -0.2f, ATOM_C);          // 4: Cβ
+    addAtom(mol, 0.5f, 2.8f, 0.8f, ATOM_S);           // 5: Sγ (disulfide)
+
+    // === Residue 2: Tyrosine ===
+    addAtom(mol, 3.5f, 0.3f, -0.8f, ATOM_N);          // 6: N
+    addAtom(mol, 4.8f, -0.2f, -1.2f, ATOM_C);         // 7: Cα
+    addAtom(mol, 5.9f, 0.7f, -0.6f, ATOM_C);          // 8: C=O
+    addAtom(mol, 5.8f, 1.9f, -0.3f, ATOM_O);          // 9: =O
+    addAtom(mol, 5.0f, -1.6f, -0.7f, ATOM_C);         // 10: Cβ
+    // Tyrosine phenol ring
+    addAtom(mol, 5.2f, -2.6f, -1.8f, ATOM_C);         // 11: Cγ
+    addAtom(mol, 4.2f, -3.5f, -2.2f, ATOM_C);         // 12
+    addAtom(mol, 4.4f, -4.5f, -3.1f, ATOM_C);         // 13
+    addAtom(mol, 5.6f, -4.6f, -3.6f, ATOM_C);         // 14
+    addAtom(mol, 6.6f, -3.7f, -3.2f, ATOM_C);         // 15
+    addAtom(mol, 6.4f, -2.7f, -2.3f, ATOM_C);         // 16
+    addAtom(mol, 5.8f, -5.6f, -4.5f, ATOM_O);         // 17: OH (phenol)
+
+    // === Residue 3: Isoleucine ===
+    addAtom(mol, 7.1f, 0.2f, -0.4f, ATOM_N);          // 18: N
+    addAtom(mol, 8.3f, 1.0f, 0.0f, ATOM_C);           // 19: Cα
+    addAtom(mol, 8.5f, 2.3f, -0.8f, ATOM_C);          // 20: C=O
+    addAtom(mol, 7.6f, 3.2f, -0.8f, ATOM_O);          // 21: =O
+    addAtom(mol, 9.5f, 0.2f, 0.5f, ATOM_C);           // 22: Cβ
+    addAtom(mol, 9.3f, -1.2f, 1.0f, ATOM_C);          // 23: Cγ1 (CH3)
+    addAtom(mol, 10.8f, 0.3f, -0.3f, ATOM_C);         // 24: Cγ2
+    addAtom(mol, 11.5f, -0.8f, -0.8f, ATOM_C);        // 25: Cδ (CH3)
+
+    // === Residue 4: Glutamine ===
+    addAtom(mol, 9.7f, 2.5f, -1.4f, ATOM_N);          // 26: N
+    addAtom(mol, 10.1f, 3.8f, -2.0f, ATOM_C);         // 27: Cα
+    addAtom(mol, 9.2f, 4.9f, -1.5f, ATOM_C);          // 28: C=O
+    addAtom(mol, 8.0f, 4.8f, -1.8f, ATOM_O);          // 29: =O
+    addAtom(mol, 11.5f, 4.2f, -1.7f, ATOM_C);         // 30: Cβ
+    addAtom(mol, 12.0f, 5.5f, -2.3f, ATOM_C);         // 31: Cγ
+    addAtom(mol, 13.3f, 5.9f, -1.8f, ATOM_C);         // 32: Cδ (amide)
+    addAtom(mol, 13.6f, 5.5f, -0.7f, ATOM_O);         // 33: =O
+    addAtom(mol, 14.1f, 6.8f, -2.5f, ATOM_N);         // 34: NH2
+
+    // === Residue 5: Asparagine ===
+    addAtom(mol, 9.6f, 6.0f, -0.8f, ATOM_N);          // 35: N
+    addAtom(mol, 8.8f, 7.2f, -0.4f, ATOM_C);          // 36: Cα
+    addAtom(mol, 7.4f, 6.9f, 0.1f, ATOM_C);           // 37: C=O
+    addAtom(mol, 6.9f, 5.8f, 0.0f, ATOM_O);           // 38: =O
+    addAtom(mol, 9.5f, 8.0f, 0.7f, ATOM_C);           // 39: Cβ
+    addAtom(mol, 8.8f, 9.3f, 1.0f, ATOM_C);           // 40: Cγ (amide)
+    addAtom(mol, 7.6f, 9.5f, 0.7f, ATOM_O);           // 41: =O
+    addAtom(mol, 9.5f, 10.2f, 1.7f, ATOM_N);          // 42: NH2
+
+    // === Residue 6: Cysteine (cyclic, disulfide) ===
+    addAtom(mol, 6.8f, 7.9f, 0.7f, ATOM_N);           // 43: N
+    addAtom(mol, 5.5f, 7.8f, 1.4f, ATOM_C);           // 44: Cα
+    addAtom(mol, 4.4f, 7.2f, 0.5f, ATOM_C);           // 45: C=O
+    addAtom(mol, 4.5f, 7.3f, -0.7f, ATOM_O);          // 46: =O
+    addAtom(mol, 5.0f, 9.1f, 2.0f, ATOM_C);           // 47: Cβ
+    addAtom(mol, 3.8f, 8.8f, 3.1f, ATOM_S);           // 48: Sγ (disulfide)
+
+    // === Disulfide bridge (Cys1-Cys6) ===
+    // S-S bond between atoms 5 and 48
+    addBond(mol, 5, 48, 1);
+
+    // === Residue 7: Proline (tail) ===
+    addAtom(mol, 3.3f, 6.6f, 1.1f, ATOM_N);           // 49: N (ring)
+    addAtom(mol, 2.0f, 6.0f, 0.6f, ATOM_C);           // 50: Cα
+    addAtom(mol, 1.0f, 7.0f, 0.1f, ATOM_C);           // 51: C=O
+    addAtom(mol, 1.2f, 8.2f, 0.0f, ATOM_O);           // 52: =O
+    // Proline ring
+    addAtom(mol, 1.5f, 5.0f, 1.7f, ATOM_C);           // 53: Cβ
+    addAtom(mol, 2.3f, 5.5f, 2.9f, ATOM_C);           // 54: Cγ
+    addAtom(mol, 3.5f, 6.3f, 2.5f, ATOM_C);           // 55: Cδ
+
+    // === Residue 8: Leucine (tail) ===
+    addAtom(mol, -0.2f, 6.5f, -0.3f, ATOM_N);         // 56: N
+    addAtom(mol, -1.4f, 7.3f, -0.7f, ATOM_C);         // 57: Cα
+    addAtom(mol, -2.5f, 6.3f, -1.0f, ATOM_C);         // 58: C=O
+    addAtom(mol, -2.3f, 5.1f, -1.0f, ATOM_O);         // 59: =O
+    addAtom(mol, -1.8f, 8.3f, 0.4f, ATOM_C);          // 60: Cβ
+    addAtom(mol, -3.1f, 9.0f, 0.1f, ATOM_C);          // 61: Cγ
+    addAtom(mol, -3.0f, 10.0f, -1.0f, ATOM_C);        // 62: Cδ1 (CH3)
+    addAtom(mol, -4.3f, 8.1f, 0.0f, ATOM_C);          // 63: Cδ2 (CH3)
+
+    // === Residue 9: Glycine-NH2 (C-terminus) ===
+    addAtom(mol, -3.7f, 6.8f, -1.3f, ATOM_N);         // 64: N
+    addAtom(mol, -4.9f, 6.0f, -1.6f, ATOM_C);         // 65: Cα
+    addAtom(mol, -6.0f, 6.7f, -2.2f, ATOM_C);         // 66: C=O (amide)
+    addAtom(mol, -6.0f, 7.9f, -2.4f, ATOM_O);         // 67: =O
+    addAtom(mol, -7.1f, 5.9f, -2.5f, ATOM_N);         // 68: NH2 (terminal amide)
+
+    // === Key backbone bonds ===
+    // Residue 1
+    addBond(mol, 0, 1, 1);    // N-Cα
+    addBond(mol, 1, 2, 1);    // Cα-C
+    addBond(mol, 2, 3, 2);    // C=O
+    addBond(mol, 1, 4, 1);    // Cα-Cβ
+    addBond(mol, 4, 5, 1);    // Cβ-S
+
+    // Peptide bond 1-2
+    addBond(mol, 2, 6, 1);    // C-N
+
+    // Residue 2 (Tyr)
+    addBond(mol, 6, 7, 1);
+    addBond(mol, 7, 8, 1);
+    addBond(mol, 8, 9, 2);
+    addBond(mol, 7, 10, 1);
+    addBond(mol, 10, 11, 1);
+    // Phenol ring
+    addBond(mol, 11, 12, 2);
+    addBond(mol, 12, 13, 1);
+    addBond(mol, 13, 14, 2);
+    addBond(mol, 14, 15, 1);
+    addBond(mol, 15, 16, 2);
+    addBond(mol, 16, 11, 1);
+    addBond(mol, 14, 17, 1);  // phenol OH
+
+    // Peptide bond 2-3
+    addBond(mol, 8, 18, 1);
+
+    // Residue 3 (Ile)
+    addBond(mol, 18, 19, 1);
+    addBond(mol, 19, 20, 1);
+    addBond(mol, 20, 21, 2);
+    addBond(mol, 19, 22, 1);
+    addBond(mol, 22, 23, 1);
+    addBond(mol, 22, 24, 1);
+    addBond(mol, 24, 25, 1);
+
+    // Peptide bond 3-4
+    addBond(mol, 20, 26, 1);
+
+    // Residue 4 (Gln)
+    addBond(mol, 26, 27, 1);
+    addBond(mol, 27, 28, 1);
+    addBond(mol, 28, 29, 2);
+    addBond(mol, 27, 30, 1);
+    addBond(mol, 30, 31, 1);
+    addBond(mol, 31, 32, 1);
+    addBond(mol, 32, 33, 2);
+    addBond(mol, 32, 34, 1);
+
+    // Peptide bond 4-5
+    addBond(mol, 28, 35, 1);
+
+    // Residue 5 (Asn)
+    addBond(mol, 35, 36, 1);
+    addBond(mol, 36, 37, 1);
+    addBond(mol, 37, 38, 2);
+    addBond(mol, 36, 39, 1);
+    addBond(mol, 39, 40, 1);
+    addBond(mol, 40, 41, 2);
+    addBond(mol, 40, 42, 1);
+
+    // Peptide bond 5-6
+    addBond(mol, 37, 43, 1);
+
+    // Residue 6 (Cys)
+    addBond(mol, 43, 44, 1);
+    addBond(mol, 44, 45, 1);
+    addBond(mol, 45, 46, 2);
+    addBond(mol, 44, 47, 1);
+    addBond(mol, 47, 48, 1);
+
+    // Peptide bond 6-7
+    addBond(mol, 45, 49, 1);
+
+    // Residue 7 (Pro) - includes ring
+    addBond(mol, 49, 50, 1);
+    addBond(mol, 50, 51, 1);
+    addBond(mol, 51, 52, 2);
+    addBond(mol, 50, 53, 1);
+    addBond(mol, 53, 54, 1);
+    addBond(mol, 54, 55, 1);
+    addBond(mol, 55, 49, 1);  // Pro ring closure
+
+    // Peptide bond 7-8
+    addBond(mol, 51, 56, 1);
+
+    // Residue 8 (Leu)
+    addBond(mol, 56, 57, 1);
+    addBond(mol, 57, 58, 1);
+    addBond(mol, 58, 59, 2);
+    addBond(mol, 57, 60, 1);
+    addBond(mol, 60, 61, 1);
+    addBond(mol, 61, 62, 1);
+    addBond(mol, 61, 63, 1);
+
+    // Peptide bond 8-9
+    addBond(mol, 58, 64, 1);
+
+    // Residue 9 (Gly-NH2)
+    addBond(mol, 64, 65, 1);
+    addBond(mol, 65, 66, 1);
+    addBond(mol, 66, 67, 2);
+    addBond(mol, 66, 68, 1);
+
+    // Add key hydrogens (simplified - focusing on NH and important H)
+    int hIdx = mol->numAtoms;
+
+    // N-terminal and backbone NH hydrogens
+    addAtom(mol, -0.5f, 0.5f, 0.7f, ATOM_H);          // H on N-term
+    addAtom(mol, -0.5f, -0.5f, -0.5f, ATOM_H);        // H on N-term
+    addAtom(mol, 3.3f, 1.1f, -1.2f, ATOM_H);          // H on Tyr N
+    addAtom(mol, 7.2f, -0.6f, 0.0f, ATOM_H);          // H on Ile N
+    addAtom(mol, 10.4f, 1.8f, -1.3f, ATOM_H);         // H on Gln N
+    addAtom(mol, 10.5f, 5.8f, -0.3f, ATOM_H);         // H on Asn N
+    addAtom(mol, 7.2f, 8.7f, 1.0f, ATOM_H);           // H on Cys6 N
+    addAtom(mol, -0.3f, 5.6f, -0.1f, ATOM_H);         // H on Leu N
+    addAtom(mol, -3.8f, 7.7f, -1.3f, ATOM_H);         // H on Gly N
+
+    // Phenol OH hydrogen
+    addAtom(mol, 5.1f, -6.2f, -4.7f, ATOM_H);
+
+    // Amide NH2 hydrogens (Gln side chain)
+    addAtom(mol, 14.0f, 7.0f, -3.4f, ATOM_H);
+    addAtom(mol, 15.0f, 7.0f, -2.1f, ATOM_H);
+
+    // Amide NH2 hydrogens (Asn side chain)
+    addAtom(mol, 9.2f, 11.0f, 2.0f, ATOM_H);
+    addAtom(mol, 10.4f, 10.0f, 1.9f, ATOM_H);
+
+    // Terminal amide NH2
+    addAtom(mol, -7.2f, 4.9f, -2.3f, ATOM_H);
+    addAtom(mol, -7.9f, 6.4f, -2.9f, ATOM_H);
+
+    // Bond hydrogens
+    addBond(mol, 0, hIdx, 1);
+    addBond(mol, 0, hIdx + 1, 1);
+    addBond(mol, 6, hIdx + 2, 1);
+    addBond(mol, 18, hIdx + 3, 1);
+    addBond(mol, 26, hIdx + 4, 1);
+    addBond(mol, 35, hIdx + 5, 1);
+    addBond(mol, 43, hIdx + 6, 1);
+    addBond(mol, 56, hIdx + 7, 1);
+    addBond(mol, 64, hIdx + 8, 1);
+    addBond(mol, 17, hIdx + 9, 1);
+    addBond(mol, 34, hIdx + 10, 1);
+    addBond(mol, 34, hIdx + 11, 1);
+    addBond(mol, 42, hIdx + 12, 1);
+    addBond(mol, 42, hIdx + 13, 1);
+    addBond(mol, 68, hIdx + 14, 1);
+    addBond(mol, 68, hIdx + 15, 1);
+
+    centerMolecule(mol);
+}
+
 // Build Acetylcholine (C7H16NO2+) - Memory & muscle control neurotransmitter
 void buildAcetylcholine(Molecule* mol) {
     mol->numAtoms = 0;
@@ -15591,6 +15851,8 @@ static MoleculeInfo molecules[] = {
       "Cortisone is cortisol's inactive form, stored in tissue until your body needs it. Doctors prescribe cortisone shots for joint pain and inflammation. It's different from cortisol because it doesn't act until your body converts it." },
     { buildAldosterone, "Aldosterone", "C21H28O5", CAT_HORMONES, "Salt balance",
       "Aldosterone controls salt and water balance, regulating blood pressure. Your kidneys release it when sodium levels drop, making you retain water. This is why too much salt raises blood pressure over time." },
+    { buildOxytocin, "Oxytocin", "C43H66N12O12S2", CAT_HORMONES, "Love/bonding hormone",
+      "Oxytocin is the 'love hormone' released during hugging, childbirth, and breastfeeding. It strengthens social bonds, trust, and romantic attachment. A cyclic nonapeptide with a disulfide bridge, it's also used medically to induce labor." },
     // === HOUSEHOLD CHEMICALS (141-150) ===
     { buildBleach, "Bleach", "NaOCl", CAT_HOUSEHOLD, "Disinfectant",
       "Bleach (sodium hypochlorite) disinfects surfaces and water by releasing dangerous free radicals that destroy bacteria and viruses. It's toxic if swallowed and creates poisonous gas when mixed with ammonia. Diluted properly, it's safe for sanitizing." },
