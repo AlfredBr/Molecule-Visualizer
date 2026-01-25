@@ -340,14 +340,8 @@ int main(int argc, char* argv[]) {
                 renderer->render(&renderMolecule, rotX, rotY, zoom, offsetX, offsetY);
 
                 // Render molecule name overlay
-                // Format as "Name (Formula)" with subscript digits
-                char displayText[128];
-                if (molecule.formula[0]) {
-                    snprintf(displayText, sizeof(displayText), "%s (%s)", molecule.name, molecule.formula);
-                } else {
-                    snprintf(displayText, sizeof(displayText), "%s", molecule.name);
-                }
-                renderer->renderText(displayText, 10, 10, 3);
+                // molecule.name already contains "Name (Formula)" format
+                renderer->renderText(molecule.name, 10, 10, 3);
 
                 // Molecule Viewport Panel
                 ImGui::SetNextWindowSize(ImVec2(820, 640), ImGuiCond_FirstUseEver);

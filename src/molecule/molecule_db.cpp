@@ -9728,57 +9728,89 @@ void buildMaltose(Molecule* mol) {
     centerMolecule(mol);
 }
 
-// Build Galactose (C6H12O6) - Milk sugar monosaccharide (glucose epimer)
+// Build Galactose (C6H12O6) - Milk sugar monosaccharide (glucose C4 epimer)
 void buildGalactose(Molecule* mol) {
     mol->numAtoms = 0;
     mol->numBonds = 0;
     strcpy(mol->name, "Galactose (C6H12O6)");
 
-    // Galactose ring (6-membered pyranose)
-    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);         // 0: C1 (anomeric)
-    addAtom(mol, 1.2f, 0.7f, 0.3f, ATOM_C);         // 1: C2
-    addAtom(mol, 2.4f, 0.0f, 0.0f, ATOM_C);         // 2: C3
-    addAtom(mol, 2.4f, -1.4f, 0.5f, ATOM_C);        // 3: C4 (differs from glucose)
-    addAtom(mol, 1.2f, -2.1f, 0.2f, ATOM_C);        // 4: C5
-    addAtom(mol, 0.0f, -1.4f, 0.5f, ATOM_O);        // 5: ring O
+    // Galactose: β-D-galactopyranose (chair conformation)
+    // Differs from glucose at C4 - OH is axial instead of equatorial
+    float r = 1.4f;
 
-    // Hydroxyl groups and CH2OH
-    addAtom(mol, -1.0f, 0.5f, 0.5f, ATOM_O);        // 6: OH on C1 (anomeric)
-    addAtom(mol, 1.2f, 2.1f, 0.0f, ATOM_O);         // 7: OH on C2
-    addAtom(mol, 3.5f, 0.7f, 0.3f, ATOM_O);         // 8: OH on C3
-    addAtom(mol, 3.5f, -2.1f, 0.2f, ATOM_O);        // 9: OH on C4 (axial, differs from glucose)
-    addAtom(mol, 1.2f, -3.5f, 0.5f, ATOM_C);        // 10: C6 (CH2OH)
-    addAtom(mol, 1.2f, -4.2f, 1.5f, ATOM_O);        // 11: OH on C6
+    // Ring carbons and oxygen (chair conformation)
+    addAtom(mol, r, 0.0f, 0.3f, ATOM_C);                    // 0: C1 (anomeric)
+    addAtom(mol, r * 0.5f, r * 0.866f, -0.3f, ATOM_C);      // 1: C2
+    addAtom(mol, -r * 0.5f, r * 0.866f, 0.3f, ATOM_C);      // 2: C3
+    addAtom(mol, -r, 0.0f, -0.3f, ATOM_C);                  // 3: C4 (epimer position)
+    addAtom(mol, -r * 0.5f, -r * 0.866f, 0.3f, ATOM_C);     // 4: C5
+    addAtom(mol, r * 0.5f, -r * 0.866f, -0.3f, ATOM_O);     // 5: Ring O
 
-    // Hydrogens
-    addAtom(mol, 0.0f, 0.0f, 1.0f, ATOM_H);         // 12: H on C1
-    addAtom(mol, 1.2f, 0.7f, 1.3f, ATOM_H);         // 13: H on C2
-    addAtom(mol, 2.4f, 0.0f, -1.0f, ATOM_H);        // 14: H on C3
-    addAtom(mol, 2.4f, -1.4f, 1.5f, ATOM_H);        // 15: H on C4
-    addAtom(mol, 1.2f, -2.1f, -0.8f, ATOM_H);       // 16: H on C5
+    // C6 (CH2OH group)
+    addAtom(mol, -r * 0.9f, -r * 1.5f, 0.0f, ATOM_C);       // 6: C6
 
+    // OH groups (5 total)
+    addAtom(mol, r * 1.5f, 0.3f, 1.0f, ATOM_O);             // 7: O on C1 (anomeric)
+    addAtom(mol, r * 0.9f, r * 1.4f, -1.0f, ATOM_O);        // 8: O on C2
+    addAtom(mol, -r * 0.9f, r * 1.4f, 1.0f, ATOM_O);        // 9: O on C3
+    addAtom(mol, -r * 1.5f, 0.0f, -1.0f, ATOM_O);           // 10: O on C4 (AXIAL - galactose epimer)
+    addAtom(mol, -r * 0.5f, -r * 2.3f, 0.0f, ATOM_O);       // 11: O on C6
+
+    // === HYDROGENS (12 total for C6H12O6) ===
+    // Ring carbon hydrogens (1H each on C1-C5)
+    addAtom(mol, r * 1.3f, -0.5f, -0.5f, ATOM_H);           // 12: H on C1
+    addAtom(mol, r * 0.8f, r * 0.5f, 0.5f, ATOM_H);         // 13: H on C2
+    addAtom(mol, -r * 0.2f, r * 1.1f, -0.5f, ATOM_H);       // 14: H on C3
+    addAtom(mol, -r * 0.7f, -0.3f, 0.5f, ATOM_H);           // 15: H on C4
+    addAtom(mol, -r * 0.8f, -r * 0.6f, -0.5f, ATOM_H);      // 16: H on C5
+
+    // C6 hydrogens (2H on CH2)
+    addAtom(mol, -r * 1.5f, -r * 1.3f, 0.7f, ATOM_H);       // 17: H on C6 (a)
+    addAtom(mol, -r * 1.3f, -r * 1.5f, -0.8f, ATOM_H);      // 18: H on C6 (b)
+
+    // OH hydrogens (5H on hydroxyl groups)
+    addAtom(mol, r * 2.2f, 0.0f, 1.3f, ATOM_H);             // 19: H on C1-OH
+    addAtom(mol, r * 1.5f, r * 1.2f, -1.5f, ATOM_H);        // 20: H on C2-OH
+    addAtom(mol, -r * 1.5f, r * 1.2f, 1.5f, ATOM_H);        // 21: H on C3-OH
+    addAtom(mol, -r * 2.2f, 0.0f, -1.3f, ATOM_H);           // 22: H on C4-OH
+    addAtom(mol, -r * 0.9f, -r * 2.8f, 0.5f, ATOM_H);       // 23: H on C6-OH
+
+    // === BONDS ===
     // Ring bonds
-    addBond(mol, 0, 1, 1);
-    addBond(mol, 1, 2, 1);
-    addBond(mol, 2, 3, 1);
-    addBond(mol, 3, 4, 1);
-    addBond(mol, 4, 5, 1);
-    addBond(mol, 5, 0, 1);  // ring closure
+    addBond(mol, 0, 1, 1);   // C1-C2
+    addBond(mol, 1, 2, 1);   // C2-C3
+    addBond(mol, 2, 3, 1);   // C3-C4
+    addBond(mol, 3, 4, 1);   // C4-C5
+    addBond(mol, 4, 5, 1);   // C5-O
+    addBond(mol, 5, 0, 1);   // O-C1 (ring closure)
 
-    // Hydroxyl and CH2OH bonds
-    addBond(mol, 0, 6, 1);  // C1-OH (anomeric)
-    addBond(mol, 1, 7, 1);  // C2-OH
-    addBond(mol, 2, 8, 1);  // C3-OH
-    addBond(mol, 3, 9, 1);  // C4-OH
-    addBond(mol, 4, 10, 1); // C5-C6
-    addBond(mol, 10, 11, 1);// C6-OH
+    // C6 bond
+    addBond(mol, 4, 6, 1);   // C5-C6
 
-    // Hydrogen bonds
-    addBond(mol, 0, 12, 1);
-    addBond(mol, 1, 13, 1);
-    addBond(mol, 2, 14, 1);
-    addBond(mol, 3, 15, 1);
-    addBond(mol, 4, 16, 1);
+    // C-O bonds (hydroxyl groups)
+    addBond(mol, 0, 7, 1);   // C1-OH
+    addBond(mol, 1, 8, 1);   // C2-OH
+    addBond(mol, 2, 9, 1);   // C3-OH
+    addBond(mol, 3, 10, 1);  // C4-OH
+    addBond(mol, 6, 11, 1);  // C6-OH
+
+    // C-H bonds (ring carbons)
+    addBond(mol, 0, 12, 1);  // C1-H
+    addBond(mol, 1, 13, 1);  // C2-H
+    addBond(mol, 2, 14, 1);  // C3-H
+    addBond(mol, 3, 15, 1);  // C4-H
+    addBond(mol, 4, 16, 1);  // C5-H
+
+    // C-H bonds (C6)
+    addBond(mol, 6, 17, 1);  // C6-Ha
+    addBond(mol, 6, 18, 1);  // C6-Hb
+
+    // O-H bonds (hydroxyl groups)
+    addBond(mol, 7, 19, 1);  // C1-O-H
+    addBond(mol, 8, 20, 1);  // C2-O-H
+    addBond(mol, 9, 21, 1);  // C3-O-H
+    addBond(mol, 10, 22, 1); // C4-O-H
+    addBond(mol, 11, 23, 1); // C6-O-H
 
     centerMolecule(mol);
 }

@@ -369,14 +369,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         renderer_render(g_pRenderer, &renderMol, g_rotX, g_rotY, g_zoom, g_offsetX, g_offsetY);
 
         // Render molecule name overlay using GPU text kernel
-        // Format as "Name (Formula)" with subscript digits
-        char displayText[128];
-        if (g_molecule.formula[0]) {
-            snprintf(displayText, sizeof(displayText), "%s (%s)", g_molecule.name, g_molecule.formula);
-        } else {
-            snprintf(displayText, sizeof(displayText), "%s", g_molecule.name);
-        }
-        renderer_render_text(g_pRenderer, displayText, 10, 10, 3);
+        // mol->name already contains "Name (Formula)" format
+        renderer_render_text(g_pRenderer, g_molecule.name, 10, 10, 3);
 
         // Molecule Viewport Panel
         ImGui::SetNextWindowSize(ImVec2(820, 640), ImGuiCond_FirstUseEver);
