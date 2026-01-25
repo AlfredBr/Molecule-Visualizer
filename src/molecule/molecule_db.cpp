@@ -9450,83 +9450,140 @@ void buildLactose(Molecule* mol) {
     mol->numBonds = 0;
     strcpy(mol->name, "Lactose (C12H22O11)");
 
-    // Glucose ring (6-membered pyranose)
-    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);         // 0: C1 (anomeric)
-    addAtom(mol, 1.2f, 0.7f, 0.3f, ATOM_C);         // 1: C2
-    addAtom(mol, 2.4f, 0.0f, 0.0f, ATOM_C);         // 2: C3
-    addAtom(mol, 2.4f, -1.4f, 0.5f, ATOM_C);        // 3: C4
-    addAtom(mol, 1.2f, -2.1f, 0.2f, ATOM_C);        // 4: C5
-    addAtom(mol, 0.0f, -1.4f, 0.5f, ATOM_O);        // 5: ring O
+    // Lactose: β-D-galactopyranosyl-(1→4)-D-glucopyranose
+    // Galactose unit connected via β-1,4 glycosidic bond to Glucose unit
 
-    // Glucose hydroxyl groups and CH2OH
-    addAtom(mol, -1.0f, 0.5f, 0.5f, ATOM_O);        // 6: OH on C1 (anomeric)
-    addAtom(mol, 1.2f, 2.1f, 0.0f, ATOM_O);         // 7: OH on C2
-    addAtom(mol, 3.5f, 0.7f, 0.3f, ATOM_O);         // 8: OH on C3
-    addAtom(mol, 3.5f, -2.1f, 0.2f, ATOM_O);        // 9: OH on C4
-    addAtom(mol, 1.2f, -3.5f, 0.5f, ATOM_C);        // 10: C6 (CH2OH)
-    addAtom(mol, 1.2f, -4.2f, 1.5f, ATOM_O);        // 11: OH on C6
+    // === GLUCOSE RING (right side) ===
+    addAtom(mol, 2.5f, 0.0f, 0.3f, ATOM_C);         // 0: Glc-C1 (anomeric)
+    addAtom(mol, 3.7f, 0.7f, -0.3f, ATOM_C);        // 1: Glc-C2
+    addAtom(mol, 5.0f, 0.0f, 0.0f, ATOM_C);         // 2: Glc-C3
+    addAtom(mol, 5.0f, -1.5f, 0.3f, ATOM_C);        // 3: Glc-C4 (glycosidic link)
+    addAtom(mol, 3.7f, -2.2f, -0.3f, ATOM_C);       // 4: Glc-C5
+    addAtom(mol, 2.5f, -1.5f, 0.0f, ATOM_O);        // 5: Glc ring O
+    addAtom(mol, 3.7f, -3.7f, 0.0f, ATOM_C);        // 6: Glc-C6
 
-    // Galactose ring (6-membered pyranose, glucose C4 epimer)
-    // Connected via glycosidic bond from glucose C1 to galactose C4
-    addAtom(mol, -2.2f, 0.5f, -0.3f, ATOM_C);       // 12: C1 (CH2OH)
-    addAtom(mol, -3.4f, -0.2f, 0.0f, ATOM_C);       // 13: C2
-    addAtom(mol, -4.6f, 0.5f, 0.7f, ATOM_C);        // 14: C3 (galactose - flipped stereochemistry)
-    addAtom(mol, -4.6f, 1.9f, -0.6f, ATOM_C);       // 15: C4 (galactose epimer)
-    addAtom(mol, -3.4f, 2.6f, -0.1f, ATOM_C);       // 16: C5
-    addAtom(mol, -2.2f, 1.9f, 0.2f, ATOM_O);        // 17: ring O
+    // Glucose oxygen substituents
+    addAtom(mol, 1.3f, 0.7f, 0.0f, ATOM_O);         // 7: Glc-C1 OH (anomeric)
+    addAtom(mol, 3.7f, 2.2f, 0.0f, ATOM_O);         // 8: Glc-C2 OH
+    addAtom(mol, 6.2f, 0.7f, -0.5f, ATOM_O);        // 9: Glc-C3 OH
+    // C4 oxygen is glycosidic link (no OH here)
+    addAtom(mol, 3.7f, -4.4f, 1.2f, ATOM_O);        // 10: Glc-C6 OH
 
-    // Galactose hydroxyl groups and CH2OH
-    addAtom(mol, -1.0f, -0.3f, 0.0f, ATOM_O);       // 18: OH on C1
-    addAtom(mol, -3.4f, -1.6f, -0.5f, ATOM_O);      // 19: OH on C2
-    addAtom(mol, -5.8f, 1.2f, 1.0f, ATOM_O);        // 20: OH on C3 (galactose position)
-    addAtom(mol, -5.8f, 1.2f, -0.9f, ATOM_O);       // 21: OH on C4 (galactose position)
-    addAtom(mol, -3.4f, 4.0f, 0.2f, ATOM_C);        // 22: C6 (CH2OH)
-    addAtom(mol, -3.4f, 4.7f, -0.8f, ATOM_O);       // 23: OH on C6
+    // === GALACTOSE RING (left side) ===
+    addAtom(mol, -2.5f, -1.5f, 0.3f, ATOM_C);       // 11: Gal-C1 (anomeric)
+    addAtom(mol, -3.7f, -0.8f, -0.3f, ATOM_C);      // 12: Gal-C2
+    addAtom(mol, -5.0f, -1.5f, 0.0f, ATOM_C);       // 13: Gal-C3
+    addAtom(mol, -5.0f, -3.0f, -0.3f, ATOM_C);      // 14: Gal-C4 (epimer - axial OH)
+    addAtom(mol, -3.7f, -3.7f, 0.3f, ATOM_C);       // 15: Gal-C5
+    addAtom(mol, -2.5f, -3.0f, 0.0f, ATOM_O);       // 16: Gal ring O
+    addAtom(mol, -3.7f, -5.2f, 0.0f, ATOM_C);       // 17: Gal-C6
 
-    // Selected hydrogens for clarity
-    addAtom(mol, 0.0f, 0.0f, 1.0f, ATOM_H);         // 24: H on glucose C1
-    addAtom(mol, 1.2f, 0.7f, 1.3f, ATOM_H);         // 25: H on glucose C2
-    addAtom(mol, -4.6f, 1.9f, 1.2f, ATOM_H);        // 26: H on galactose C4
+    // Galactose oxygen substituents
+    addAtom(mol, -1.3f, -0.8f, 0.0f, ATOM_O);       // 18: Gal-C1 OH (anomeric)
+    addAtom(mol, -3.7f, 0.7f, 0.0f, ATOM_O);        // 19: Gal-C2 OH
+    addAtom(mol, -6.2f, -0.8f, -0.5f, ATOM_O);      // 20: Gal-C3 OH
+    addAtom(mol, -6.2f, -3.7f, 0.2f, ATOM_O);       // 21: Gal-C4 OH (axial in galactose)
+    addAtom(mol, -3.7f, -5.9f, 1.2f, ATOM_O);       // 22: Gal-C6 OH
 
-    // Glucose ring bonds
-    addBond(mol, 0, 1, 1);
-    addBond(mol, 1, 2, 1);
-    addBond(mol, 2, 3, 1);
-    addBond(mol, 3, 4, 1);
-    addBond(mol, 4, 5, 1);
-    addBond(mol, 5, 0, 1);  // ring closure
+    // Glycosidic oxygen (connects Gal-C1 to Glc-C4)
+    addAtom(mol, 5.0f, -2.2f, 1.5f, ATOM_O);        // 23: glycosidic O
 
-    // Glucose substituents
-    addBond(mol, 0, 6, 1);  // C1-OH (anomeric)
-    addBond(mol, 1, 7, 1);  // C2-OH
-    addBond(mol, 2, 8, 1);  // C3-OH
-    addBond(mol, 3, 9, 1);  // C4-OH
-    addBond(mol, 4, 10, 1); // C5-C6
-    addBond(mol, 10, 11, 1);// C6-OH
+    // === HYDROGENS (22 total for C12H22O11) ===
+    // Glucose ring carbons (1H each on C1-C5)
+    addAtom(mol, 2.5f, 0.0f, 1.4f, ATOM_H);         // 24: H-Glc-C1
+    addAtom(mol, 3.7f, 0.7f, -1.4f, ATOM_H);        // 25: H-Glc-C2
+    addAtom(mol, 5.0f, 0.0f, -1.1f, ATOM_H);        // 26: H-Glc-C3
+    addAtom(mol, 5.0f, -1.5f, -0.8f, ATOM_H);       // 27: H-Glc-C4
+    addAtom(mol, 3.7f, -2.2f, -1.4f, ATOM_H);       // 28: H-Glc-C5
+    // Glucose C6 (2H)
+    addAtom(mol, 4.6f, -4.1f, -0.5f, ATOM_H);       // 29: H-Glc-C6a
+    addAtom(mol, 2.8f, -4.1f, -0.5f, ATOM_H);       // 30: H-Glc-C6b
 
-    // Glycosidic bond (glucose C1 O to galactose C4)
-    addBond(mol, 6, 15, 1);
+    // Galactose ring carbons (1H each on C1-C5)
+    addAtom(mol, -2.5f, -1.5f, 1.4f, ATOM_H);       // 31: H-Gal-C1
+    addAtom(mol, -3.7f, -0.8f, -1.4f, ATOM_H);      // 32: H-Gal-C2
+    addAtom(mol, -5.0f, -1.5f, 1.1f, ATOM_H);       // 33: H-Gal-C3
+    addAtom(mol, -5.0f, -3.0f, -1.4f, ATOM_H);      // 34: H-Gal-C4
+    addAtom(mol, -3.7f, -3.7f, 1.4f, ATOM_H);       // 35: H-Gal-C5
+    // Galactose C6 (2H)
+    addAtom(mol, -4.6f, -5.6f, -0.5f, ATOM_H);      // 36: H-Gal-C6a
+    addAtom(mol, -2.8f, -5.6f, -0.5f, ATOM_H);      // 37: H-Gal-C6b
 
-    // Galactose ring bonds
-    addBond(mol, 12, 13, 1);
-    addBond(mol, 13, 14, 1);
-    addBond(mol, 14, 15, 1);
-    addBond(mol, 15, 16, 1);
-    addBond(mol, 16, 17, 1);
-    addBond(mol, 17, 12, 1); // ring closure
+    // Hydroxyl hydrogens (8 OH groups)
+    addAtom(mol, 0.5f, 0.3f, 0.3f, ATOM_H);         // 38: H-Glc-C1-OH
+    addAtom(mol, 3.7f, 2.7f, -0.8f, ATOM_H);        // 39: H-Glc-C2-OH
+    addAtom(mol, 7.0f, 0.3f, -0.2f, ATOM_H);        // 40: H-Glc-C3-OH
+    addAtom(mol, 3.7f, -5.3f, 1.4f, ATOM_H);        // 41: H-Glc-C6-OH
+    addAtom(mol, -1.3f, -0.3f, 0.8f, ATOM_H);       // 42: H-Gal-C1-OH
+    addAtom(mol, -3.7f, 1.2f, -0.8f, ATOM_H);       // 43: H-Gal-C2-OH
+    addAtom(mol, -7.0f, -1.2f, -0.2f, ATOM_H);      // 44: H-Gal-C3-OH
+    addAtom(mol, -7.0f, -3.3f, 0.5f, ATOM_H);       // 45: H-Gal-C4-OH
+    addAtom(mol, -3.7f, -6.8f, 1.4f, ATOM_H);       // 46: H-Gal-C6-OH
 
-    // Galactose substituents
-    addBond(mol, 12, 18, 1); // C1-OH
-    addBond(mol, 13, 19, 1); // C2-OH
-    addBond(mol, 14, 20, 1); // C3-OH
-    addBond(mol, 15, 21, 1); // C4-OH
-    addBond(mol, 16, 22, 1); // C5-C6
-    addBond(mol, 22, 23, 1); // C6-OH
+    // === BONDS ===
+    // Glucose ring
+    addBond(mol, 0, 1, 1);   // C1-C2
+    addBond(mol, 1, 2, 1);   // C2-C3
+    addBond(mol, 2, 3, 1);   // C3-C4
+    addBond(mol, 3, 4, 1);   // C4-C5
+    addBond(mol, 4, 5, 1);   // C5-O
+    addBond(mol, 5, 0, 1);   // O-C1 (ring closure)
+    addBond(mol, 4, 6, 1);   // C5-C6
 
-    // Selected hydrogen bonds
+    // Glucose C-O bonds
+    addBond(mol, 0, 7, 1);   // C1-OH
+    addBond(mol, 1, 8, 1);   // C2-OH
+    addBond(mol, 2, 9, 1);   // C3-OH
+    addBond(mol, 3, 23, 1);  // C4-O (glycosidic)
+    addBond(mol, 6, 10, 1);  // C6-OH
+
+    // Galactose ring
+    addBond(mol, 11, 12, 1); // C1-C2
+    addBond(mol, 12, 13, 1); // C2-C3
+    addBond(mol, 13, 14, 1); // C3-C4
+    addBond(mol, 14, 15, 1); // C4-C5
+    addBond(mol, 15, 16, 1); // C5-O
+    addBond(mol, 16, 11, 1); // O-C1 (ring closure)
+    addBond(mol, 15, 17, 1); // C5-C6
+
+    // Galactose C-O bonds
+    addBond(mol, 11, 18, 1); // C1-OH
+    addBond(mol, 12, 19, 1); // C2-OH
+    addBond(mol, 13, 20, 1); // C3-OH
+    addBond(mol, 14, 21, 1); // C4-OH
+    addBond(mol, 17, 22, 1); // C6-OH
+
+    // Glycosidic bond (Gal-C1 to glycosidic O)
+    addBond(mol, 11, 23, 1);
+
+    // Glucose C-H bonds
     addBond(mol, 0, 24, 1);
     addBond(mol, 1, 25, 1);
-    addBond(mol, 15, 26, 1);
+    addBond(mol, 2, 26, 1);
+    addBond(mol, 3, 27, 1);
+    addBond(mol, 4, 28, 1);
+    addBond(mol, 6, 29, 1);
+    addBond(mol, 6, 30, 1);
+
+    // Galactose C-H bonds
+    addBond(mol, 11, 31, 1);
+    addBond(mol, 12, 32, 1);
+    addBond(mol, 13, 33, 1);
+    addBond(mol, 14, 34, 1);
+    addBond(mol, 15, 35, 1);
+    addBond(mol, 17, 36, 1);
+    addBond(mol, 17, 37, 1);
+
+    // O-H bonds
+    addBond(mol, 7, 38, 1);
+    addBond(mol, 8, 39, 1);
+    addBond(mol, 9, 40, 1);
+    addBond(mol, 10, 41, 1);
+    addBond(mol, 18, 42, 1);
+    addBond(mol, 19, 43, 1);
+    addBond(mol, 20, 44, 1);
+    addBond(mol, 21, 45, 1);
+    addBond(mol, 22, 46, 1);
 
     centerMolecule(mol);
 }
@@ -9537,83 +9594,136 @@ void buildMaltose(Molecule* mol) {
     mol->numBonds = 0;
     strcpy(mol->name, "Maltose (C12H22O11)");
 
-    // Glucose ring 1 (6-membered pyranose)
-    addAtom(mol, 0.0f, 0.0f, 0.0f, ATOM_C);         // 0: C1 (anomeric)
-    addAtom(mol, 1.2f, 0.7f, 0.3f, ATOM_C);         // 1: C2
-    addAtom(mol, 2.4f, 0.0f, 0.0f, ATOM_C);         // 2: C3
-    addAtom(mol, 2.4f, -1.4f, 0.5f, ATOM_C);        // 3: C4
-    addAtom(mol, 1.2f, -2.1f, 0.2f, ATOM_C);        // 4: C5
-    addAtom(mol, 0.0f, -1.4f, 0.5f, ATOM_O);        // 5: ring O
+    // Maltose: α-D-glucopyranosyl-(1→4)-D-glucopyranose
+    // Two glucose units connected via α-1,4 glycosidic bond
 
-    // Glucose 1 hydroxyl groups and CH2OH
-    addAtom(mol, -1.0f, 0.5f, 0.5f, ATOM_O);        // 6: OH on C1 (anomeric)
-    addAtom(mol, 1.2f, 2.1f, 0.0f, ATOM_O);         // 7: OH on C2
-    addAtom(mol, 3.5f, 0.7f, 0.3f, ATOM_O);         // 8: OH on C3
-    addAtom(mol, 3.5f, -2.1f, 0.2f, ATOM_O);        // 9: OH on C4
-    addAtom(mol, 1.2f, -3.5f, 0.5f, ATOM_C);        // 10: C6 (CH2OH)
-    addAtom(mol, 1.2f, -4.2f, 1.5f, ATOM_O);        // 11: OH on C6
+    // === GLUCOSE RING 1 - Reducing end (right side) ===
+    addAtom(mol, 2.5f, 0.0f, 0.3f, ATOM_C);         // 0: Glc1-C1 (anomeric, free)
+    addAtom(mol, 3.7f, 0.7f, -0.3f, ATOM_C);        // 1: Glc1-C2
+    addAtom(mol, 5.0f, 0.0f, 0.0f, ATOM_C);         // 2: Glc1-C3
+    addAtom(mol, 5.0f, -1.5f, 0.3f, ATOM_C);        // 3: Glc1-C4 (glycosidic link)
+    addAtom(mol, 3.7f, -2.2f, -0.3f, ATOM_C);       // 4: Glc1-C5
+    addAtom(mol, 2.5f, -1.5f, 0.0f, ATOM_O);        // 5: Glc1 ring O
+    addAtom(mol, 3.7f, -3.7f, 0.0f, ATOM_C);        // 6: Glc1-C6
 
-    // Glucose ring 2 (6-membered pyranose)
-    // Connected via glycosidic bond from glucose1 C1 to glucose2 C4
-    addAtom(mol, -2.2f, 0.5f, -0.3f, ATOM_C);       // 12: C1 (CH2OH)
-    addAtom(mol, -3.4f, -0.2f, 0.0f, ATOM_C);       // 13: C2
-    addAtom(mol, -4.6f, 0.5f, -0.3f, ATOM_C);       // 14: C3
-    addAtom(mol, -4.6f, 1.9f, 0.2f, ATOM_C);        // 15: C4 (glycosidic linkage)
-    addAtom(mol, -3.4f, 2.6f, -0.1f, ATOM_C);       // 16: C5
-    addAtom(mol, -2.2f, 1.9f, 0.2f, ATOM_O);        // 17: ring O
+    // Glucose 1 oxygen substituents
+    addAtom(mol, 1.3f, 0.7f, 0.0f, ATOM_O);         // 7: Glc1-C1 OH (anomeric)
+    addAtom(mol, 3.7f, 2.2f, 0.0f, ATOM_O);         // 8: Glc1-C2 OH
+    addAtom(mol, 6.2f, 0.7f, -0.5f, ATOM_O);        // 9: Glc1-C3 OH
+    // C4 oxygen is glycosidic link (no OH here)
+    addAtom(mol, 3.7f, -4.4f, 1.2f, ATOM_O);        // 10: Glc1-C6 OH
 
-    // Glucose 2 hydroxyl groups and CH2OH
-    addAtom(mol, -1.0f, -0.3f, 0.0f, ATOM_O);       // 18: OH on C1
-    addAtom(mol, -3.4f, -1.6f, -0.5f, ATOM_O);      // 19: OH on C2
-    addAtom(mol, -5.8f, -0.2f, -0.6f, ATOM_O);      // 20: OH on C3
-    addAtom(mol, -5.8f, 2.6f, 0.5f, ATOM_O);        // 21: OH on C4
-    addAtom(mol, -3.4f, 4.0f, 0.2f, ATOM_C);        // 22: C6 (CH2OH)
-    addAtom(mol, -3.4f, 4.7f, -0.8f, ATOM_O);       // 23: OH on C6
+    // === GLUCOSE RING 2 - Non-reducing end (left side) ===
+    addAtom(mol, -2.5f, -1.5f, 0.3f, ATOM_C);       // 11: Glc2-C1 (anomeric, linked)
+    addAtom(mol, -3.7f, -0.8f, -0.3f, ATOM_C);      // 12: Glc2-C2
+    addAtom(mol, -5.0f, -1.5f, 0.0f, ATOM_C);       // 13: Glc2-C3
+    addAtom(mol, -5.0f, -3.0f, 0.3f, ATOM_C);       // 14: Glc2-C4
+    addAtom(mol, -3.7f, -3.7f, -0.3f, ATOM_C);      // 15: Glc2-C5
+    addAtom(mol, -2.5f, -3.0f, 0.0f, ATOM_O);       // 16: Glc2 ring O
+    addAtom(mol, -3.7f, -5.2f, 0.0f, ATOM_C);       // 17: Glc2-C6
 
-    // Selected hydrogens
-    addAtom(mol, 0.0f, 0.0f, 1.0f, ATOM_H);         // 24: H on glucose1 C1
-    addAtom(mol, 1.2f, 0.7f, 1.3f, ATOM_H);         // 25: H on glucose1 C2
-    addAtom(mol, -4.6f, 1.9f, 1.2f, ATOM_H);        // 26: H on glucose2 C4
+    // Glucose 2 oxygen substituents (C1 is glycosidic, no OH)
+    addAtom(mol, -3.7f, 0.7f, 0.0f, ATOM_O);        // 18: Glc2-C2 OH
+    addAtom(mol, -6.2f, -0.8f, -0.5f, ATOM_O);      // 19: Glc2-C3 OH
+    addAtom(mol, -6.2f, -3.7f, 0.0f, ATOM_O);       // 20: Glc2-C4 OH
+    addAtom(mol, -3.7f, -5.9f, 1.2f, ATOM_O);       // 21: Glc2-C6 OH
 
-    // Glucose 1 ring bonds
-    addBond(mol, 0, 1, 1);
-    addBond(mol, 1, 2, 1);
-    addBond(mol, 2, 3, 1);
-    addBond(mol, 3, 4, 1);
-    addBond(mol, 4, 5, 1);
-    addBond(mol, 5, 0, 1);  // ring closure
+    // Glycosidic oxygen (connects Glc2-C1 to Glc1-C4)
+    addAtom(mol, 5.0f, -2.2f, 1.5f, ATOM_O);        // 22: glycosidic O
 
-    // Glucose 1 substituents
-    addBond(mol, 0, 6, 1);  // C1-OH (anomeric)
-    addBond(mol, 1, 7, 1);  // C2-OH
-    addBond(mol, 2, 8, 1);  // C3-OH
-    addBond(mol, 3, 9, 1);  // C4-OH
-    addBond(mol, 4, 10, 1); // C5-C6
-    addBond(mol, 10, 11, 1);// C6-OH
+    // === HYDROGENS (22 total for C12H22O11) ===
+    // Glucose 1 ring carbons (1H each on C1-C5)
+    addAtom(mol, 2.5f, 0.0f, 1.4f, ATOM_H);         // 23: H-Glc1-C1
+    addAtom(mol, 3.7f, 0.7f, -1.4f, ATOM_H);        // 24: H-Glc1-C2
+    addAtom(mol, 5.0f, 0.0f, -1.1f, ATOM_H);        // 25: H-Glc1-C3
+    addAtom(mol, 5.0f, -1.5f, -0.8f, ATOM_H);       // 26: H-Glc1-C4
+    addAtom(mol, 3.7f, -2.2f, -1.4f, ATOM_H);       // 27: H-Glc1-C5
+    // Glucose 1 C6 (2H)
+    addAtom(mol, 4.6f, -4.1f, -0.5f, ATOM_H);       // 28: H-Glc1-C6a
+    addAtom(mol, 2.8f, -4.1f, -0.5f, ATOM_H);       // 29: H-Glc1-C6b
 
-    // Glycosidic bond (glucose1 C1 O to glucose2 C4)
-    addBond(mol, 6, 15, 1);
+    // Glucose 2 ring carbons (1H each on C1-C5)
+    addAtom(mol, -2.5f, -1.5f, 1.4f, ATOM_H);       // 30: H-Glc2-C1
+    addAtom(mol, -3.7f, -0.8f, -1.4f, ATOM_H);      // 31: H-Glc2-C2
+    addAtom(mol, -5.0f, -1.5f, -1.1f, ATOM_H);      // 32: H-Glc2-C3
+    addAtom(mol, -5.0f, -3.0f, 1.4f, ATOM_H);       // 33: H-Glc2-C4
+    addAtom(mol, -3.7f, -3.7f, -1.4f, ATOM_H);      // 34: H-Glc2-C5
+    // Glucose 2 C6 (2H)
+    addAtom(mol, -4.6f, -5.6f, -0.5f, ATOM_H);      // 35: H-Glc2-C6a
+    addAtom(mol, -2.8f, -5.6f, -0.5f, ATOM_H);      // 36: H-Glc2-C6b
 
-    // Glucose 2 ring bonds
-    addBond(mol, 12, 13, 1);
-    addBond(mol, 13, 14, 1);
-    addBond(mol, 14, 15, 1);
-    addBond(mol, 15, 16, 1);
-    addBond(mol, 16, 17, 1);
-    addBond(mol, 17, 12, 1); // ring closure
+    // Hydroxyl hydrogens (8 OH groups)
+    addAtom(mol, 0.5f, 0.3f, 0.3f, ATOM_H);         // 37: H-Glc1-C1-OH
+    addAtom(mol, 3.7f, 2.7f, -0.8f, ATOM_H);        // 38: H-Glc1-C2-OH
+    addAtom(mol, 7.0f, 0.3f, -0.2f, ATOM_H);        // 39: H-Glc1-C3-OH
+    addAtom(mol, 3.7f, -5.3f, 1.4f, ATOM_H);        // 40: H-Glc1-C6-OH
+    addAtom(mol, -3.7f, 1.2f, -0.8f, ATOM_H);       // 41: H-Glc2-C2-OH
+    addAtom(mol, -7.0f, -1.2f, -0.2f, ATOM_H);      // 42: H-Glc2-C3-OH
+    addAtom(mol, -7.0f, -3.3f, 0.5f, ATOM_H);       // 43: H-Glc2-C4-OH
+    addAtom(mol, -3.7f, -6.8f, 1.4f, ATOM_H);       // 44: H-Glc2-C6-OH
 
-    // Glucose 2 substituents
-    addBond(mol, 12, 18, 1); // C1-OH
-    addBond(mol, 13, 19, 1); // C2-OH
-    addBond(mol, 14, 20, 1); // C3-OH
-    addBond(mol, 15, 21, 1); // C4-OH
-    addBond(mol, 16, 22, 1); // C5-C6
-    addBond(mol, 22, 23, 1); // C6-OH
+    // === BONDS ===
+    // Glucose 1 ring
+    addBond(mol, 0, 1, 1);   // C1-C2
+    addBond(mol, 1, 2, 1);   // C2-C3
+    addBond(mol, 2, 3, 1);   // C3-C4
+    addBond(mol, 3, 4, 1);   // C4-C5
+    addBond(mol, 4, 5, 1);   // C5-O
+    addBond(mol, 5, 0, 1);   // O-C1 (ring closure)
+    addBond(mol, 4, 6, 1);   // C5-C6
 
-    // Selected hydrogen bonds
-    addBond(mol, 0, 24, 1);
-    addBond(mol, 1, 25, 1);
-    addBond(mol, 15, 26, 1);
+    // Glucose 1 C-O bonds
+    addBond(mol, 0, 7, 1);   // C1-OH
+    addBond(mol, 1, 8, 1);   // C2-OH
+    addBond(mol, 2, 9, 1);   // C3-OH
+    addBond(mol, 3, 22, 1);  // C4-O (glycosidic)
+    addBond(mol, 6, 10, 1);  // C6-OH
+
+    // Glucose 2 ring
+    addBond(mol, 11, 12, 1); // C1-C2
+    addBond(mol, 12, 13, 1); // C2-C3
+    addBond(mol, 13, 14, 1); // C3-C4
+    addBond(mol, 14, 15, 1); // C4-C5
+    addBond(mol, 15, 16, 1); // C5-O
+    addBond(mol, 16, 11, 1); // O-C1 (ring closure)
+    addBond(mol, 15, 17, 1); // C5-C6
+
+    // Glucose 2 C-O bonds
+    addBond(mol, 12, 18, 1); // C2-OH
+    addBond(mol, 13, 19, 1); // C3-OH
+    addBond(mol, 14, 20, 1); // C4-OH
+    addBond(mol, 17, 21, 1); // C6-OH
+
+    // Glycosidic bond (Glc2-C1 to glycosidic O)
+    addBond(mol, 11, 22, 1);
+
+    // Glucose 1 C-H bonds
+    addBond(mol, 0, 23, 1);
+    addBond(mol, 1, 24, 1);
+    addBond(mol, 2, 25, 1);
+    addBond(mol, 3, 26, 1);
+    addBond(mol, 4, 27, 1);
+    addBond(mol, 6, 28, 1);
+    addBond(mol, 6, 29, 1);
+
+    // Glucose 2 C-H bonds
+    addBond(mol, 11, 30, 1);
+    addBond(mol, 12, 31, 1);
+    addBond(mol, 13, 32, 1);
+    addBond(mol, 14, 33, 1);
+    addBond(mol, 15, 34, 1);
+    addBond(mol, 17, 35, 1);
+    addBond(mol, 17, 36, 1);
+
+    // O-H bonds
+    addBond(mol, 7, 37, 1);
+    addBond(mol, 8, 38, 1);
+    addBond(mol, 9, 39, 1);
+    addBond(mol, 10, 40, 1);
+    addBond(mol, 18, 41, 1);
+    addBond(mol, 19, 42, 1);
+    addBond(mol, 20, 43, 1);
+    addBond(mol, 21, 44, 1);
 
     centerMolecule(mol);
 }
