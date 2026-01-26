@@ -78,3 +78,5 @@ molvis.ini
 
 # third party libraries
 /third_party/imgui
+release/*.sha256
+release/*.zip
