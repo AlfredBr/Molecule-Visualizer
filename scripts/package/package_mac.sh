@@ -16,7 +16,7 @@ PROJECT_ROOT="$SCRIPT_DIR/../.."
 BUILD_DIR="$PROJECT_ROOT/build_mac"
 DIST_DIR="$PROJECT_ROOT/dist"
 APP_NAME="MolVis"
-VERSION="0.4.0"
+VERSION="0.4.1"
 DMG_NAME="${APP_NAME}-${VERSION}-macOS"
 
 # Colors for output

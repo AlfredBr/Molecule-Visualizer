@@ -1,6 +1,16 @@
 
 # MolVis Release Notes
 
+## v0.4.1 (2026-01-26)
+
+### New Features
+- Added **Cyanoacrylate** (Super Glue) molecule to the Plastics category
+
+### Improvements
+- **Hide Hydrogen** option now only appears for molecules with more than 2 hydrogen atoms
+
+---
+
 ## v0.4.0 (2026-01-25)
 
 ### Project Improvements
