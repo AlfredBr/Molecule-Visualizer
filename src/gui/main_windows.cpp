@@ -584,8 +584,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         {
             ImGui::TextDisabled("Rendering options");
             ImGui::Separator();
-            ImGui::Checkbox("Hide Hydrogen (H)", &g_hideHydrogen);
-            ImGui::TextDisabled("Does not affect Periodic Table");
+            // Count hydrogens in the source molecule
+            int hydrogenCount = 0;
+            for (int i = 0; i < g_molecule.numAtoms; ++i) {
+                if (g_molecule.atoms[i].type == ATOM_H) hydrogenCount++;
+            }
+            // Only show Hide Hydrogen option for molecules with more than 2 hydrogens
+            if (hydrogenCount > 2) {
+                ImGui::Checkbox("Hide Hydrogen (H)", &g_hideHydrogen);
+                ImGui::TextDisabled("Does not affect Periodic Table");
+            } else {
+                g_hideHydrogen = false; // Reset if not applicable
+                ImGui::TextDisabled("Hide Hydrogen: N/A (<=2 H atoms)");
+            }
         }
         ImGui::End();
 

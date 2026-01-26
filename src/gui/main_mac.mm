@@ -465,10 +465,24 @@ int main(int argc, char* argv[]) {
                 {
                     ImGui::TextDisabled("Rendering options");
                     ImGui::Separator();
-                    if (ImGui::Checkbox("Hide Hydrogen (H)", &hideHydrogen)) {
-                        BuildRenderMolecule(molecule, renderMolecule, hideHydrogen);
+                    // Count hydrogens in the source molecule
+                    int hydrogenCount = 0;
+                    for (int i = 0; i < molecule.numAtoms; ++i) {
+                        if (molecule.atoms[i].type == ATOM_H) hydrogenCount++;
                     }
-                    ImGui::TextDisabled("Does not affect Periodic Table");
+                    // Only show Hide Hydrogen option for molecules with more than 2 hydrogens
+                    if (hydrogenCount > 2) {
+                        if (ImGui::Checkbox("Hide Hydrogen (H)", &hideHydrogen)) {
+                            BuildRenderMolecule(molecule, renderMolecule, hideHydrogen);
+                        }
+                        ImGui::TextDisabled("Does not affect Periodic Table");
+                    } else {
+                        if (hideHydrogen) {
+                            hideHydrogen = false;
+                            BuildRenderMolecule(molecule, renderMolecule, hideHydrogen);
+                        }
+                        ImGui::TextDisabled("Hide Hydrogen: N/A (<=2 H atoms)");
+                    }
                 }
                 ImGui::End();
 
