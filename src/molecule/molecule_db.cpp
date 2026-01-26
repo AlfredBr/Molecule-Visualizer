@@ -23,21 +23,21 @@
 static const char* categoryNames[] = {
     "Simple Molecules",       // CAT_SIMPLE
     "Organic Compounds",      // CAT_ORGANIC
-    "Amino Acids",           // CAT_AMINO_ACIDS
+    "Amino Acids",            // CAT_AMINO_ACIDS
     "Sugars & Carbohydrates", // CAT_SUGARS
-    "Vitamins",              // CAT_VITAMINS
-    "Neurotransmitters",     // CAT_NEUROTRANS
-    "Hormones",              // CAT_HORMONES
-    "Pharmaceuticals",       // CAT_PHARMA
-    "Controlled Substances", // CAT_CONTROLLED
-    "Household Chemicals",   // CAT_HOUSEHOLD
-    "Acids",                 // CAT_ACIDS
-    "Plastic Monomers",      // CAT_PLASTICS
-    "Fatty Acids",           // CAT_FATS
-    "Metal Compounds",       // CAT_METALS
-    "Energy Molecules",      // CAT_ENERGY
-    "Flavors & Fragrances",  // CAT_FLAVORS
-    "Other"                  // CAT_OTHER
+    "Vitamins",               // CAT_VITAMINS
+    "Neurotransmitters",      // CAT_NEUROTRANS
+    "Hormones",               // CAT_HORMONES
+    "Pharmaceuticals",        // CAT_PHARMA
+    "Controlled Substances",  // CAT_CONTROLLED
+    "Household Chemicals",    // CAT_HOUSEHOLD
+    "Acids",                  // CAT_ACIDS
+    "Plastic Monomers",       // CAT_PLASTICS
+    "Fatty Acids",            // CAT_FATS
+    "Metal Compounds",        // CAT_METALS
+    "Energy Molecules",       // CAT_ENERGY
+    "Flavors & Fragrances",   // CAT_FLAVORS
+    "Other"                   // CAT_OTHER
 };
 
 const char* molecule_get_category_name(int category) {
@@ -1089,6 +1089,43 @@ void buildMethylMethacrylate(Molecule* mol) {
     addBond(mol, 6, 12, 1);
     addBond(mol, 6, 13, 1);
     addBond(mol, 6, 14, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Cyanoacrylate (C5H5NO2) - Super glue monomer
+void buildCyanoacrylate(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Cyanoacrylate/Super Glue (C5H5NO2)");
+
+    // CH2=C(CN)-COOCH3
+    addAtom(mol, -1.8f, 0.0f, 0.0f, ATOM_C);    // 0: CH2=
+    addAtom(mol, -0.6f, 0.0f, 0.0f, ATOM_C);    // 1: =C(CN)
+    addAtom(mol, -0.6f, 1.2f, 0.0f, ATOM_C);    // 2: C of C≡N
+    addAtom(mol, -0.6f, 2.4f, 0.0f, ATOM_N);    // 3: N of C≡N
+    addAtom(mol, 0.7f, -0.5f, 0.0f, ATOM_C);    // 4: C(=O)
+    addAtom(mol, 0.7f, -1.7f, 0.0f, ATOM_O);    // 5: =O
+    addAtom(mol, 1.9f, 0.2f, 0.0f, ATOM_O);     // 6: O-
+    addAtom(mol, 3.1f, -0.3f, 0.0f, ATOM_C);    // 7: OCH3
+    addAtom(mol, -2.3f, 0.9f, 0.0f, ATOM_H);    // 8: H on CH2
+    addAtom(mol, -2.3f, -0.9f, 0.0f, ATOM_H);   // 9: H on CH2
+    addAtom(mol, 3.6f, 0.2f, 0.9f, ATOM_H);     // 10: H on OCH3
+    addAtom(mol, 3.6f, 0.2f, -0.9f, ATOM_H);    // 11: H on OCH3
+    addAtom(mol, 3.1f, -1.3f, 0.0f, ATOM_H);    // 12: H on OCH3
+
+    addBond(mol, 0, 1, 2);  // C=C double bond
+    addBond(mol, 1, 2, 1);  // C-CN single bond
+    addBond(mol, 2, 3, 3);  // C≡N triple bond
+    addBond(mol, 1, 4, 1);  // C-COOCH3 single bond
+    addBond(mol, 4, 5, 2);  // C=O double bond
+    addBond(mol, 4, 6, 1);  // C-O single bond
+    addBond(mol, 6, 7, 1);  // O-CH3 single bond
+    addBond(mol, 0, 8, 1);  // C-H
+    addBond(mol, 0, 9, 1);  // C-H
+    addBond(mol, 7, 10, 1); // C-H
+    addBond(mol, 7, 11, 1); // C-H
+    addBond(mol, 7, 12, 1); // C-H
 
     centerMolecule(mol);
 }
@@ -15908,6 +15945,8 @@ static MoleculeInfo molecules[] = {
       "Vinyl chloride polymerizes into polyvinyl chloride (PVC), the third most common plastic. Workers exposed to vinyl chloride dust develop angiosarcoma liver cancer. PVC is now made more safely, but the hazard remains with improper handling." },
     { buildMethylMethacrylate, "Methyl Methacrylate", "C5H8O2", CAT_PLASTICS, "Acrylic monomer",
       "Methyl methacrylate polymerizes into acrylic glass (Plexiglas), stronger and lighter than regular glass. It's used in aquariums, aircraft windows, and dental prosthetics. Acrylic sheets are shatter-resistant and easily molded when heated." },
+    { buildCyanoacrylate, "Cyanoacrylate", "C5H5NO2", CAT_PLASTICS, "Super glue",
+      "Cyanoacrylate is the monomer in super glue, polymerizing instantly when exposed to moisture. It bonds skin, plastics, and metals in seconds. Discovered accidentally in 1942, it was later used to seal wounds in the Vietnam War." },
     { buildTetrafluoroethylene, "Tetrafluoroethylene", "C2F4", CAT_PLASTICS, "PTFE monomer",
       "TFE polymerizes into PTFE (Teflon), the non-stick coating on frying pans. It's heat-resistant to 260°C and chemically inert. Teflon was discovered accidentally when a refrigerant experiment produced this slippery powder." },
     { buildCaprolactam, "Caprolactam", "C6H11NO", CAT_PLASTICS, "Nylon-6 monomer",
