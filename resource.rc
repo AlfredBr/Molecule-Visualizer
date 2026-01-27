@@ -1,6 +1,35 @@
-// Windows Resource File for application icon
-// The icon file must be named "app.ico" and placed in the project directory
+// Windows Resource File for application icon and version info
+
+#include <windows.h>
 
 // Application icon - ID 1 is used by Windows as the main application icon
 // The icon with the lowest numeric ID becomes the default app icon
 1 ICON "app.ico"
+
+// Version information - ProductName appears under the icon in Explorer
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     0,4,1,0
+PRODUCTVERSION  0,4,1,0
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+FILEFLAGS       0
+FILEOS          VOS__WINDOWS32
+FILETYPE        VFT_APP
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "FileDescription", "Molecule Visualizer"
+            VALUE "FileVersion", "0.4.1"
+            VALUE "InternalName", "MolVis"
+            VALUE "OriginalFilename", "MolVis.exe"
+            VALUE "ProductName", "Molecule Visualizer"
+            VALUE "ProductVersion", "0.4.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 0x04B0
+    END
+END
