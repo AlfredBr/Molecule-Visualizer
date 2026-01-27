@@ -13,7 +13,7 @@ MolVis is a real-time 3D molecular visualization application powered by GPU comp
 
 - **Real-time GPU Rendering** — CUDA-powered parallel ray-sphere intersection for smooth performance
 - **Dear ImGui Interface** — Modern, responsive GUI with dockable panels
-- **301 Molecule Library** — From simple gases to exotic structures like Buckminsterfullerene (C₆₀), including skincare ingredients
+- **296 Molecule Library** — From simple gases to exotic structures like Buckminsterfullerene (C₆₀), including skincare ingredients
 - **17 Categories** — Commercial pharmaceuticals, controlled substances, amino acids, sugars, skincare acids, exotic structures, and more
 - **CPK Color Convention** — Industry-standard atomic coloring (Carbon=gray, Oxygen=red, Nitrogen=blue, etc.)
 - **Ball-and-Stick Models** — Clear visualization of molecular structure with single, double, and triple bonds
@@ -26,7 +26,7 @@ MolVis is a real-time 3D molecular visualization application powered by GPU comp
 
 | Panel | Description |
 |-------|-------------|
-| **Molecule Selector** | Browse 301 molecules by category or search by name (coming soon) |
+| **Molecule Selector** | Browse 296 molecules by category or search by name |
 | **Molecule Viewport** | Interactive 3D model of the selected molecule |
 | **View Controls** | Adjust rotation speed, direction, and position offset |
 | **Performance** | Real-time FPS and GPU statistics |
@@ -36,9 +36,7 @@ MolVis is a real-time 3D molecular visualization application powered by GPU comp
 - **Simple Molecules** (H₂O, CO₂, NH₃...)
 - **Organic Compounds** (Benzene, Ethanol, Caffeine...)
 - **Amino Acids** (all 20 standard + Hydroxyproline)
-- **Nucleobases** (DNA/RNA bases)
 - **Sugars & Carbohydrates** (Glucose, Fructose, Ribose...)
-- **Lipids & Fatty Acids** (Oleic, Palmitic, Linoleic...)
 - **Vitamins** (A, B complex, C, D, E, K)
 - **Neurotransmitters** (Dopamine, Serotonin, GABA, Acetylcholine...)
 - **Hormones** (Testosterone, Estradiol, Cortisol...)
@@ -46,13 +44,12 @@ MolVis is a real-time 3D molecular visualization application powered by GPU comp
 - **Controlled Substances** (Heroin, Cocaine, LSD, MDMA, Ketamine...)
 - **Household Chemicals** (NaOH, NaCl, Bleach, MSG...)
 - **Acids** (Acetic, Sulfuric, Glycolic, Salicylic, Citric...)
-  - **Skincare Acids** ⭐
-    - AHA Acids (Glycolic, Lactic, Citric, Malic, Tartaric)
-    - BHA Acids (Salicylic)
-- **Metal Compounds** (Ferrocene, Cisplatin, Rust...)
 - **Plastics & Polymers** (PET, Polystyrene, Nylon-6...)
-- **Energy Molecules** (ATP, ADP, NADH...)
-- **Exotic Structures** (C₆₀, Cubane, Catenanes, Molecular Knots...)
+- **Lipids & Fatty Acids** (Oleic, Palmitic, Linoleic...)
+- **Metal Compounds** (Ferrocene, Cisplatin, Rust...)
+- **Energy Molecules** (ATP, ADP, NADH, DNA/RNA nucleobases...)
+- **Flavors & Fragrances** (Vanillin, Limonene, Menthol...)
+- **Other** (C₆₀, Cubane, exotic structures...)
 
 ## 🛠️ Requirements
 
@@ -108,7 +105,7 @@ open build_mac/bin/MolVis.app
 
 ## 🧪 Supported Elements
 
-18 elements with CPK coloring:
+20 elements with CPK coloring:
 
 | Element | Color | Element | Color |
 |---------|-------|---------|-------|
@@ -120,15 +117,18 @@ open build_mac/bin/MolVis.app
 | Sulfur (S) | Yellow | Aluminum (Al) | Silver |
 | Chlorine (Cl) | Green | Titanium (Ti) | Gray |
 | Bromine (Br) | Dark Red | Platinum (Pt) | Silver |
-| Fluorine (F) | Light Green | Iodine (I) | Purple |
+| Fluorine (F) | Light Green | Rhenium (Re) | Metallic Gray |
+| Iodine (I) | Purple | Xenon (Xe) | Cyan |
 
 ## 📁 Project Structure
 
 ```
 MolVis/
 ├── src/
-│   ├── main_windows.cpp      # Windows entry point (Win32 + DX11)
-│   ├── main_mac.mm           # macOS entry point (SDL2 + Metal)
+│   ├── gui/
+│   │   ├── main_windows.cpp  # Windows entry point (Win32 + DX11 + ImGui)
+│   │   ├── main_mac.mm       # macOS entry point (SDL2 + Metal + ImGui)
+│   │   └── windowicon.h      # Window icon data
 │   ├── renderer/
 │   │   ├── cuda_renderer.h   # Windows renderer interface
 │   │   ├── cuda_renderer.cu  # CUDA ray-tracing kernels
@@ -140,17 +140,19 @@ MolVis/
 │   └── molecule/
 │       ├── molecule_types.h  # Platform-agnostic data structures
 │       ├── molecule_db.h     # Molecule database API
-│       └── molecule_db.cpp   # 249 molecule definitions
+│       └── molecule_db.cpp   # 296 molecule definitions (~16K lines)
 ├── platform/
-│   ├── windows/              # Windows-specific files
 │   └── macos/
-│       └── Info.plist        # macOS app bundle info
+│       ├── Info.plist        # macOS app bundle metadata
+│       └── AppIcon.icns      # macOS app icon
 ├── third_party/
 │   └── imgui/                # Dear ImGui (all backends)
 ├── CMakeLists.txt            # Cross-platform build (CMake)
 ├── Makefile                  # Windows build (nmake)
 ├── build.bat                 # Windows build script
-└── build_mac.sh              # macOS build script
+├── build_mac.sh              # macOS build script
+├── resource.rc               # Windows app icon and version info
+└── app.ico                   # Windows app icon
 ```
 
 ## 📄 License
