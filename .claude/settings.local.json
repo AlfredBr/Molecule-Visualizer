@@ -6,7 +6,8 @@
       "Bash(xcrun notarytool store-credentials:*)",
       "Bash(xcrun notarytool:*)",
       "Bash(gh release:*)",
-      "Bash(./build_mac.sh:*)"
+      "Bash(./build_mac.sh:*)",
+      "Bash(/usr/libexec/PlistBuddy:*)"
     ]
   }
 }
