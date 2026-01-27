@@ -15,9 +15,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$SCRIPT_DIR/../.."
 BUILD_DIR="$PROJECT_ROOT/build_mac"
 DIST_DIR="$PROJECT_ROOT/dist"
-APP_NAME="MolVis"
-VERSION="0.4.1"
-DMG_NAME="${APP_NAME}-${VERSION}-macOS"
+APP_NAME="Molecule Visualizer"
+VERSION="0.4.2"
+DMG_NAME="MolVis-${VERSION}-macOS"
 
 # Colors for output
 RED='\033[0;31m'
@@ -144,7 +144,7 @@ show_info() {
     echo ""
     echo "  To install:"
     echo "    1. Open the DMG file"
-    echo "    2. Drag MolVis to Applications"
+    echo "    2. Drag Molecule Visualizer to Applications"
     echo "    3. Eject the DMG"
     echo ""
     echo "  To distribute:"

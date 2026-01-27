@@ -233,17 +233,13 @@ $ReleaseBody = @"
 $existingRelease = gh release view $TagName 2>$null
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Release $TagName already exists." -ForegroundColor Yellow
-    $confirm = Read-Host "Delete and recreate? (y/N)"
-    if ($confirm -eq 'y' -or $confirm -eq 'Y') {
-        Write-Host "Deleting existing release..." -ForegroundColor Gray
-        gh release delete $TagName --yes 2>$null
-    } else {
-        Write-Host "Uploading assets to existing release..." -ForegroundColor Yellow
-        gh release upload $TagName $ZipPath $ChecksumPath --clobber
-        Write-Host ""
-        Write-Host "Assets uploaded successfully!" -ForegroundColor Green
-        exit 0
-    }
+    Write-Host "Uploading assets to existing release (preserving release notes)..." -ForegroundColor Yellow
+    gh release upload $TagName $ZipPath $ChecksumPath --clobber
+    Write-Host ""
+    Write-Host "Assets uploaded successfully!" -ForegroundColor Green
+    Write-Host ""
+    Write-Host "Note: Release notes were preserved. Edit them manually on GitHub if needed." -ForegroundColor Cyan
+    exit 0
 }
 
 # Create the release

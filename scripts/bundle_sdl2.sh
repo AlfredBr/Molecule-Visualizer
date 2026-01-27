@@ -6,19 +6,19 @@
 # 2. Copies it to the app's Frameworks folder
 # 3. Updates the executable to look for SDL2 in @executable_path/../Frameworks
 #
-# Usage: ./bundle_sdl2.sh /path/to/MolVis.app
+# Usage: ./bundle_sdl2.sh /path/to/Molecule\ Visualizer.app
 
 set -e
 
 APP_BUNDLE="$1"
 
 if [ -z "$APP_BUNDLE" ]; then
-    echo "Usage: $0 /path/to/MolVis.app"
+    echo "Usage: $0 /path/to/Molecule\\ Visualizer.app"
     exit 1
 fi
 
 FRAMEWORKS_DIR="$APP_BUNDLE/Contents/Frameworks"
-EXECUTABLE="$APP_BUNDLE/Contents/MacOS/MolVis"
+EXECUTABLE="$APP_BUNDLE/Contents/MacOS/Molecule Visualizer"
 
 # Create Frameworks directory if it doesn't exist
 mkdir -p "$FRAMEWORKS_DIR"

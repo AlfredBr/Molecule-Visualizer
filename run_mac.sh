@@ -1,1 +1,1 @@
-open build_mac/bin/MolVis.app
+open "build_mac/bin/Molecule Visualizer.app"

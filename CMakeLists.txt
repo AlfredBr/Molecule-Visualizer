@@ -6,7 +6,7 @@
 #   cmake .. && cmake --build .
 
 cmake_minimum_required(VERSION 3.20)
-project(MolVis VERSION 0.4.1 LANGUAGES CXX)
+project(MolVis VERSION 0.4.2 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -146,8 +146,9 @@ if(MOLVIS_BUILD_MACOS)
 
     # macOS bundle properties
     set_target_properties(MolVis PROPERTIES
+        OUTPUT_NAME "Molecule Visualizer"
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/platform/macos/Info.plist
-        MACOSX_BUNDLE_BUNDLE_NAME "MolVis"
+        MACOSX_BUNDLE_BUNDLE_NAME "Molecule Visualizer"
         MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}"
         MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}"
         MACOSX_BUNDLE_GUI_IDENTIFIER "com.molvis.app"

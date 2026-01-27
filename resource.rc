@@ -8,8 +8,8 @@
 
 // Version information - ProductName appears under the icon in Explorer
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION     0,4,1,0
-PRODUCTVERSION  0,4,1,0
+FILEVERSION     0,4,2,0
+PRODUCTVERSION  0,4,2,0
 FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
 FILEFLAGS       0
 FILEOS          VOS__WINDOWS32
@@ -21,11 +21,11 @@ BEGIN
         BLOCK "040904B0"
         BEGIN
             VALUE "FileDescription", "Molecule Visualizer"
-            VALUE "FileVersion", "0.4.1"
+            VALUE "FileVersion", "0.4.2"
             VALUE "InternalName", "MolVis"
             VALUE "OriginalFilename", "MolVis.exe"
             VALUE "ProductName", "Molecule Visualizer"
-            VALUE "ProductVersion", "0.4.1"
+            VALUE "ProductVersion", "0.4.2"
         END
     END
     BLOCK "VarFileInfo"

@@ -106,19 +106,19 @@ build() {
 
     print_status "Build complete!"
     echo ""
-    echo "Application built at: $BUILD_DIR/bin/MolVis.app"
-    echo "Run with: open $BUILD_DIR/bin/MolVis.app"
-    echo "Or: $BUILD_DIR/bin/MolVis.app/Contents/MacOS/MolVis"
+    echo "Application built at: $BUILD_DIR/bin/Molecule Visualizer.app"
+    echo "Run with: open $BUILD_DIR/bin/Molecule Visualizer.app"
+    echo "Or: $BUILD_DIR/bin/Molecule Visualizer.app/Contents/MacOS/Molecule Visualizer"
 }
 
 # Run
 run() {
-    if [ ! -d "$BUILD_DIR/bin/MolVis.app" ]; then
+    if [ ! -d "$BUILD_DIR/bin/Molecule Visualizer.app" ]; then
         build
     fi
 
-    print_status "Running MolVis..."
-    "$BUILD_DIR/bin/MolVis.app/Contents/MacOS/MolVis"
+    print_status "Running Molecule Visualizer..."
+    "$BUILD_DIR/bin/Molecule Visualizer.app/Contents/MacOS/Molecule Visualizer"
 }
 
 # Main
