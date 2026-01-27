@@ -93,7 +93,7 @@ static float                    g_offsetX = 0.0f;
 static float                    g_offsetY = 0.0f;
 static bool                     g_autoRotate = true;
 static float                    g_rotSpeed = 1.0f;
-static bool                     g_rotateX = false;
+static bool                     g_rotateX = true;
 static bool                     g_rotateY = true;
 
 // Molecule Browser Search

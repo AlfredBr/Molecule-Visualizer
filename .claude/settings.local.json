@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(winget upgrade:*)"
+      "Bash(winget upgrade:*)",
+      "Bash(security find-identity:*)",
+      "Bash(xcrun notarytool store-credentials:*)",
+      "Bash(xcrun notarytool:*)",
+      "Bash(gh release:*)",
+      "Bash(./build_mac.sh:*)"
     ]
   }
 }

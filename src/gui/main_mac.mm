@@ -175,7 +175,7 @@ int main(int argc, char* argv[]) {
         float offsetY = 0.0f;
         bool autoRotate = true;
         float rotSpeed = 1.0f;
-        bool rotateX = false;
+        bool rotateX = true;
         bool rotateY = true;
         static bool hideHydrogen = false;
         // Docking options
