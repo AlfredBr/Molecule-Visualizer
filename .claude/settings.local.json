@@ -7,7 +7,10 @@
       "Bash(xcrun notarytool:*)",
       "Bash(gh release:*)",
       "Bash(./build_mac.sh:*)",
-      "Bash(/usr/libexec/PlistBuddy:*)"
+      "Bash(/usr/libexec/PlistBuddy:*)",
+      "Bash(E:)",
+      "Bash(.build.bat)",
+      "Bash(cmd /c \"cd /d E:\\\\MolVis && build.bat\")"
     ]
   }
 }

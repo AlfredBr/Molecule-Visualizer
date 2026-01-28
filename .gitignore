@@ -80,3 +80,4 @@ molvis.ini
 /third_party/imgui
 release/*.sha256
 release/*.zip
+nul
