@@ -2456,6 +2456,71 @@ void buildTitaniumDioxide(Molecule* mol) {
     centerMolecule(mol);
 }
 
+// Build Silicon Dioxide (SiO2) - silica molecule
+void buildSiliconDioxide(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Silicon Dioxide (SiO2)");
+
+    // Bent geometry (~144 degree O-Si-O angle)
+    addAtom(mol, 0.0f, 0.4f, 0.0f, ATOM_SI);     // Si center
+    addAtom(mol, -1.3f, -0.5f, 0.0f, ATOM_O);    // O left
+    addAtom(mol, 1.3f, -0.5f, 0.0f, ATOM_O);     // O right
+
+    addBond(mol, 0, 1, 2);  // Si=O
+    addBond(mol, 0, 2, 2);  // Si=O
+
+    centerMolecule(mol);
+}
+
+// Build Silica (SiO2 crystal fragment) - quartz/silica network
+void buildSilica(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Silica (Quartz Fragment)");
+
+    // Three corner-sharing SiO4 tetrahedra
+    // Top Si tetrahedron
+    addAtom(mol, 0.0f, 1.6f, 0.0f, ATOM_SI);      // 0: top Si
+    addAtom(mol, 0.0f, 3.2f, 0.0f, ATOM_O);       // 1: top terminal O
+    addAtom(mol, -1.2f, 0.7f, 0.0f, ATOM_O);      // 2: left bridging O
+    addAtom(mol, 1.2f, 0.7f, 0.0f, ATOM_O);       // 3: right bridging O
+    addAtom(mol, 0.0f, 1.6f, 1.5f, ATOM_O);       // 4: back terminal O
+
+    // Bottom-left Si tetrahedron
+    addAtom(mol, -1.8f, -0.6f, 0.4f, ATOM_SI);    // 5: bottom-left Si
+    addAtom(mol, -3.0f, -0.1f, 0.8f, ATOM_O);     // 6: BL terminal O
+    addAtom(mol, -1.8f, -2.2f, 0.0f, ATOM_O);     // 7: BL terminal O
+
+    // Bottom-right Si tetrahedron
+    addAtom(mol, 1.8f, -0.6f, 0.4f, ATOM_SI);     // 8: bottom-right Si
+    addAtom(mol, 3.0f, -0.1f, 0.8f, ATOM_O);      // 9: BR terminal O
+    addAtom(mol, 1.8f, -2.2f, 0.0f, ATOM_O);      // 10: BR terminal O
+
+    // Bottom bridging O (between BL and BR Si)
+    addAtom(mol, 0.0f, -1.2f, 0.8f, ATOM_O);      // 11: bottom bridging O
+
+    // Top Si bonds (tetrahedral)
+    addBond(mol, 0, 1, 1);   // Si-O terminal
+    addBond(mol, 0, 2, 1);   // Si-O bridge left
+    addBond(mol, 0, 3, 1);   // Si-O bridge right
+    addBond(mol, 0, 4, 1);   // Si-O terminal back
+
+    // Bottom-left Si bonds
+    addBond(mol, 5, 2, 1);   // Si-O bridge (shared with top)
+    addBond(mol, 5, 6, 1);   // Si-O terminal
+    addBond(mol, 5, 7, 1);   // Si-O terminal
+    addBond(mol, 5, 11, 1);  // Si-O bridge bottom
+
+    // Bottom-right Si bonds
+    addBond(mol, 8, 3, 1);   // Si-O bridge (shared with top)
+    addBond(mol, 8, 9, 1);   // Si-O terminal
+    addBond(mol, 8, 10, 1);  // Si-O terminal
+    addBond(mol, 8, 11, 1);  // Si-O bridge bottom
+
+    centerMolecule(mol);
+}
+
 // Build Carbon Dioxide (CO2)
 void buildCarbonDioxide(Molecule* mol) {
     mol->numAtoms = 0;
@@ -16019,6 +16084,10 @@ static MoleculeInfo molecules[] = {
       "Aluminum oxide (alumina) is extremely hard, used as sandpaper and polishing compound. It's also the main component of rubies and sapphires (colored by trace elements). Alumina protects aluminum from rusting by forming a protective layer." },
     { buildTitaniumDioxide, "Titanium Dioxide", "TiO2", CAT_METALS, "White pigment",
       "Titanium dioxide is bright white, used in paints, cosmetics, and sunscreen. It's one of the whitest substances known, scattering all visible light. Nanoparticle TiO2 in sunscreen is controversial for potential toxicity." },
+    { buildSiliconDioxide, "Silicon Dioxide", "SiO2", CAT_METALS, "Sand/glass",
+      "Silicon dioxide (SiO2) is the most abundant mineral in Earth's crust. As a gas-phase molecule it has a bent geometry with double Si=O bonds. It's the basic building block of sand, glass, and quartz crystals." },
+    { buildSilica, "Silica", "Si3O9", CAT_METALS, "Quartz network",
+      "Silica is the crystalline network form of silicon dioxide, found in quartz, sand, and glass. Each silicon atom bonds tetrahedrally to four oxygen atoms, with oxygens bridging between silicon centers. This fragment shows three corner-sharing SiO4 tetrahedra, the fundamental unit of Earth's most common mineral." },
     // === NEUROTRANSMITTERS (199-202) ===
     { buildAcetylcholine, "Acetylcholine", "C7H16NO2", CAT_NEUROTRANS, "Muscle/memory",
       "Acetylcholine enables muscle contraction and memory formation at synapses. Your brain uses acetylcholine to consolidate memories; Alzheimer's involves acetylcholine deficiency. Some pesticides work by blocking acetylcholine breakdown." },
