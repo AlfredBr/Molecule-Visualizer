@@ -7,7 +7,16 @@
       "Bash(xcrun notarytool:*)",
       "Bash(gh release:*)",
       "Bash(./build_mac.sh:*)",
-      "Bash(/usr/libexec/PlistBuddy:*)"
+      "Bash(/usr/libexec/PlistBuddy:*)",
+      "Bash(./scripts/package/package_mac.sh:*)",
+      "Bash(codesign:*)",
+      "Bash(security find-generic-password:*)",
+      "Bash(git add:*)",
+      "Bash(git restore:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nRename app bundle to \"Molecule Visualizer\" and bump to v0.4.2\n\n- Rename macOS app bundle from MolVis.app to Molecule Visualizer.app\n- Update CFBundleExecutable and CFBundleName in Info.plist\n- Update all build scripts to use new app name with proper quoting\n- Bump version to 0.4.2 in CMakeLists.txt, Info.plist, and resource.rc\n- Fix Windows release script to preserve release notes when uploading assets\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push)",
+      "Bash(git tag:*)",
+      "Bash(git push:*)"
     ]
   }
 }
