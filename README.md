@@ -172,4 +172,4 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
-Made with 💜 CUDA, Metal, and Claude Opus 4.5
+Made with 💜, CUDA, Metal, Claude Opus 4.5, GPT 5.6 Sol Light and me...
