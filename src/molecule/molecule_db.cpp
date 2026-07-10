@@ -1,14 +1,19 @@
 /*
  * MolVis - Molecule Database Implementation
  *
- * Complete database of 233 molecules organized by category.
+ * Compiled presets and runtime external-molecule registry.
  * Molecule builders imported from legacy cuda_molecule.cu
  */
 
 #include "molecule_db.h"
+#include "molecule_loader.h"
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <algorithm>
+#include <cctype>
+#include <string>
+#include <vector>
 
 #ifndef PI
 #define PI 3.14159265358979323846f
@@ -37,6 +42,7 @@ static const char* categoryNames[] = {
     "Metal Compounds",        // CAT_METALS
     "Energy Molecules",       // CAT_ENERGY
     "Flavors & Fragrances",   // CAT_FLAVORS
+    "Materials & Semiconductors", // CAT_MATERIALS
     "Other"                   // CAT_OTHER
 };
 
@@ -56,7 +62,12 @@ static void addAtom(Molecule* mol, float x, float y, float z, int type) {
         0.25f, 0.40f, 0.38f, 0.35f, 0.45f, 0.45f, 0.45f, 0.50f, 0.35f, 0.55f,
         0.55f, 0.48f, 0.42f, 0.55f, 0.50f, 0.50f, 0.52f, 0.55f,
         0.62f, // Re (approx)
-        0.62f  // Xe (noble gas, large)
+        0.62f, // Xe (noble gas, large)
+        0.55f, // Mo
+        0.58f, // W
+        0.50f, // Se
+        0.50f, // Ge
+        0.50f  // Ga
     };
     a->radius = radii[(type >= 0 && type < ATOM_TYPE_COUNT) ? type : 0];
     mol->numAtoms++;
@@ -15646,7 +15657,62 @@ void buildSalicylicAcid(Molecule* mol) {
     centerMolecule(mol);
 }
 
-// ============== MOLECULE REGISTRY (258 molecules) ==============
+// ============== SEMICONDUCTOR MATERIAL FRAGMENTS ==============
+
+static void buildTmdFragment(Molecule* mol, const char* name, int metal, int chalcogen) {
+    memset(mol, 0, sizeof(*mol));
+    strncpy(mol->name, name, sizeof(mol->name) - 1);
+    const float a = 2.75f;
+    const float h = 1.35f;
+    for (int row = -1; row <= 1; ++row) {
+        for (int col = -1; col <= 1; ++col) {
+            float x = a * (col + 0.5f * row);
+            float y = a * 0.8660254f * row;
+            int m = mol->numAtoms; addAtom(mol, x, y, 0.0f, metal);
+            int top = mol->numAtoms; addAtom(mol, x + 0.65f, y + 0.38f, h, chalcogen);
+            int bottom = mol->numAtoms; addAtom(mol, x - 0.65f, y - 0.38f, -h, chalcogen);
+            addBond(mol, m, top, 1); addBond(mol, m, bottom, 1);
+        }
+    }
+    centerMolecule(mol);
+}
+
+static void buildMoS2(Molecule* mol) { buildTmdFragment(mol, "Molybdenum Disulfide", ATOM_MO, ATOM_S); }
+static void buildWS2(Molecule* mol) { buildTmdFragment(mol, "Tungsten Disulfide", ATOM_W, ATOM_S); }
+static void buildWSe2(Molecule* mol) { buildTmdFragment(mol, "Tungsten Diselenide", ATOM_W, ATOM_SE); }
+
+static void buildZincBlendeFragment(Molecule* mol, const char* name, int aType, int bType) {
+    memset(mol, 0, sizeof(*mol));
+    strncpy(mol->name, name, sizeof(mol->name) - 1);
+    const float points[][3] = {
+        {-2,-2,-2}, { 2, 2,-2}, { 2,-2, 2}, {-2, 2, 2},
+        { 0, 0, 0}, { 4, 0, 0}, { 0, 4, 0}, { 0, 0, 4}
+    };
+    for (int i = 0; i < 8; ++i) addAtom(mol, points[i][0], points[i][1], points[i][2], (i < 4) ? aType : bType);
+    for (int i = 0; i < 4; ++i) for (int j = 4; j < 8; ++j) {
+        float dx = points[i][0] - points[j][0], dy = points[i][1] - points[j][1], dz = points[i][2] - points[j][2];
+        if (dx*dx + dy*dy + dz*dz < 13.0f) addBond(mol, i, j, 1);
+    }
+    centerMolecule(mol);
+}
+
+static void buildSiliconCrystal(Molecule* mol) { buildZincBlendeFragment(mol, "Crystalline Silicon", ATOM_SI, ATOM_SI); }
+static void buildSiliconGermanium(Molecule* mol) { buildZincBlendeFragment(mol, "Silicon-Germanium", ATOM_SI, ATOM_GE); }
+static void buildSiliconCarbide(Molecule* mol) { buildZincBlendeFragment(mol, "Silicon Carbide", ATOM_SI, ATOM_C); }
+static void buildGalliumNitride(Molecule* mol) {
+    memset(mol, 0, sizeof(*mol)); strncpy(mol->name, "Gallium Nitride", sizeof(mol->name) - 1);
+    const float r = 2.0f, h = 1.3f;
+    for (int layer = -1; layer <= 1; ++layer) for (int i = 0; i < 3; ++i) {
+        float angle = TWO_PI * i / 3.0f + (layer & 1 ? PI / 3.0f : 0.0f);
+        int ga = mol->numAtoms; addAtom(mol, r*cosf(angle), r*sinf(angle), layer*2.1f, ATOM_GA);
+        int n = mol->numAtoms; addAtom(mol, r*cosf(angle), r*sinf(angle), layer*2.1f + h, ATOM_N);
+        addBond(mol, ga, n, 1);
+        if (layer < 1) addBond(mol, n, ga + 6, 1);
+    }
+    centerMolecule(mol);
+}
+
+// ============== MOLECULE REGISTRY ==============
 
 typedef void (*MoleculeBuilder)(Molecule*);
 
@@ -16291,55 +16357,146 @@ static MoleculeInfo molecules[] = {
       "Tetrahedrane (C4H4) is a tetrahedron of four carbons. It's one of the smallest possible ring hydrocarbon. Tetrahedrane is extremely strained but has been synthesized." },
     { buildDewarBenzene, "Dewar Benzene", "C6H6", CAT_ORGANIC, "Bent benzene isomer",
       "Dewar benzene is a bent isomer of benzene with unusual bonding. It converts to benzene when heated. Dewar benzene challenges our understanding of aromaticity and resonance." },
+    // === MATERIALS & SEMICONDUCTORS ===
+    { buildMoS2, "Molybdenum Disulfide", "MoS2", CAT_MATERIALS, "Finite 2H-MoS2 monolayer fragment",
+      "Molybdenum disulfide is a layered transition-metal dichalcogenide studied as an atomically thin semiconductor channel, especially for n-type devices. This visualization is a finite fragment of its extended 2H crystal lattice, not an isolated molecule." },
+    { buildWS2, "Tungsten Disulfide", "WS2", CAT_MATERIALS, "Finite 2H-WS2 monolayer fragment",
+      "Tungsten disulfide is a layered transition-metal dichalcogenide investigated for atomically thin transistors and optoelectronics. This visualization is a finite fragment of its extended 2H crystal lattice, not an isolated molecule." },
+    { buildWSe2, "Tungsten Diselenide", "WSe2", CAT_MATERIALS, "Finite 2H-WSe2 monolayer fragment",
+      "Tungsten diselenide is a layered transition-metal dichalcogenide and a leading candidate for p-type two-dimensional transistor channels. This visualization is a finite fragment of its extended 2H crystal lattice." },
+    { buildSiliconCrystal, "Crystalline Silicon", "Si", CAT_MATERIALS, "Diamond-cubic silicon fragment",
+      "Silicon remains the foundation of mainstream integrated circuits. This model is a small diamond-cubic lattice fragment; crystalline silicon is an extended solid rather than a discrete molecule." },
+    { buildSiliconGermanium, "Silicon-Germanium", "SiGe", CAT_MATERIALS, "Representative SiGe alloy fragment",
+      "Silicon-germanium alloys are used for specialized high-performance semiconductor channels and heterostructures. Composition varies in real materials; this model is a representative finite diamond-lattice fragment rather than a fixed SiGe molecule." },
+    { buildSiliconCarbide, "Silicon Carbide (3C)", "SiC", CAT_MATERIALS, "Finite cubic silicon-carbide fragment",
+      "Silicon carbide is a wide-bandgap semiconductor used in high-power and high-temperature electronics. This model represents a finite fragment of the cubic 3C-SiC polytype." },
+    { buildGalliumNitride, "Gallium Nitride (Wurtzite)", "GaN", CAT_MATERIALS, "Finite wurtzite gallium-nitride fragment",
+      "Gallium nitride is a wide-bandgap III-V semiconductor used in power electronics, radio-frequency devices, and LEDs. This model represents a finite fragment of the wurtzite crystal." },
 };
 
-static const int NUM_MOLECULES = sizeof(molecules) / sizeof(molecules[0]);
+static const int NUM_BUILTIN_MOLECULES = sizeof(molecules) / sizeof(molecules[0]);
+
+struct RuntimeMoleculeInfo {
+    MoleculeBuilder builder = nullptr;
+    Molecule molecule = {};
+    std::string id, name, formula, description, longDescription, structureType, source;
+    int category = CAT_OTHER;
+    int builtinIndex = -1;
+    bool external = false;
+};
+
+static std::vector<RuntimeMoleculeInfo> runtimeMolecules;
+static std::vector<std::string> loadErrors;
+static std::string userMoleculeDirectory;
+
+static std::string makeStableId(const char* name) {
+    std::string id;
+    bool separator = false;
+    for (const unsigned char* p = reinterpret_cast<const unsigned char*>(name); *p; ++p) {
+        if (std::isalnum(*p)) { if (separator && !id.empty()) id += '-'; id += static_cast<char>(std::tolower(*p)); separator = false; }
+        else separator = true;
+    }
+    return id;
+}
+
+static void addBuiltins() {
+    runtimeMolecules.clear();
+    runtimeMolecules.reserve(NUM_BUILTIN_MOLECULES + 16);
+    for (int i = 0; i < NUM_BUILTIN_MOLECULES; ++i) {
+        RuntimeMoleculeInfo item;
+        item.builtinIndex = i;
+        item.builder = molecules[i].builder; item.id = makeStableId(molecules[i].name);
+        item.name = molecules[i].name; item.formula = molecules[i].formula ? molecules[i].formula : "";
+        item.category = molecules[i].category; item.description = molecules[i].description ? molecules[i].description : "";
+        item.longDescription = molecules[i].longDescription ? molecules[i].longDescription : "";
+        item.structureType = item.category == CAT_MATERIALS ? "crystal-fragment" : "molecule";
+        item.source = "Built in";
+        runtimeMolecules.push_back(std::move(item));
+    }
+}
+
+static void ensureDatabase() { if (runtimeMolecules.empty()) molecule_database_reload(); }
 
 // ============== PUBLIC API ==============
 
 int molecule_get_count() {
-    return NUM_MOLECULES;
+    ensureDatabase(); return static_cast<int>(runtimeMolecules.size());
 }
 
 const char* molecule_get_name(int index) {
-    if (index < 0 || index >= NUM_MOLECULES) return "Unknown";
-    return molecules[index].name;
+    ensureDatabase(); if (index < 0 || index >= static_cast<int>(runtimeMolecules.size())) return "Unknown";
+    const RuntimeMoleculeInfo& item = runtimeMolecules[index];
+    return item.builtinIndex >= 0 ? molecules[item.builtinIndex].name : item.name.c_str();
 }
 
 int molecule_get_category(int index) {
-    if (index < 0 || index >= NUM_MOLECULES) return CAT_OTHER;
-    return molecules[index].category;
+    ensureDatabase(); if (index < 0 || index >= static_cast<int>(runtimeMolecules.size())) return CAT_OTHER;
+    return runtimeMolecules[index].category;
 }
 
 const char* molecule_get_formula(int index) {
-    if (index < 0 || index >= NUM_MOLECULES) return "";
-    return molecules[index].formula ? molecules[index].formula : "";
+    ensureDatabase(); if (index < 0 || index >= static_cast<int>(runtimeMolecules.size())) return "";
+    const RuntimeMoleculeInfo& item = runtimeMolecules[index];
+    if (item.builtinIndex >= 0) return molecules[item.builtinIndex].formula ? molecules[item.builtinIndex].formula : "";
+    return item.formula.c_str();
 }
 
 const char* molecule_get_description(int index) {
-    if (index < 0 || index >= NUM_MOLECULES) return "";
-    return molecules[index].description;
+    ensureDatabase(); if (index < 0 || index >= static_cast<int>(runtimeMolecules.size())) return "";
+    const RuntimeMoleculeInfo& item = runtimeMolecules[index];
+    if (item.builtinIndex >= 0) return molecules[item.builtinIndex].description ? molecules[item.builtinIndex].description : "";
+    return item.description.c_str();
 }
 
 const char* molecule_get_long_description(int index) {
-    if (index < 0 || index >= NUM_MOLECULES) return "";
-    const char* desc = molecules[index].longDescription;
-    return desc ? desc : "No detailed description available yet.";
+    ensureDatabase(); if (index < 0 || index >= static_cast<int>(runtimeMolecules.size())) return "";
+    const RuntimeMoleculeInfo& item = runtimeMolecules[index];
+    if (item.builtinIndex >= 0) return molecules[item.builtinIndex].longDescription ? molecules[item.builtinIndex].longDescription : "No detailed description available yet.";
+    const std::string& desc = item.longDescription;
+    return desc.empty() ? "No detailed description available yet." : desc.c_str();
 }
 
 void molecule_build(int index, Molecule* mol) {
-    if (index < 0 || index >= NUM_MOLECULES) index = 0;
-    molecules[index].builder(mol);
-    // Copy formula to molecule struct
-    const char* formula = molecules[index].formula;
-    if (formula) {
-        strncpy(mol->formula, formula, sizeof(mol->formula) - 1);
-        mol->formula[sizeof(mol->formula) - 1] = '\0';
-    } else {
-        mol->formula[0] = '\0';
-    }
+    ensureDatabase(); if (index < 0 || index >= static_cast<int>(runtimeMolecules.size())) index = 0;
+    const RuntimeMoleculeInfo& item = runtimeMolecules[index];
+    if (item.builder) item.builder(mol); else *mol = item.molecule;
+    const char* formula = item.builtinIndex >= 0 ? molecules[item.builtinIndex].formula : item.formula.c_str();
+    strncpy(mol->formula, formula ? formula : "", sizeof(mol->formula) - 1); mol->formula[sizeof(mol->formula) - 1] = '\0';
 }
 
 void molecule_build_random(Molecule* mol) {
     buildRandomMolecule(mol);
 }
+
+int molecule_database_reload() {
+    addBuiltins(); loadErrors.clear(); userMoleculeDirectory = molecule_user_directory();
+    std::string directoryError;
+    if (!molecule_ensure_user_directory(&directoryError)) loadErrors.push_back(userMoleculeDirectory + ": " + directoryError);
+    std::vector<std::string> directories = { molecule_application_directory() + "/molecules", userMoleculeDirectory };
+    MoleculeLoadResult loaded = molecule_load_json_directories(directories);
+    loadErrors = std::move(loaded.errors);
+    int accepted = 0;
+    for (ExternalMoleculeRecord& external : loaded.records) {
+        auto existing = std::find_if(runtimeMolecules.begin(), runtimeMolecules.end(), [&](const RuntimeMoleculeInfo& item) { return item.id == external.id; });
+        if (existing != runtimeMolecules.end() && !external.overrideExisting) {
+            loadErrors.push_back(external.source + ": ID '" + external.id + "' already exists; set \"override\": true to replace it");
+            continue;
+        }
+        RuntimeMoleculeInfo item;
+        item.molecule = external.molecule; item.id = external.id; item.name = external.name; item.formula = external.formula;
+        item.category = external.category; item.description = external.description; item.longDescription = external.longDescription;
+        item.structureType = external.structureType.empty() ? "molecule" : external.structureType;
+        item.source = external.source; item.external = true;
+        if (existing == runtimeMolecules.end()) runtimeMolecules.push_back(std::move(item)); else *existing = std::move(item);
+        ++accepted;
+    }
+    return accepted;
+}
+
+const char* molecule_get_id(int index) { ensureDatabase(); return (index >= 0 && index < static_cast<int>(runtimeMolecules.size())) ? runtimeMolecules[index].id.c_str() : ""; }
+int molecule_find_by_id(const char* id) { ensureDatabase(); if (!id) return -1; for (int i = 0; i < static_cast<int>(runtimeMolecules.size()); ++i) if (runtimeMolecules[i].id == id) return i; return -1; }
+bool molecule_is_external(int index) { ensureDatabase(); return index >= 0 && index < static_cast<int>(runtimeMolecules.size()) && runtimeMolecules[index].external; }
+const char* molecule_get_source(int index) { ensureDatabase(); return (index >= 0 && index < static_cast<int>(runtimeMolecules.size())) ? runtimeMolecules[index].source.c_str() : ""; }
+int molecule_get_load_error_count() { ensureDatabase(); return static_cast<int>(loadErrors.size()); }
+const char* molecule_get_load_error(int index) { ensureDatabase(); return (index >= 0 && index < static_cast<int>(loadErrors.size())) ? loadErrors[index].c_str() : ""; }
+const char* molecule_get_user_directory() { ensureDatabase(); return userMoleculeDirectory.c_str(); }

@@ -13,11 +13,12 @@ MolVis is a real-time 3D molecular visualization application powered by GPU comp
 
 - **Real-time GPU Rendering** — CUDA-powered parallel ray-sphere intersection for smooth performance
 - **Dear ImGui Interface** — Modern, responsive GUI with dockable panels
-- **296 Molecule Library** — From simple gases to exotic structures like Buckminsterfullerene (C₆₀), including skincare ingredients
+- **300+ Built-in Presets** — Molecules and finite material models, plus user-editable external JSON records
 - **17 Categories** — Commercial pharmaceuticals, controlled substances, amino acids, sugars, skincare acids, exotic structures, and more
 - **CPK Color Convention** — Industry-standard atomic coloring (Carbon=gray, Oxygen=red, Nitrogen=blue, etc.)
 - **Ball-and-Stick Models** — Clear visualization of molecular structure with single, double, and triple bonds
 - **Interactive Controls** — Rotation speed, direction, position offset, zoom—all from the GUI
+- **Extensible Database** — Add or explicitly override presets with validated JSON files after compilation
 - **Metallic Shading** — Specular highlights and realistic lighting for depth perception
 
 ## 🖥️ Interface
@@ -26,7 +27,7 @@ MolVis is a real-time 3D molecular visualization application powered by GPU comp
 
 | Panel | Description |
 |-------|-------------|
-| **Molecule Selector** | Browse 296 molecules by category or search by name |
+| **Molecule Selector** | Browse compiled and external records by category or search by name |
 | **Molecule Viewport** | Interactive 3D model of the selected molecule |
 | **View Controls** | Adjust rotation speed, direction, and position offset |
 | **Performance** | Real-time FPS and GPU statistics |
@@ -105,7 +106,7 @@ open build_mac/bin/MolVis.app
 
 ## 🧪 Supported Elements
 
-20 elements with CPK coloring:
+25 elements with CPK-style coloring, including Mo, W, Se, Ge, and Ga for semiconductor materials:
 
 | Element | Color | Element | Color |
 |---------|-------|---------|-------|
@@ -119,6 +120,9 @@ open build_mac/bin/MolVis.app
 | Bromine (Br) | Dark Red | Platinum (Pt) | Silver |
 | Fluorine (F) | Light Green | Rhenium (Re) | Metallic Gray |
 | Iodine (I) | Purple | Xenon (Xe) | Cyan |
+| Molybdenum (Mo) | Teal | Tungsten (W) | Blue |
+| Selenium (Se) | Orange | Germanium (Ge) | Gray-green |
+| Gallium (Ga) | Muted rose | | |
 
 ## 📁 Project Structure
 
@@ -140,7 +144,8 @@ MolVis/
 │   └── molecule/
 │       ├── molecule_types.h  # Platform-agnostic data structures
 │       ├── molecule_db.h     # Molecule database API
-│       └── molecule_db.cpp   # 296 molecule definitions (~16K lines)
+│       ├── molecule_db.cpp   # Compiled presets and runtime registry
+│       └── molecule_loader.cpp # External JSON loader and validation
 ├── platform/
 │   └── macos/
 │       ├── Info.plist        # macOS app bundle metadata

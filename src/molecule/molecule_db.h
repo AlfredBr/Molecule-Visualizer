@@ -28,6 +28,7 @@ enum MoleculeCategory {
     CAT_METALS,         // Metal compounds
     CAT_ENERGY,         // Energy molecules (ATP, etc.)
     CAT_FLAVORS,        // Fragrances and flavors
+    CAT_MATERIALS,      // Crystalline and semiconductor materials
     CAT_OTHER,          // Other / Random
     CAT_COUNT
 };
@@ -61,5 +62,14 @@ void molecule_build(int index, Molecule* mol);
 
 // Build a random molecule
 void molecule_build_random(Molecule* mol);
+
+int molecule_database_reload();
+const char* molecule_get_id(int index);
+int molecule_find_by_id(const char* id);
+bool molecule_is_external(int index);
+const char* molecule_get_source(int index);
+int molecule_get_load_error_count();
+const char* molecule_get_load_error(int index);
+const char* molecule_get_user_directory();
 
 #endif // MOLECULE_DB_H

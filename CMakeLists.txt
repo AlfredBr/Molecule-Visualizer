@@ -8,6 +8,8 @@
 cmake_minimum_required(VERSION 3.20)
 project(MolVis VERSION 0.4.2 LANGUAGES CXX)
 
+include(CTest)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -52,13 +54,24 @@ set(IMGUI_SOURCES
 #==============================================================================
 set(COMMON_SOURCES
     ${CMAKE_SOURCE_DIR}/src/molecule/molecule_db.cpp
+    ${CMAKE_SOURCE_DIR}/src/molecule/molecule_loader.cpp
 )
 
 set(COMMON_HEADERS
     ${CMAKE_SOURCE_DIR}/src/molecule/molecule_db.h
+    ${CMAKE_SOURCE_DIR}/src/molecule/molecule_loader.h
     ${CMAKE_SOURCE_DIR}/src/molecule/molecule_types.h
     ${CMAKE_SOURCE_DIR}/src/renderer/renderer_interface.h
 )
+
+if(BUILD_TESTING)
+    add_executable(MolVisDatabaseTests
+        ${CMAKE_SOURCE_DIR}/tests/test_molecule_database.cpp
+        ${COMMON_SOURCES}
+    )
+    target_include_directories(MolVisDatabaseTests PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src)
+    add_test(NAME molecule_database COMMAND MolVisDatabaseTests)
+endif()
 
 #==============================================================================
 # macOS Build (Metal + SDL2)
@@ -238,6 +251,7 @@ if(MOLVIS_BUILD_WINDOWS)
         d3d11
         dxgi
         d3dcompiler
+        shell32
         user32
         gdi32
     )

@@ -236,6 +236,8 @@ xattr -cr /Applications/MolVis.app
 .\build.bat
 ```
 
+When Visual Studio Insiders includes both preview and stable MSVC toolsets, `build.bat` selects the installed 14.44 toolset for CUDA 13.1 compatibility. It also normalizes developer-environment paths, so it is safe to launch from an IDE terminal that already initialized Visual Studio.
+
 **From Developer Command Prompt:**
 ```powershell
 nmake
@@ -310,6 +312,19 @@ Releases are triggered by:
 ---
 
 ## Troubleshooting
+
+## Database Tests
+
+The molecule registry and external JSON loader have host-only tests that do not require a GPU at runtime. With a configured CMake build, run:
+
+```bash
+cmake --build . --target MolVisDatabaseTests
+ctest --output-on-failure
+```
+
+The tests validate all compiled presets, stable IDs, atom and bond bounds, the semiconductor material models, and representative valid and invalid JSON input.
+
+External molecule authoring is documented in `docs/MOLECULE_FORMAT.md`.
 
 ### macOS
 

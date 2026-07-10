@@ -47,7 +47,7 @@ INCLUDES     = /I. /I$(SRC_DIR) /Iinclude /I$(IMGUI_DIR) /I$(IMGUI_DIR)/backends
 CUDA_INC_FLAGS = -I. -I$(SRC_DIR) -Iinclude -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
 
 # Libraries
-LIBS         = user32.lib gdi32.lib d3d11.lib dxgi.lib d3dcompiler.lib cudart.lib
+LIBS         = user32.lib gdi32.lib shell32.lib d3d11.lib dxgi.lib d3dcompiler.lib cudart.lib
 LIB_PATHS    = /LIBPATH:"$(CUDA_LIB)"
 
 #==============================================================================
@@ -57,7 +57,8 @@ LIB_PATHS    = /LIBPATH:"$(CUDA_LIB)"
 # Application sources
 APP_SOURCES  = \
 	$(SRC_DIR)/gui/main_windows.cpp \
-	$(SRC_DIR)/molecule/molecule_db.cpp
+	$(SRC_DIR)/molecule/molecule_db.cpp \
+	$(SRC_DIR)/molecule/molecule_loader.cpp
 
 # CUDA sources
 CUDA_SOURCES = $(SRC_DIR)/renderer/cuda_renderer.cu
@@ -103,7 +104,7 @@ $(RES_OBJ): resource.rc
 $(TARGET): $(CUDA_OBJ) $(RES_OBJ) $(APP_SOURCES) $(IMGUI_SOURCES)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) /Fe:$@ /Fo:$(BUILD_DIR)/ \
 		$(APP_SOURCES) $(IMGUI_SOURCES) $(CUDA_OBJ) \
-		/link $(LIB_PATHS) $(LIBS) $(RES_OBJ)
+		/link /MAP:$(BUILD_DIR)/molvis.map $(LIB_PATHS) $(LIBS) $(RES_OBJ)
 
 run: all
 	@echo Starting MolVis...

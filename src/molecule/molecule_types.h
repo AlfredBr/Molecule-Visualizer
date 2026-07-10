@@ -33,9 +33,14 @@
 #define ATOM_PT 17  // Platinum
 #define ATOM_RE 18  // Rhenium
 #define ATOM_XE 19  // Xenon
+#define ATOM_MO 20  // Molybdenum
+#define ATOM_W  21  // Tungsten
+#define ATOM_SE 22  // Selenium
+#define ATOM_GE 23  // Germanium
+#define ATOM_GA 24  // Gallium
 
 // Total number of defined atom types (for UI arrays, presence flags, etc.)
-#define ATOM_TYPE_COUNT 20
+#define ATOM_TYPE_COUNT 25
 
 // Atom structure
 struct Atom {

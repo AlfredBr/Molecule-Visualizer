@@ -35,6 +35,11 @@ __device__ __constant__ float3 atomColors[ATOM_TYPE_COUNT] = {
     {0.85f, 0.85f, 0.88f},  // Pt - white
     {0.51f, 0.51f, 0.56f},  // Re - metallic gray
     {0.26f, 0.62f, 0.69f},  // Xe - cyan (noble gas)
+    {0.33f, 0.71f, 0.71f},  // Mo - teal
+    {0.13f, 0.58f, 0.84f},  // W - blue
+    {1.00f, 0.63f, 0.00f},  // Se - orange
+    {0.40f, 0.56f, 0.56f},  // Ge - gray-green
+    {0.76f, 0.56f, 0.56f},  // Ga - muted rose
 };
 
 // ============== 3D Math Helpers ==============
@@ -663,7 +668,8 @@ void renderer_get_size(CudaRenderer* r, int* width, int* height) {
 void renderer_render_text(CudaRenderer* r, const char* text, int x, int y, int scale) {
     if (!r || !text) return;
 
-    int textLen = (int)strlen(text);
+    int textLen = 0;
+    while (textLen < 255 && text[textLen] != '\0') ++textLen;
     if (textLen == 0 || textLen > 255) return;
 
     // Copy text to device

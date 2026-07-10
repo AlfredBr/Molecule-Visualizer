@@ -1,6 +1,19 @@
 
 # MolVis Release Notes
 
+## Unreleased
+
+### New Features
+- Added a hybrid molecule database: compiled presets remain available while validated JSON files can add or explicitly override records after compilation
+- Added reload, user-folder, provenance, and load-error controls to both platform UIs
+- Added a Materials & Semiconductors category with finite crystal models for MoS2, WS2, WSe2, silicon, SiGe, 3C-SiC, and wurtzite GaN
+- Added support for molybdenum, tungsten, selenium, germanium, and gallium across the database, periodic table, CUDA renderer, and Metal shader
+
+### Developer Improvements
+- Added stable molecule IDs, host-only database tests, schema documentation, and an example external molecule
+- Saved the database modernization design in `docs/MOLECULE_DATABASE_PLAN.md`
+- Fixed Windows builds launched from IDE terminals by selecting the CUDA-compatible MSVC 14.44 toolset and preventing duplicated developer-environment paths from breaking `nvcc`
+
 ## v0.4.1 (2026-01-26)
 
 ### New Features

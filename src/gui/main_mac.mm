@@ -8,6 +8,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
 #import <Metal/Metal.h>
 #import <QuartzCore/CAMetalLayer.h>
 
@@ -25,6 +26,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <cctype>
+#include <string>
 
 // ============== Configuration ==============
 
@@ -187,6 +189,8 @@ int main(int argc, char* argv[]) {
             dst.numAtoms = 0; dst.numBonds = 0;
             strncpy(dst.name, src.name, sizeof(dst.name));
             strncpy(dst.formula, src.formula, sizeof(dst.formula));
+            dst.name[sizeof(dst.name) - 1] = '\0';
+            dst.formula[sizeof(dst.formula) - 1] = '\0';
             int mapOldToNew[MAX_ATOMS];
             for (int i = 0; i < src.numAtoms; ++i) mapOldToNew[i] = -1;
             for (int i = 0; i < src.numAtoms; ++i) {
@@ -259,6 +263,9 @@ int main(int argc, char* argv[]) {
 
                 if (!running) break;
 
+                molecule.name[sizeof(molecule.name) - 1] = '\0';
+                molecule.formula[sizeof(molecule.formula) - 1] = '\0';
+
                 // Get drawable size (handles Retina displays)
                 int drawableWidth, drawableHeight;
                 SDL_Metal_GetDrawableSize(window, &drawableWidth, &drawableHeight);
@@ -291,6 +298,18 @@ int main(int argc, char* argv[]) {
                 // Main menu bar
                 if (ImGui::BeginMainMenuBar()) {
                     if (ImGui::BeginMenu("File")) {
+                        if (ImGui::MenuItem("Reload External Molecules")) {
+                            int selectedIndex = g_currentMolecule;
+                            molecule_database_reload();
+                            g_currentMolecule = selectedIndex >= 0 && selectedIndex < molecule_get_count() ? selectedIndex : 0;
+                            molecule_build(g_currentMolecule, &molecule);
+                            BuildRenderMolecule(molecule, renderMolecule, hideHydrogen);
+                        }
+                        if (ImGui::MenuItem("Open Molecules Folder")) {
+                            NSString* path = [NSString stringWithUTF8String:molecule_get_user_directory()];
+                            [[NSWorkspace sharedWorkspace] openURL:[NSURL fileURLWithPath:path]];
+                        }
+                        ImGui::Separator();
                         if (ImGui::MenuItem("Quit", "Cmd+Q")) {
                             running = false;
                         }
@@ -507,12 +526,12 @@ int main(int argc, char* argv[]) {
                         {"Mn", "Manganese",       4,  7, -1},         {"Fe", "Iron",            4,  8, ATOM_FE},
                         {"Co", "Cobalt",          4,  9, -1},         {"Ni", "Nickel",          4, 10, -1},
                         {"Cu", "Copper",          4, 11, ATOM_CU},    {"Zn", "Zinc",            4, 12, -1},
-                        {"Ga", "Gallium",         4, 13, -1},         {"Ge", "Germanium",       4, 14, -1},
-                        {"As", "Arsenic",         4, 15, -1},         {"Se", "Selenium",        4, 16, -1},
+                        {"Ga", "Gallium",         4, 13, ATOM_GA},    {"Ge", "Germanium",       4, 14, ATOM_GE},
+                        {"As", "Arsenic",         4, 15, -1},         {"Se", "Selenium",        4, 16, ATOM_SE},
                         {"Br", "Bromine",         4, 17, ATOM_BR},    {"Kr", "Krypton",         4, 18, -1},
                         {"Rb", "Rubidium",        5,  1, -1},         {"Sr", "Strontium",       5,  2, -1},
                         {"Y",  "Yttrium",         5,  3, -1},         {"Zr", "Zirconium",       5,  4, -1},
-                        {"Nb", "Niobium",         5,  5, -1},         {"Mo", "Molybdenum",      5,  6, -1},
+                        {"Nb", "Niobium",         5,  5, -1},         {"Mo", "Molybdenum",      5,  6, ATOM_MO},
                         {"Tc", "Technetium",      5,  7, -1},         {"Ru", "Ruthenium",       5,  8, -1},
                         {"Rh", "Rhodium",         5,  9, -1},         {"Pd", "Palladium",       5, 10, -1},
                         {"Ag", "Silver",          5, 11, -1},         {"Cd", "Cadmium",         5, 12, -1},
@@ -528,7 +547,7 @@ int main(int argc, char* argv[]) {
                         {"Ho", "Holmium",         6, 13, -1},         {"Er", "Erbium",          6, 14, -1},
                         {"Tm", "Thulium",         6, 15, -1},         {"Yb", "Ytterbium",      6, 16, -1},
                         {"Lu", "Lutetium",        6, 17, -1},         {"Hf", "Hafnium",         6,  4, -1},
-                        {"Ta", "Tantalum",        6,  5, -1},         {"W",  "Tungsten",        6,  6, -1},
+                        {"Ta", "Tantalum",        6,  5, -1},         {"W",  "Tungsten",        6,  6, ATOM_W},
                         {"Re", "Rhenium",         6,  7, ATOM_RE},    {"Os", "Osmium",          6,  8, -1},
                         {"Ir", "Iridium",         6,  9, -1},         {"Pt", "Platinum",        6, 10, ATOM_PT},
                         {"Au", "Gold",            6, 11, -1},         {"Hg", "Mercury",         6, 12, -1},
@@ -576,6 +595,11 @@ int main(int argc, char* argv[]) {
                         case ATOM_PT: return ImVec4(0.85f, 0.85f, 0.88f, 1.0f);
                         case ATOM_RE: return ImVec4(0.51f, 0.51f, 0.56f, 1.0f);
                         case ATOM_XE: return ImVec4(0.26f, 0.62f, 0.69f, 1.0f); // cyan (noble gas)
+                        case ATOM_MO: return ImVec4(0.33f, 0.71f, 0.71f, 1.0f);
+                        case ATOM_W:  return ImVec4(0.13f, 0.58f, 0.84f, 1.0f);
+                        case ATOM_SE: return ImVec4(1.00f, 0.63f, 0.00f, 1.0f);
+                        case ATOM_GE: return ImVec4(0.40f, 0.56f, 0.56f, 1.0f);
+                        case ATOM_GA: return ImVec4(0.76f, 0.56f, 0.56f, 1.0f);
                         default:      return ImVec4(0.32f, 0.32f, 0.36f, 1.0f);
                         }
                     };
@@ -608,10 +632,17 @@ int main(int argc, char* argv[]) {
                         else if (strcmp(sym, "Pt") == 0) present[ATOM_PT] = true;
                         else if (strcmp(sym, "Re") == 0) present[ATOM_RE] = true;
                         else if (strcmp(sym, "Xe") == 0) present[ATOM_XE] = true;
+                        else if (strcmp(sym, "Mo") == 0) present[ATOM_MO] = true;
+                        else if (strcmp(sym, "W") == 0) present[ATOM_W] = true;
+                        else if (strcmp(sym, "Se") == 0) present[ATOM_SE] = true;
+                        else if (strcmp(sym, "Ge") == 0) present[ATOM_GE] = true;
+                        else if (strcmp(sym, "Ga") == 0) present[ATOM_GA] = true;
                     };
-                    const char* formula = molecule_get_formula(g_currentMolecule);
-                    if (formula && formula[0]) {
-                        const char* end = formula + strlen(formula);
+                    const char* formula = molecule.formula;
+                    size_t formulaLength = 0;
+                    while (formulaLength < sizeof(molecule.formula) && formula[formulaLength] != '\0') ++formulaLength;
+                    if (formulaLength > 0) {
+                        const char* end = formula + formulaLength;
                         for (const char* p = formula; p < end; ) {
                             if (*p >= 'A' && *p <= 'Z') {
                                 char sym[3] = {0,0,0}; sym[0] = *p; ++p;
@@ -699,6 +730,15 @@ int main(int argc, char* argv[]) {
                     ImGui::Separator();
                     ImGui::Text("Atoms: %d", renderMolecule.numAtoms);
                     ImGui::Text("Bonds: %d", renderMolecule.numBonds);
+                    ImGui::Text("Source: %s", molecule_is_external(g_currentMolecule) ? "External JSON" : "Built in");
+                    if (molecule_is_external(g_currentMolecule)) ImGui::TextWrapped("%s", molecule_get_source(g_currentMolecule));
+                    if (molecule_get_load_error_count() > 0) {
+                        ImGui::TextColored(ImVec4(1.0f, .5f, .3f, 1.0f), "%d molecule file error(s)", molecule_get_load_error_count());
+                        if (ImGui::TreeNode("Load error details")) {
+                            for (int i = 0; i < molecule_get_load_error_count(); ++i) ImGui::TextWrapped("%s", molecule_get_load_error(i));
+                            ImGui::TreePop();
+                        }
+                    }
                     ImGui::Text("Category: %s", molecule_get_category_name(molecule_get_category(g_currentMolecule)));
                 }
                 ImGui::End();
@@ -790,6 +830,11 @@ int main(int argc, char* argv[]) {
                         {0.85f, 0.85f, 0.88f, 1.0f},  // Pt - white
                         {0.51f, 0.51f, 0.56f, 1.0f},  // Re - metallic gray
                         {0.26f, 0.62f, 0.69f, 1.0f},  // Xe - cyan (noble gas)
+                        {0.33f, 0.71f, 0.71f, 1.0f},  // Mo - teal
+                        {0.13f, 0.58f, 0.84f, 1.0f},  // W - blue
+                        {1.00f, 0.63f, 0.00f, 1.0f},  // Se - orange
+                        {0.40f, 0.56f, 0.56f, 1.0f},  // Ge - gray-green
+                        {0.76f, 0.56f, 0.56f, 1.0f},  // Ga - muted rose
                     };
 
                     const char* atomNames[] = {
@@ -813,7 +858,15 @@ int main(int argc, char* argv[]) {
                         "Pt - Platinum (White)",
                         "Re - Rhenium (Gray)",
                         "Xe - Xenon (Cyan)",
+                        "Mo - Molybdenum (Teal)",
+                        "W - Tungsten (Blue)",
+                        "Se - Selenium (Orange)",
+                        "Ge - Germanium (Gray-Green)",
+                        "Ga - Gallium (Muted Rose)",
                     };
+
+                    static_assert(sizeof(cpkColors) / sizeof(cpkColors[0]) == ATOM_TYPE_COUNT, "CPK color table must match atom types");
+                    static_assert(sizeof(atomNames) / sizeof(atomNames[0]) == ATOM_TYPE_COUNT, "CPK name table must match atom types");
 
                     // Display color swatches in a grid
                     for (int i = 0; i < ATOM_TYPE_COUNT; i++) {
