@@ -172,4 +172,4 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
-Made with 💜, CUDA, Metal, Anthropic Claude Opus 4.5, OpenAI GPT 5.6 Sol Light and me...
+Made with my 💜, Microsoft C++, nVidia CUDA, Apple Metal, Anthropic Claude Opus 4.5, OpenAI GPT 5.6 Sol Light
