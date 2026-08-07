@@ -10188,6 +10188,574 @@ void buildGalactose(Molecule* mol) {
     centerMolecule(mol);
 }
 
+// Build Mannose (C6H12O6) - Glycoprotein monosaccharide (glucose C2 epimer)
+void buildMannose(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Mannose (C6H12O6)");
+
+    // Mannose: D-mannopyranose (chair conformation)
+    // Differs from glucose at C2 - OH is axial instead of equatorial
+    float r = 1.4f;
+
+    // Ring carbons and oxygen (chair conformation)
+    addAtom(mol, r, 0.0f, 0.3f, ATOM_C);                    // 0: C1 (anomeric)
+    addAtom(mol, r * 0.5f, r * 0.866f, -0.3f, ATOM_C);      // 1: C2 (epimer position)
+    addAtom(mol, -r * 0.5f, r * 0.866f, 0.3f, ATOM_C);      // 2: C3
+    addAtom(mol, -r, 0.0f, -0.3f, ATOM_C);                  // 3: C4
+    addAtom(mol, -r * 0.5f, -r * 0.866f, 0.3f, ATOM_C);     // 4: C5
+    addAtom(mol, r * 0.5f, -r * 0.866f, -0.3f, ATOM_O);     // 5: Ring O
+
+    // C6 (CH2OH group)
+    addAtom(mol, -r * 0.9f, -r * 1.5f, 0.0f, ATOM_C);       // 6: C6
+
+    // OH groups (5 total)
+    addAtom(mol, r * 1.5f, 0.3f, 1.0f, ATOM_O);             // 7: O on C1 (anomeric)
+    addAtom(mol, r * 0.9f, r * 1.4f, -1.0f, ATOM_O);        // 8: O on C2 (AXIAL - mannose epimer)
+    addAtom(mol, -r * 0.9f, r * 1.4f, 1.0f, ATOM_O);        // 9: O on C3
+    addAtom(mol, -r * 1.5f, 0.0f, -1.0f, ATOM_O);           // 10: O on C4
+    addAtom(mol, -r * 0.5f, -r * 2.3f, 0.0f, ATOM_O);       // 11: O on C6
+
+    // Ring carbon hydrogens
+    addAtom(mol, r * 1.3f, -0.5f, -0.5f, ATOM_H);           // 12: H on C1
+    addAtom(mol, r * 0.8f, r * 0.5f, 0.5f, ATOM_H);         // 13: H on C2
+    addAtom(mol, -r * 0.2f, r * 1.1f, -0.5f, ATOM_H);       // 14: H on C3
+    addAtom(mol, -r * 0.7f, -0.3f, 0.5f, ATOM_H);           // 15: H on C4
+    addAtom(mol, -r * 0.8f, -r * 0.6f, -0.5f, ATOM_H);      // 16: H on C5
+
+    // C6 hydrogens (2H on CH2)
+    addAtom(mol, -r * 1.5f, -r * 1.3f, 0.7f, ATOM_H);       // 17: H on C6 (a)
+    addAtom(mol, -r * 1.3f, -r * 1.5f, -0.8f, ATOM_H);      // 18: H on C6 (b)
+
+    // OH hydrogens
+    addAtom(mol, r * 2.2f, 0.0f, 1.3f, ATOM_H);             // 19: H on C1-OH
+    addAtom(mol, r * 1.5f, r * 1.2f, -1.5f, ATOM_H);        // 20: H on C2-OH
+    addAtom(mol, -r * 1.5f, r * 1.2f, 1.5f, ATOM_H);        // 21: H on C3-OH
+    addAtom(mol, -r * 2.2f, 0.0f, -1.3f, ATOM_H);           // 22: H on C4-OH
+    addAtom(mol, -r * 0.9f, -r * 2.8f, 0.5f, ATOM_H);       // 23: H on C6-OH
+
+    // Ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);
+
+    // C6 bond
+    addBond(mol, 4, 6, 1);
+
+    // C-O bonds
+    addBond(mol, 0, 7, 1);
+    addBond(mol, 1, 8, 1);
+    addBond(mol, 2, 9, 1);
+    addBond(mol, 3, 10, 1);
+    addBond(mol, 6, 11, 1);
+
+    // C-H bonds
+    addBond(mol, 0, 12, 1);
+    addBond(mol, 1, 13, 1);
+    addBond(mol, 2, 14, 1);
+    addBond(mol, 3, 15, 1);
+    addBond(mol, 4, 16, 1);
+    addBond(mol, 6, 17, 1);
+    addBond(mol, 6, 18, 1);
+
+    // O-H bonds
+    addBond(mol, 7, 19, 1);
+    addBond(mol, 8, 20, 1);
+    addBond(mol, 9, 21, 1);
+    addBond(mol, 10, 22, 1);
+    addBond(mol, 11, 23, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Xylose (C5H10O5) - Wood sugar, aldopentose (pyranose form, no C6 branch)
+void buildXylose(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Xylose (C5H10O5)");
+
+    float r = 1.3f;
+
+    // Ring carbons and oxygen (pyranose - 5C + ring O, no exocyclic CH2OH)
+    addAtom(mol, r, 0.0f, 0.3f, ATOM_C);                  // 0: C1 (anomeric)
+    addAtom(mol, r * 0.5f, r * 0.866f, -0.3f, ATOM_C);    // 1: C2
+    addAtom(mol, -r * 0.5f, r * 0.866f, 0.3f, ATOM_C);    // 2: C3
+    addAtom(mol, -r, 0.0f, -0.3f, ATOM_C);                // 3: C4
+    addAtom(mol, -r * 0.5f, -r * 0.866f, 0.3f, ATOM_C);   // 4: C5
+    addAtom(mol, r * 0.5f, -r * 0.866f, -0.3f, ATOM_O);   // 5: Ring O
+
+    // OH groups (4 total, on C1-C4)
+    addAtom(mol, r * 1.5f, 0.3f, 1.0f, ATOM_O);           // 6: O on C1 (anomeric)
+    addAtom(mol, r * 0.9f, r * 1.4f, -1.0f, ATOM_O);      // 7: O on C2
+    addAtom(mol, -r * 0.9f, r * 1.4f, 1.0f, ATOM_O);      // 8: O on C3
+    addAtom(mol, -r * 1.5f, 0.0f, -1.0f, ATOM_O);         // 9: O on C4
+
+    // Ring carbon hydrogens (1H each on C1-C4)
+    addAtom(mol, r * 1.3f, -0.5f, -0.5f, ATOM_H);         // 10: H on C1
+    addAtom(mol, r * 0.8f, r * 0.5f, 0.5f, ATOM_H);       // 11: H on C2
+    addAtom(mol, -r * 0.2f, r * 1.1f, -0.5f, ATOM_H);     // 12: H on C3
+    addAtom(mol, -r * 0.7f, -0.3f, 0.5f, ATOM_H);         // 13: H on C4
+
+    // C5 hydrogens (2H, since C5 has no substituent besides ring O and C4)
+    addAtom(mol, -r * 0.8f, -r * 0.6f, -0.5f, ATOM_H);    // 14: H on C5 (a)
+    addAtom(mol, -r * 0.3f, -r * 1.3f, 0.8f, ATOM_H);     // 15: H on C5 (b)
+
+    // OH hydrogens
+    addAtom(mol, r * 2.2f, 0.0f, 1.3f, ATOM_H);           // 16: H on C1-OH
+    addAtom(mol, r * 1.5f, r * 1.2f, -1.5f, ATOM_H);      // 17: H on C2-OH
+    addAtom(mol, -r * 1.5f, r * 1.2f, 1.5f, ATOM_H);      // 18: H on C3-OH
+    addAtom(mol, -r * 2.2f, 0.0f, -1.3f, ATOM_H);         // 19: H on C4-OH
+
+    // Ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);
+
+    // C-O bonds
+    addBond(mol, 0, 6, 1);
+    addBond(mol, 1, 7, 1);
+    addBond(mol, 2, 8, 1);
+    addBond(mol, 3, 9, 1);
+
+    // C-H bonds
+    addBond(mol, 0, 10, 1);
+    addBond(mol, 1, 11, 1);
+    addBond(mol, 2, 12, 1);
+    addBond(mol, 3, 13, 1);
+    addBond(mol, 4, 14, 1);
+    addBond(mol, 4, 15, 1);
+
+    // O-H bonds
+    addBond(mol, 6, 16, 1);
+    addBond(mol, 7, 17, 1);
+    addBond(mol, 8, 18, 1);
+    addBond(mol, 9, 19, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Trehalose (C12H22O11) - Fungal/insect blood sugar (alpha,alpha-1,1-glycosidic bond)
+void buildTrehalose(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Trehalose (C12H22O11)");
+
+    // Trehalose: alpha-D-glucopyranosyl-(1<->1)-alpha-D-glucopyranoside
+    // Two glucose units joined C1-to-C1 through a single bridging oxygen (non-reducing)
+    float r = 1.4f;
+
+    // === GLUCOSE A ===
+    addAtom(mol, r, 0.0f, 0.3f, ATOM_C);                    // 0: GlcA-C1 (glycosidic)
+    addAtom(mol, r * 0.5f, r * 0.866f, -0.3f, ATOM_C);      // 1: GlcA-C2
+    addAtom(mol, -r * 0.5f, r * 0.866f, 0.3f, ATOM_C);      // 2: GlcA-C3
+    addAtom(mol, -r, 0.0f, -0.3f, ATOM_C);                  // 3: GlcA-C4
+    addAtom(mol, -r * 0.5f, -r * 0.866f, 0.3f, ATOM_C);     // 4: GlcA-C5
+    addAtom(mol, r * 0.5f, -r * 0.866f, -0.3f, ATOM_O);     // 5: GlcA ring O
+    addAtom(mol, -r * 0.9f, -r * 1.5f, 0.0f, ATOM_C);       // 6: GlcA-C6
+
+    // GlcA OH groups (C1 has no OH - it's the glycosidic carbon)
+    addAtom(mol, r * 0.9f, r * 1.4f, -1.0f, ATOM_O);        // 7: O on C2
+    addAtom(mol, -r * 0.9f, r * 1.4f, 1.0f, ATOM_O);        // 8: O on C3
+    addAtom(mol, -r * 1.5f, 0.0f, -1.0f, ATOM_O);           // 9: O on C4
+    addAtom(mol, -r * 0.5f, -r * 2.3f, 0.0f, ATOM_O);       // 10: O on C6
+
+    // GlcA hydrogens
+    addAtom(mol, r * 1.3f, -0.5f, -0.5f, ATOM_H);           // 11: H on C1
+    addAtom(mol, r * 0.8f, r * 0.5f, 0.5f, ATOM_H);         // 12: H on C2
+    addAtom(mol, -r * 0.2f, r * 1.1f, -0.5f, ATOM_H);       // 13: H on C3
+    addAtom(mol, -r * 0.7f, -0.3f, 0.5f, ATOM_H);           // 14: H on C4
+    addAtom(mol, -r * 0.8f, -r * 0.6f, -0.5f, ATOM_H);      // 15: H on C5
+    addAtom(mol, -r * 1.5f, -r * 1.3f, 0.7f, ATOM_H);       // 16: H on C6 (a)
+    addAtom(mol, -r * 1.3f, -r * 1.5f, -0.8f, ATOM_H);      // 17: H on C6 (b)
+    addAtom(mol, r * 1.5f, r * 1.2f, -1.5f, ATOM_H);        // 18: H on C2-OH
+    addAtom(mol, -r * 1.5f, r * 1.2f, 1.5f, ATOM_H);        // 19: H on C3-OH
+    addAtom(mol, -r * 2.2f, 0.0f, -1.3f, ATOM_H);           // 20: H on C4-OH
+    addAtom(mol, -r * 0.9f, -r * 2.8f, 0.5f, ATOM_H);       // 21: H on C6-OH
+
+    // === GLUCOSE B (mirrored in x, translated) ===
+    float dx = 5.5f, dy = 0.3f;
+    addAtom(mol, -r + dx, 0.0f + dy, 0.3f, ATOM_C);                 // 22: GlcB-C1 (glycosidic)
+    addAtom(mol, -r * 0.5f + dx, r * 0.866f + dy, -0.3f, ATOM_C);   // 23: GlcB-C2
+    addAtom(mol, r * 0.5f + dx, r * 0.866f + dy, 0.3f, ATOM_C);     // 24: GlcB-C3
+    addAtom(mol, r + dx, 0.0f + dy, -0.3f, ATOM_C);                 // 25: GlcB-C4
+    addAtom(mol, r * 0.5f + dx, -r * 0.866f + dy, 0.3f, ATOM_C);    // 26: GlcB-C5
+    addAtom(mol, -r * 0.5f + dx, -r * 0.866f + dy, -0.3f, ATOM_O);  // 27: GlcB ring O
+    addAtom(mol, r * 0.9f + dx, -r * 1.5f + dy, 0.0f, ATOM_C);      // 28: GlcB-C6
+
+    addAtom(mol, -r * 0.9f + dx, r * 1.4f + dy, -1.0f, ATOM_O);     // 29: O on C2
+    addAtom(mol, r * 0.9f + dx, r * 1.4f + dy, 1.0f, ATOM_O);       // 30: O on C3
+    addAtom(mol, r * 1.5f + dx, 0.0f + dy, -1.0f, ATOM_O);          // 31: O on C4
+    addAtom(mol, r * 0.5f + dx, -r * 2.3f + dy, 0.0f, ATOM_O);      // 32: O on C6
+
+    addAtom(mol, -r * 1.3f + dx, -0.5f + dy, -0.5f, ATOM_H);        // 33: H on C1
+    addAtom(mol, -r * 0.8f + dx, r * 0.5f + dy, 0.5f, ATOM_H);      // 34: H on C2
+    addAtom(mol, r * 0.2f + dx, r * 1.1f + dy, -0.5f, ATOM_H);      // 35: H on C3
+    addAtom(mol, r * 0.7f + dx, -0.3f + dy, 0.5f, ATOM_H);          // 36: H on C4
+    addAtom(mol, r * 0.8f + dx, -r * 0.6f + dy, -0.5f, ATOM_H);     // 37: H on C5
+    addAtom(mol, r * 1.5f + dx, -r * 1.3f + dy, -0.7f, ATOM_H);     // 38: H on C6 (a)
+    addAtom(mol, r * 1.3f + dx, -r * 1.5f + dy, 0.8f, ATOM_H);      // 39: H on C6 (b)
+    addAtom(mol, -r * 1.5f + dx, r * 1.2f + dy, -1.5f, ATOM_H);     // 40: H on C2-OH
+    addAtom(mol, r * 1.5f + dx, r * 1.2f + dy, 1.5f, ATOM_H);       // 41: H on C3-OH
+    addAtom(mol, r * 2.2f + dx, 0.0f + dy, -1.3f, ATOM_H);          // 42: H on C4-OH
+    addAtom(mol, r * 0.9f + dx, -r * 2.8f + dy, 0.5f, ATOM_H);      // 43: H on C6-OH
+
+    // Bridging oxygen (connects GlcA-C1 and GlcB-C1)
+    addAtom(mol, 2.75f, 0.15f, 0.8f, ATOM_O);                       // 44: glycosidic O
+
+    // === BONDS ===
+    // GlcA ring
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);
+    addBond(mol, 4, 6, 1);
+
+    addBond(mol, 1, 7, 1);
+    addBond(mol, 2, 8, 1);
+    addBond(mol, 3, 9, 1);
+    addBond(mol, 6, 10, 1);
+
+    addBond(mol, 0, 11, 1);
+    addBond(mol, 1, 12, 1);
+    addBond(mol, 2, 13, 1);
+    addBond(mol, 3, 14, 1);
+    addBond(mol, 4, 15, 1);
+    addBond(mol, 6, 16, 1);
+    addBond(mol, 6, 17, 1);
+
+    addBond(mol, 7, 18, 1);
+    addBond(mol, 8, 19, 1);
+    addBond(mol, 9, 20, 1);
+    addBond(mol, 10, 21, 1);
+
+    // GlcB ring
+    addBond(mol, 22, 23, 1);
+    addBond(mol, 23, 24, 1);
+    addBond(mol, 24, 25, 1);
+    addBond(mol, 25, 26, 1);
+    addBond(mol, 26, 27, 1);
+    addBond(mol, 27, 22, 1);
+    addBond(mol, 26, 28, 1);
+
+    addBond(mol, 23, 29, 1);
+    addBond(mol, 24, 30, 1);
+    addBond(mol, 25, 31, 1);
+    addBond(mol, 28, 32, 1);
+
+    addBond(mol, 22, 33, 1);
+    addBond(mol, 23, 34, 1);
+    addBond(mol, 24, 35, 1);
+    addBond(mol, 25, 36, 1);
+    addBond(mol, 26, 37, 1);
+    addBond(mol, 28, 38, 1);
+    addBond(mol, 28, 39, 1);
+
+    addBond(mol, 29, 40, 1);
+    addBond(mol, 30, 41, 1);
+    addBond(mol, 31, 42, 1);
+    addBond(mol, 32, 43, 1);
+
+    // Glycosidic bonds (C1-O-C1)
+    addBond(mol, 0, 44, 1);
+    addBond(mol, 22, 44, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Cellobiose (C12H22O11) - Cellulose repeat unit (beta-1,4-glycosidic bond)
+void buildCellobiose(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Cellobiose (C12H22O11)");
+
+    // Cellobiose: beta-D-glucopyranosyl-(1->4)-D-glucopyranose
+    // Same skeleton as maltose, but beta-linked (cellulose's repeat unit vs maltose's alpha-linked starch)
+
+    // === GLUCOSE 1 - Reducing end (right side) ===
+    addAtom(mol, 2.5f, 0.0f, 0.3f, ATOM_C);         // 0: Glc1-C1 (anomeric, free)
+    addAtom(mol, 3.7f, 0.7f, -0.3f, ATOM_C);        // 1: Glc1-C2
+    addAtom(mol, 5.0f, 0.0f, 0.0f, ATOM_C);         // 2: Glc1-C3
+    addAtom(mol, 5.0f, -1.5f, 0.3f, ATOM_C);        // 3: Glc1-C4 (glycosidic link)
+    addAtom(mol, 3.7f, -2.2f, -0.3f, ATOM_C);       // 4: Glc1-C5
+    addAtom(mol, 2.5f, -1.5f, 0.0f, ATOM_O);        // 5: Glc1 ring O
+    addAtom(mol, 3.7f, -3.7f, 0.0f, ATOM_C);        // 6: Glc1-C6
+
+    // Glucose 1 oxygen substituents
+    addAtom(mol, 1.3f, 0.7f, 0.0f, ATOM_O);         // 7: Glc1-C1 OH (anomeric)
+    addAtom(mol, 3.7f, 2.2f, 0.0f, ATOM_O);         // 8: Glc1-C2 OH
+    addAtom(mol, 6.2f, 0.7f, -0.5f, ATOM_O);        // 9: Glc1-C3 OH
+    // C4 oxygen is glycosidic link (no OH here)
+    addAtom(mol, 3.7f, -4.4f, 1.2f, ATOM_O);        // 10: Glc1-C6 OH
+
+    // === GLUCOSE 2 - Non-reducing end (left side) ===
+    addAtom(mol, -2.5f, -1.5f, 0.3f, ATOM_C);       // 11: Glc2-C1 (anomeric, linked)
+    addAtom(mol, -3.7f, -0.8f, -0.3f, ATOM_C);      // 12: Glc2-C2
+    addAtom(mol, -5.0f, -1.5f, 0.0f, ATOM_C);       // 13: Glc2-C3
+    addAtom(mol, -5.0f, -3.0f, 0.3f, ATOM_C);       // 14: Glc2-C4
+    addAtom(mol, -3.7f, -3.7f, -0.3f, ATOM_C);      // 15: Glc2-C5
+    addAtom(mol, -2.5f, -3.0f, 0.0f, ATOM_O);       // 16: Glc2 ring O
+    addAtom(mol, -3.7f, -5.2f, 0.0f, ATOM_C);       // 17: Glc2-C6
+
+    // Glucose 2 oxygen substituents (C1 is glycosidic, no OH)
+    addAtom(mol, -3.7f, 0.7f, 0.0f, ATOM_O);        // 18: Glc2-C2 OH
+    addAtom(mol, -6.2f, -0.8f, -0.5f, ATOM_O);      // 19: Glc2-C3 OH
+    addAtom(mol, -6.2f, -3.7f, 0.0f, ATOM_O);       // 20: Glc2-C4 OH
+    addAtom(mol, -3.7f, -5.9f, 1.2f, ATOM_O);       // 21: Glc2-C6 OH
+
+    // Glycosidic oxygen (connects Glc2-C1 to Glc1-C4)
+    addAtom(mol, 5.0f, -2.2f, 1.5f, ATOM_O);        // 22: glycosidic O
+
+    // === HYDROGENS (22 total for C12H22O11) ===
+    addAtom(mol, 2.5f, 0.0f, 1.4f, ATOM_H);         // 23: H-Glc1-C1
+    addAtom(mol, 3.7f, 0.7f, -1.4f, ATOM_H);        // 24: H-Glc1-C2
+    addAtom(mol, 5.0f, 0.0f, -1.1f, ATOM_H);        // 25: H-Glc1-C3
+    addAtom(mol, 5.0f, -1.5f, -0.8f, ATOM_H);       // 26: H-Glc1-C4
+    addAtom(mol, 3.7f, -2.2f, -1.4f, ATOM_H);       // 27: H-Glc1-C5
+    addAtom(mol, 4.6f, -4.1f, -0.5f, ATOM_H);       // 28: H-Glc1-C6a
+    addAtom(mol, 2.8f, -4.1f, -0.5f, ATOM_H);       // 29: H-Glc1-C6b
+
+    addAtom(mol, -2.5f, -1.5f, 1.4f, ATOM_H);       // 30: H-Glc2-C1
+    addAtom(mol, -3.7f, -0.8f, -1.4f, ATOM_H);      // 31: H-Glc2-C2
+    addAtom(mol, -5.0f, -1.5f, -1.1f, ATOM_H);      // 32: H-Glc2-C3
+    addAtom(mol, -5.0f, -3.0f, 1.4f, ATOM_H);       // 33: H-Glc2-C4
+    addAtom(mol, -3.7f, -3.7f, -1.4f, ATOM_H);      // 34: H-Glc2-C5
+    addAtom(mol, -4.6f, -5.6f, -0.5f, ATOM_H);      // 35: H-Glc2-C6a
+    addAtom(mol, -2.8f, -5.6f, -0.5f, ATOM_H);      // 36: H-Glc2-C6b
+
+    addAtom(mol, 0.5f, 0.3f, 0.3f, ATOM_H);         // 37: H-Glc1-C1-OH
+    addAtom(mol, 3.7f, 2.7f, -0.8f, ATOM_H);        // 38: H-Glc1-C2-OH
+    addAtom(mol, 7.0f, 0.3f, -0.2f, ATOM_H);        // 39: H-Glc1-C3-OH
+    addAtom(mol, 3.7f, -5.3f, 1.4f, ATOM_H);        // 40: H-Glc1-C6-OH
+    addAtom(mol, -3.7f, 1.2f, -0.8f, ATOM_H);       // 41: H-Glc2-C2-OH
+    addAtom(mol, -7.0f, -1.2f, -0.2f, ATOM_H);      // 42: H-Glc2-C3-OH
+    addAtom(mol, -7.0f, -3.3f, 0.5f, ATOM_H);       // 43: H-Glc2-C4-OH
+    addAtom(mol, -3.7f, -6.8f, 1.4f, ATOM_H);       // 44: H-Glc2-C6-OH
+
+    // === BONDS ===
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);
+    addBond(mol, 4, 6, 1);
+
+    addBond(mol, 0, 7, 1);
+    addBond(mol, 1, 8, 1);
+    addBond(mol, 2, 9, 1);
+    addBond(mol, 3, 22, 1);
+    addBond(mol, 6, 10, 1);
+
+    addBond(mol, 11, 12, 1);
+    addBond(mol, 12, 13, 1);
+    addBond(mol, 13, 14, 1);
+    addBond(mol, 14, 15, 1);
+    addBond(mol, 15, 16, 1);
+    addBond(mol, 16, 11, 1);
+    addBond(mol, 15, 17, 1);
+
+    addBond(mol, 12, 18, 1);
+    addBond(mol, 13, 19, 1);
+    addBond(mol, 14, 20, 1);
+    addBond(mol, 17, 21, 1);
+
+    addBond(mol, 11, 22, 1);
+
+    addBond(mol, 0, 23, 1);
+    addBond(mol, 1, 24, 1);
+    addBond(mol, 2, 25, 1);
+    addBond(mol, 3, 26, 1);
+    addBond(mol, 4, 27, 1);
+    addBond(mol, 6, 28, 1);
+    addBond(mol, 6, 29, 1);
+
+    addBond(mol, 11, 30, 1);
+    addBond(mol, 12, 31, 1);
+    addBond(mol, 13, 32, 1);
+    addBond(mol, 14, 33, 1);
+    addBond(mol, 15, 34, 1);
+    addBond(mol, 17, 35, 1);
+    addBond(mol, 17, 36, 1);
+
+    addBond(mol, 7, 37, 1);
+    addBond(mol, 8, 38, 1);
+    addBond(mol, 9, 39, 1);
+    addBond(mol, 10, 40, 1);
+    addBond(mol, 18, 41, 1);
+    addBond(mol, 19, 42, 1);
+    addBond(mol, 20, 43, 1);
+    addBond(mol, 21, 44, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Sorbitol (C6H14O6) - Sugar alcohol sweetener (open-chain glucose reduction product)
+void buildSorbitol(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Sorbitol (C6H14O6)");
+
+    // Open-chain hexitol: HOCH2-(CHOH)4-CH2OH, zigzag backbone
+    addAtom(mol, -3.75f, 0.0f, 0.0f, ATOM_C);   // 0: C1
+    addAtom(mol, -2.25f, 0.7f, 0.0f, ATOM_C);   // 1: C2
+    addAtom(mol, -0.75f, 0.0f, 0.0f, ATOM_C);   // 2: C3
+    addAtom(mol, 0.75f, 0.7f, 0.0f, ATOM_C);    // 3: C4
+    addAtom(mol, 2.25f, 0.0f, 0.0f, ATOM_C);    // 4: C5
+    addAtom(mol, 3.75f, 0.7f, 0.0f, ATOM_C);    // 5: C6
+
+    // OH groups (one per carbon, alternating above/below the zigzag)
+    addAtom(mol, -3.75f, -1.3f, 0.0f, ATOM_O);  // 6: O on C1
+    addAtom(mol, -2.25f, 2.0f, 0.0f, ATOM_O);   // 7: O on C2
+    addAtom(mol, -0.75f, -1.3f, 0.0f, ATOM_O);  // 8: O on C3
+    addAtom(mol, 0.75f, 2.0f, 0.0f, ATOM_O);    // 9: O on C4
+    addAtom(mol, 2.25f, -1.3f, 0.0f, ATOM_O);   // 10: O on C5
+    addAtom(mol, 3.75f, 2.0f, 0.0f, ATOM_O);    // 11: O on C6
+
+    // Carbon hydrogens (2 on terminal C1/C6, 1 on internal C2-C5)
+    addAtom(mol, -4.5f, 0.5f, 0.8f, ATOM_H);    // 12: H on C1 (a)
+    addAtom(mol, -4.5f, 0.5f, -0.8f, ATOM_H);   // 13: H on C1 (b)
+    addAtom(mol, -2.25f, 0.7f, -1.1f, ATOM_H);  // 14: H on C2
+    addAtom(mol, -0.75f, 0.0f, 1.1f, ATOM_H);   // 15: H on C3
+    addAtom(mol, 0.75f, 0.7f, -1.1f, ATOM_H);   // 16: H on C4
+    addAtom(mol, 2.25f, 0.0f, 1.1f, ATOM_H);    // 17: H on C5
+    addAtom(mol, 4.5f, 0.5f, 0.8f, ATOM_H);     // 18: H on C6 (a)
+    addAtom(mol, 4.5f, 0.5f, -0.8f, ATOM_H);    // 19: H on C6 (b)
+
+    // OH hydrogens
+    addAtom(mol, -3.75f, -2.3f, 0.5f, ATOM_H);  // 20: H on C1-OH
+    addAtom(mol, -2.25f, 3.0f, -0.5f, ATOM_H);  // 21: H on C2-OH
+    addAtom(mol, -0.75f, -2.3f, 0.5f, ATOM_H);  // 22: H on C3-OH
+    addAtom(mol, 0.75f, 3.0f, -0.5f, ATOM_H);   // 23: H on C4-OH
+    addAtom(mol, 2.25f, -2.3f, 0.5f, ATOM_H);   // 24: H on C5-OH
+    addAtom(mol, 3.75f, 3.0f, -0.5f, ATOM_H);   // 25: H on C6-OH
+
+    // Backbone bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+
+    // C-O bonds
+    addBond(mol, 0, 6, 1);
+    addBond(mol, 1, 7, 1);
+    addBond(mol, 2, 8, 1);
+    addBond(mol, 3, 9, 1);
+    addBond(mol, 4, 10, 1);
+    addBond(mol, 5, 11, 1);
+
+    // C-H bonds
+    addBond(mol, 0, 12, 1);
+    addBond(mol, 0, 13, 1);
+    addBond(mol, 1, 14, 1);
+    addBond(mol, 2, 15, 1);
+    addBond(mol, 3, 16, 1);
+    addBond(mol, 4, 17, 1);
+    addBond(mol, 5, 18, 1);
+    addBond(mol, 5, 19, 1);
+
+    // O-H bonds
+    addBond(mol, 6, 20, 1);
+    addBond(mol, 7, 21, 1);
+    addBond(mol, 8, 22, 1);
+    addBond(mol, 9, 23, 1);
+    addBond(mol, 10, 24, 1);
+    addBond(mol, 11, 25, 1);
+
+    centerMolecule(mol);
+}
+
+// Build Glucosamine (C6H13NO5) - Amino sugar, joint supplement (glucose with NH2 at C2)
+void buildGlucosamine(Molecule* mol) {
+    mol->numAtoms = 0;
+    mol->numBonds = 0;
+    strcpy(mol->name, "Glucosamine (C6H13NO5)");
+
+    // 2-amino-2-deoxy-D-glucopyranose: glucose ring with NH2 replacing the C2 hydroxyl
+    float r = 1.4f;
+
+    addAtom(mol, r, 0.0f, 0.3f, ATOM_C);                    // 0: C1 (anomeric)
+    addAtom(mol, r * 0.5f, r * 0.866f, -0.3f, ATOM_C);      // 1: C2 (amino position)
+    addAtom(mol, -r * 0.5f, r * 0.866f, 0.3f, ATOM_C);      // 2: C3
+    addAtom(mol, -r, 0.0f, -0.3f, ATOM_C);                  // 3: C4
+    addAtom(mol, -r * 0.5f, -r * 0.866f, 0.3f, ATOM_C);     // 4: C5
+    addAtom(mol, r * 0.5f, -r * 0.866f, -0.3f, ATOM_O);     // 5: Ring O
+    addAtom(mol, -r * 0.9f, -r * 1.5f, 0.0f, ATOM_C);       // 6: C6
+
+    // C1/C3/C4/C6 hydroxyls
+    addAtom(mol, r * 1.5f, 0.3f, 1.0f, ATOM_O);             // 7: O on C1
+    addAtom(mol, -r * 0.9f, r * 1.4f, 1.0f, ATOM_O);        // 8: O on C3
+    addAtom(mol, -r * 1.5f, 0.0f, -1.0f, ATOM_O);           // 9: O on C4
+    addAtom(mol, -r * 0.5f, -r * 2.3f, 0.0f, ATOM_O);       // 10: O on C6
+
+    // C2 amino group
+    addAtom(mol, r * 0.9f, r * 1.4f, -1.0f, ATOM_N);        // 11: N on C2 (NH2)
+
+    // Ring carbon hydrogens
+    addAtom(mol, r * 1.3f, -0.5f, -0.5f, ATOM_H);           // 12: H on C1
+    addAtom(mol, r * 0.8f, r * 0.5f, 0.5f, ATOM_H);         // 13: H on C2
+    addAtom(mol, -r * 0.2f, r * 1.1f, -0.5f, ATOM_H);       // 14: H on C3
+    addAtom(mol, -r * 0.7f, -0.3f, 0.5f, ATOM_H);           // 15: H on C4
+    addAtom(mol, -r * 0.8f, -r * 0.6f, -0.5f, ATOM_H);      // 16: H on C5
+    addAtom(mol, -r * 1.5f, -r * 1.3f, 0.7f, ATOM_H);       // 17: H on C6 (a)
+    addAtom(mol, -r * 1.3f, -r * 1.5f, -0.8f, ATOM_H);      // 18: H on C6 (b)
+
+    // OH hydrogens
+    addAtom(mol, r * 2.2f, 0.0f, 1.3f, ATOM_H);             // 19: H on C1-OH
+    addAtom(mol, -r * 1.5f, r * 1.2f, 1.5f, ATOM_H);        // 20: H on C3-OH
+    addAtom(mol, -r * 2.2f, 0.0f, -1.3f, ATOM_H);           // 21: H on C4-OH
+    addAtom(mol, -r * 0.9f, -r * 2.8f, 0.5f, ATOM_H);       // 22: H on C6-OH
+
+    // NH2 hydrogens
+    addAtom(mol, r * 1.5f, r * 1.2f, -1.5f, ATOM_H);        // 23: H on N (a)
+    addAtom(mol, r * 1.3f, r * 2.1f, -0.7f, ATOM_H);        // 24: H on N (b)
+
+    // Ring bonds
+    addBond(mol, 0, 1, 1);
+    addBond(mol, 1, 2, 1);
+    addBond(mol, 2, 3, 1);
+    addBond(mol, 3, 4, 1);
+    addBond(mol, 4, 5, 1);
+    addBond(mol, 5, 0, 1);
+    addBond(mol, 4, 6, 1);
+
+    // C-O / C-N bonds
+    addBond(mol, 0, 7, 1);
+    addBond(mol, 1, 11, 1);
+    addBond(mol, 2, 8, 1);
+    addBond(mol, 3, 9, 1);
+    addBond(mol, 6, 10, 1);
+
+    // C-H bonds
+    addBond(mol, 0, 12, 1);
+    addBond(mol, 1, 13, 1);
+    addBond(mol, 2, 14, 1);
+    addBond(mol, 3, 15, 1);
+    addBond(mol, 4, 16, 1);
+    addBond(mol, 6, 17, 1);
+    addBond(mol, 6, 18, 1);
+
+    // O-H bonds
+    addBond(mol, 7, 19, 1);
+    addBond(mol, 8, 20, 1);
+    addBond(mol, 9, 21, 1);
+    addBond(mol, 10, 22, 1);
+
+    // N-H bonds
+    addBond(mol, 11, 23, 1);
+    addBond(mol, 11, 24, 1);
+
+    centerMolecule(mol);
+}
+
 // Build Aspartame (C14H18N2O5) - Diet soda sweetener (aspartyl-phenylalanine methyl ester)
 void buildAspartame(Molecule* mol) {
     mol->numAtoms = 0;
@@ -16199,6 +16767,18 @@ static MoleculeInfo molecules[] = {
       "Maltose is created when enzymes break down starch in grains and potatoes. Brewers use it to ferment beer; your saliva starts breaking starch into maltose when chewing. Malt sugar is slightly less sweet than table sugar but has a pleasant, subtle flavor." },
     { buildGalactose, "Galactose", "C6H12O6", CAT_SUGARS, "Milk monosaccharide",
       "Galactose is a monosaccharide derived from lactose in milk. It differs from glucose by the position of one hydroxyl group, yet this tiny difference makes it crucial for brain development. Your body uses galactose to make galactose-cerebroside, a critical component of myelin insulation." },
+    { buildMannose, "Mannose", "C6H12O6", CAT_SUGARS, "Glycoprotein sugar",
+      "Mannose is a glucose epimer common in glycoproteins and plant gums. Your cells attach mannose to proteins in a process called glycosylation, essential for proper protein folding. It's sold as a supplement believed to help prevent urinary tract infections." },
+    { buildXylose, "Xylose", "C5H10O5", CAT_SUGARS, "Wood sugar",
+      "Xylose is the sugar that gives wood and straw their structure, released when hemicellulose breaks down. Named from the Greek word for wood, it's used in a classic test for intestinal absorption. Xylose is also fermented into xylitol, a popular sugar substitute." },
+    { buildTrehalose, "Trehalose", "C12H22O11", CAT_SUGARS, "Insect blood sugar",
+      "Trehalose is the primary sugar circulating in insect blood and lets some organisms survive extreme drying by vitrifying their cells. Two glucose units join at their anomeric carbons, making it unusually stable and resistant to digestion. It's used in food and pharmaceuticals as a stabilizer." },
+    { buildCellobiose, "Cellobiose", "C12H22O11", CAT_SUGARS, "Cellulose subunit",
+      "Cellobiose is the repeating disaccharide unit of cellulose, linked by a beta bond that humans can't digest but termites and cows can with symbiotic microbes. It looks almost identical to maltose, but that single bond angle is the difference between digestible starch and structural fiber." },
+    { buildSorbitol, "Sorbitol", "C6H14O6", CAT_SUGARS, "Sugar alcohol",
+      "Sorbitol is a sugar alcohol found naturally in apples and pears, made industrially by reducing glucose. It's roughly 60% as sweet as sugar with fewer calories, common in sugar-free gum and candy. Eating too much can cause a laxative effect since your gut absorbs it slowly." },
+    { buildGlucosamine, "Glucosamine", "C6H13NO5", CAT_SUGARS, "Joint supplement",
+      "Glucosamine is an amino sugar your body uses to build cartilage and the fluid that cushions joints. It's a popular supplement for arthritis, though clinical evidence for pain relief is mixed. Shellfish shells are the traditional industrial source, since chitin is built from glucosamine units." },
     { buildAspartame, "Aspartame", "C14H18N2O5", CAT_OTHER, "NutraSweet",
       "Aspartame is a sweetener 200 times sweeter than sugar with no calories. It's made from aspartic acid and phenylalanine, amino acids. People with phenylketonuria (PKU) cannot safely consume aspartame due to phenylalanine." },
     { buildSaccharin, "Saccharin", "C7H5NO3S", CAT_OTHER, "Sweet'N Low",

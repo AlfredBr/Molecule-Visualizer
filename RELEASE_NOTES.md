@@ -4,6 +4,7 @@
 ## Unreleased
 
 ### New Features
+- Added 6 new presets to the Sugars & Carbohydrates category: Mannose, Xylose, Trehalose, Cellobiose, Sorbitol, and Glucosamine
 - Added a hybrid molecule database: compiled presets remain available while validated JSON files can add or explicitly override records after compilation
 - Added reload, user-folder, provenance, and load-error controls to both platform UIs
 - Added a Materials & Semiconductors category with finite crystal models for MoS2, WS2, WSe2, silicon, SiGe, 3C-SiC, and wurtzite GaN

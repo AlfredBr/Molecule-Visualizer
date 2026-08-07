@@ -19,7 +19,14 @@
       "Bash(git push:*)",
       "Bash(E:)",
       "Bash(.build.bat)",
-      "Bash(cmd /c \"cd /d E:\\\\MolVis && build.bat\")"
+      "Bash(cmd /c \"cd /d E:\\\\MolVis && build.bat\")",
+      "Bash(./build.bat)",
+      "Bash(./molvis.exe)",
+      "Bash(tasklist)",
+      "Bash(powershell -Command 'Add-Type -AssemblyName System.Windows.Forms; Add-Type -AssemblyName System.Drawing; $proc = Get-Process molvis; $b = New-Object System.Drawing.Bitmap\\([System.Windows.Forms.Screen]::PrimaryScreen.Bounds.Width, [System.Windows.Forms.Screen]::PrimaryScreen.Bounds.Height\\); $g = [System.Drawing.Graphics]::FromImage\\($b\\); $g.CopyFromScreen\\(0,0,0,0,$b.Size\\); $b.Save\\('\\\\''__TRACKED_VAR__/scratch_screenshot.png'\\\\''\\)')",
+      "PowerShell(Add-Type -AssemblyName System.Windows.Forms; Add-Type -AssemblyName System.Drawing; $b = New-Object System.Drawing.Bitmap\\([System.Windows.Forms.Screen]::PrimaryScreen.Bounds.Width, [System.Windows.Forms.Screen]::PrimaryScreen.Bounds.Height\\); $g = [System.Drawing.Graphics]::FromImage\\($b\\); $g.CopyFromScreen\\(0,0,0,0,$b.Size\\); $b.Save\\('E:\\\\MolVis\\\\scratch_screenshot.png'\\))",
+      "Bash(taskkill //F //IM molvis.exe)",
+      "Bash(git -C E:/MolVis status --short)"
     ]
   }
 }
